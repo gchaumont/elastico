@@ -1,12 +1,12 @@
 <?php
 
-namespace Gchaumont\Models;
+namespace Elastico\Models;
 
-use Gchaumont\Models\Features\BatchPersistable;
-use Gchaumont\Models\Features\Configurable;
-use Gchaumont\Models\Features\Persistable;
-use Gchaumont\Models\Features\Queryable;
-use Gchaumont\Models\Features\Relatable;
+use Elastico\Models\Features\BatchPersistable;
+use Elastico\Models\Features\Configurable;
+use Elastico\Models\Features\Persistable;
+use Elastico\Models\Features\Queryable;
+use Elastico\Models\Features\Relatable;
 
 /**
  * Reads and Writes Objects to the Database.

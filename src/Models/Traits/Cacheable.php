@@ -1,8 +1,8 @@
 <?php
 
-namespace Gchaumont\Models\Traits;
+namespace Elastico\Models\Traits;
 
-use Gchaumont\Models\Model;
+use Elastico\Models\Model;
 use Illuminate\Support\Facades\Cache;
 
 trait Cacheable

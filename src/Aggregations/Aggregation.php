@@ -1,12 +1,12 @@
 <?php
 
-namespace Gchaumont\Aggregations;
+namespace Elastico\Aggregations;
 
 use App\Support\Traits\When;
-use Gchaumont\Query\Builder;
-use Gchaumont\Query\Builder\HasAggregations;
-use Gchaumont\Query\Response\Aggregation\AggregationResponse;
-use Gchaumont\Query\Response\Response;
+use Elastico\Query\Builder;
+use Elastico\Query\Builder\HasAggregations;
+use Elastico\Query\Response\Aggregation\AggregationResponse;
+use Elastico\Query\Response\Response;
 
 /**
  * Abstract Aggregation.

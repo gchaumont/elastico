@@ -1,8 +1,8 @@
 <?php
 
-namespace Gchaumont\Query\Compound;
+namespace Elastico\Query\Compound;
 
-use Gchaumont\Query\Query;
+use Elastico\Query\Query;
 
 /**
  * Elasticsearch Disjuction Max Query.

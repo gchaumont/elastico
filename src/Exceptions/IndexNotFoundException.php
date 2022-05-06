@@ -1,6 +1,6 @@
 <?php
 
-namespace Gchaumont\Exceptions;
+namespace Elastico\Exceptions;
 
 use Exception;
 

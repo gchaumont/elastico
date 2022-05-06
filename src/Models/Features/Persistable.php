@@ -1,6 +1,6 @@
 <?php
 
-namespace Gchaumont\Models\Features;
+namespace Elastico\Models\Features;
 
 use App\Support\Elasticsearch\Elasticsearch; // TODO Replace with Builder
 

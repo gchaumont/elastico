@@ -1,8 +1,8 @@
 <?php
 
-namespace Gchaumont\Query\Builder;
+namespace Elastico\Query\Builder;
 
-use Gchaumont\Aggregations\Aggregation;
+use Elastico\Aggregations\Aggregation;
 use Illuminate\Support\Collection;
 
 trait HasAggregations

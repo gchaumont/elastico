@@ -1,9 +1,9 @@
 <?php
 
-namespace Gchaumont\Models\Features;
+namespace Elastico\Models\Features;
 
+use Elastico\Query\Builder;
 use Exception;
-use Gchaumont\Query\Builder;
 use GuzzleHttp\Ring\Future\FutureArray;
 use Illuminate\Support\Collection;
 

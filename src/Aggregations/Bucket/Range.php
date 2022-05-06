@@ -1,8 +1,8 @@
 <?php
 
-namespace Gchaumont\Aggregations\Bucket;
+namespace Elastico\Aggregations\Bucket;
 
-use Gchaumont\Aggregations\Aggregation;
+use Elastico\Aggregations\Aggregation;
 
 /**
  * Range Aggregation.

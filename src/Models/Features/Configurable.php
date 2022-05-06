@@ -1,6 +1,6 @@
 <?php
 
-namespace Gchaumont\Models\Features;
+namespace Elastico\Models\Features;
 
 trait Configurable
 {

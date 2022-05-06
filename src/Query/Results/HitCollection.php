@@ -1,6 +1,6 @@
 <?php
 
-namespace Gchaumont\Query\Results;
+namespace Elastico\Query\Results;
 
 use ArrayAccess;
 use ArrayIterator;

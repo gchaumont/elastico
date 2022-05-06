@@ -1,11 +1,11 @@
 <?php
 
-namespace Gchaumont\Query\Response\Aggregation;
+namespace Elastico\Query\Response\Aggregation;
 
 use ArrayAccess;
-use Gchaumont\Aggregations\Aggregation;
-use Gchaumont\Query\Builder;
-use Gchaumont\Query\Response\Response;
+use Elastico\Aggregations\Aggregation;
+use Elastico\Query\Builder;
+use Elastico\Query\Response\Response;
 use Illuminate\Support\Collection;
 use RuntimeException;
 

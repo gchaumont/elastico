@@ -1,12 +1,12 @@
 <?php
 
-namespace Gchaumont\Query\Builder;
+namespace Elastico\Query\Builder;
 
-use Gchaumont\Models\Model;
-use Gchaumont\Query\Term\Exists;
-use Gchaumont\Query\Term\Range;
-use Gchaumont\Query\Term\Term;
-use Gchaumont\Query\Term\Terms;
+use Elastico\Models\Model;
+use Elastico\Query\Term\Exists;
+use Elastico\Query\Term\Range;
+use Elastico\Query\Term\Term;
+use Elastico\Query\Term\Terms;
 use Illuminate\Support\Collection;
 
 trait HasWhere

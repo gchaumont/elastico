@@ -1,9 +1,9 @@
 <?php
 
-namespace Gchaumont\Aggregations\Bucket;
+namespace Elastico\Aggregations\Bucket;
 
-use Gchaumont\Aggregations\Aggregation;
-use Gchaumont\Query\Query;
+use Elastico\Aggregations\Aggregation;
+use Elastico\Query\Query;
 
 /**
  * Filter Aggregation.

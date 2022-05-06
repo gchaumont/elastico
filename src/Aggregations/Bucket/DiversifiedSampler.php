@@ -1,10 +1,10 @@
 <?php
 
-namespace Gchaumont\Aggregations\Bucket;
+namespace Elastico\Aggregations\Bucket;
 
+use Elastico\Aggregations\Aggregation;
+use Elastico\Aggregations\Options\ExecutionHint;
 use Exception;
-use Gchaumont\Aggregations\Aggregation;
-use Gchaumont\Aggregations\Options\ExecutionHint;
 
 /**
  * DiversifiedSampler Aggregation.

@@ -1,10 +1,10 @@
 <?php
 
-namespace Gchaumont\Query\Builder;
+namespace Elastico\Query\Builder;
 
-use Gchaumont\Exceptions\ModelNotFoundException;
-use Gchaumont\Models\Model;
-use Gchaumont\Query\Response\Response;
+use Elastico\Exceptions\ModelNotFoundException;
+use Elastico\Models\Model;
+use Elastico\Query\Response\Response;
 use Generator;
 use GuzzleHttp\Ring\Future\FutureArray;
 use Illuminate\Support\Collection;

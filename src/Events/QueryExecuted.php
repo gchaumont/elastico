@@ -1,6 +1,6 @@
 <?php
 
-namespace Gchaumont\Events;
+namespace Elastico\Events;
 
 use Illuminate\Broadcasting\Channel;
 use Illuminate\Broadcasting\InteractsWithSockets;

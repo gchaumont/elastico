@@ -1,11 +1,11 @@
 <?php
 
-namespace Gchaumont\Models;
+namespace Elastico\Models;
 
 use App\Support\Supervision\Dashboard\Fields\AdminField;
 use DateTime;
-use Gchaumont\Mapping\Field;
-use Gchaumont\Mapping\FieldType;
+use Elastico\Mapping\Field;
+use Elastico\Mapping\FieldType;
 
 /**
  * Reads and Writes Objects to a DataStream.

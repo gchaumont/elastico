@@ -1,11 +1,11 @@
 <?php
 
-namespace Gchaumont\Models\Traits;
+namespace Elastico\Models\Traits;
 
 use App\Support\Supervision\Dashboard\Fields\AdminField;
 use DateTime;
-use Gchaumont\Mapping\Field;
-use Gchaumont\Mapping\FieldType;
+use Elastico\Mapping\Field;
+use Elastico\Mapping\FieldType;
 
 trait HasTimestamps
 {

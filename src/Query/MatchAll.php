@@ -1,6 +1,6 @@
 <?php
 
-namespace Gchaumont\Query;
+namespace Elastico\Query;
 
 /**
  * Elastic Exists Query.

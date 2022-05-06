@@ -1,6 +1,6 @@
 <?php
 
-namespace Gchaumont\Aggregations\Bucket;
+namespace Elastico\Aggregations\Bucket;
 
 use Exception;
 use stdClass;

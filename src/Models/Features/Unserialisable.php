@@ -1,13 +1,13 @@
 <?php
 
-namespace Gchaumont\Models\Features;
+namespace Elastico\Models\Features;
 
 use App\Models\Crawler\Domain;
 use App\Support\Data\TransferObjects\DataTransferObject;
 use Carbon\Carbon;
-use Gchaumont\Mapping\Field;
-use Gchaumont\Mapping\FieldType;
-use Gchaumont\Models\Model;
+use Elastico\Mapping\Field;
+use Elastico\Mapping\FieldType;
+use Elastico\Models\Model;
 use GuzzleHttp\Ring\Future\FutureArray;
 use stdClass;
 

@@ -1,10 +1,10 @@
 <?php
 
-namespace Gchaumont\Query\Builder;
+namespace Elastico\Query\Builder;
 
 use DateTime;
-use Gchaumont\Events\QueryExecuted;
-use Gchaumont\Events\QueryStarted;
+use Elastico\Events\QueryExecuted;
+use Elastico\Events\QueryStarted;
 
 trait HandlesMonitoring
 {

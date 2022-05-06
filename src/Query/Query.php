@@ -1,6 +1,6 @@
 <?php
 
-namespace Gchaumont\Query;
+namespace Elastico\Query;
 
 use App\Support\Traits\When;
 

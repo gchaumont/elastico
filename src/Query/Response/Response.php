@@ -1,10 +1,10 @@
 <?php
 
-namespace Gchaumont\Query\Response;
+namespace Elastico\Query\Response;
 
-use Gchaumont\Models\Model;
-use Gchaumont\Query\Builder;
-use Gchaumont\Query\Response\Aggregation\AggregationResponse;
+use Elastico\Models\Model;
+use Elastico\Query\Builder;
+use Elastico\Query\Response\Aggregation\AggregationResponse;
 use GuzzleHttp\Ring\Future\FutureArray;
 use Illuminate\Support\Collection as BaseCollection;
 

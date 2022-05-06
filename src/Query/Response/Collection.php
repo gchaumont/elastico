@@ -1,6 +1,6 @@
 <?php
 
-namespace Gchaumont\Query\Response;
+namespace Elastico\Query\Response;
 
 use Illuminate\Support\Collection as BaseCollection;
 use Illuminate\Support\Facades\Cache;

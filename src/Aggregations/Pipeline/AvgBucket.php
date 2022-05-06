@@ -1,8 +1,8 @@
 <?php
 
-namespace Gchaumont\Aggregations\Pipeline;
+namespace Elastico\Aggregations\Pipeline;
 
-use Gchaumont\Aggregations\Aggregation;
+use Elastico\Aggregations\Aggregation;
 
 /**
  * Avg Aggregation.

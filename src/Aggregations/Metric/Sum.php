@@ -1,8 +1,8 @@
 <?php
 
-namespace Gchaumont\Aggregations\Metric;
+namespace Elastico\Aggregations\Metric;
 
-use Gchaumont\Aggregations\Aggregation;
+use Elastico\Aggregations\Aggregation;
 
 /**
  * Sum Aggregation.

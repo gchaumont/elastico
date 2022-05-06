@@ -1,11 +1,11 @@
 <?php
 
-namespace Gchaumont\Models\Features;
+namespace Elastico\Models\Features;
 
 use App\Support\Traits\Reflective;
-use Gchaumont\Mapping\Field;
-use Gchaumont\Models\DataAccessObject;
-use Gchaumont\Models\Model;
+use Elastico\Mapping\Field;
+use Elastico\Models\DataAccessObject;
+use Elastico\Models\Model;
 use Illuminate\Support\Collection;
 use ReflectionUnionType;
 

@@ -1,11 +1,11 @@
 <?php
 
-namespace Gchaumont\Query\Builder;
+namespace Elastico\Query\Builder;
 
-use Gchaumont\Query\Query;
-use Gchaumont\Query\Term\Range;
-use Gchaumont\Query\Term\Term;
-use Gchaumont\Query\Term\Terms;
+use Elastico\Query\Query;
+use Elastico\Query\Term\Range;
+use Elastico\Query\Term\Term;
+use Elastico\Query\Term\Terms;
 
 trait HandlesFilters
 {

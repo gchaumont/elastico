@@ -1,8 +1,8 @@
 <?php
 
-namespace Gchaumont\Models\Features;
+namespace Elastico\Models\Features;
 
-use Gchaumont\Query\Builder;
+use Elastico\Query\Builder;
 
 trait Queryable
 {

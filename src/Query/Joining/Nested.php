@@ -1,8 +1,8 @@
 <?php
 
-namespace Gchaumont\Query\Joining;
+namespace Elastico\Query\Joining;
 
-use Gchaumont\Query\Query;
+use Elastico\Query\Query;
 
 /**
  * Elastic Exists Query.

@@ -1,8 +1,8 @@
 <?php
 
-namespace Gchaumont\Query\Specialized;
+namespace Elastico\Query\Specialized;
 
-use Gchaumont\Query\Query;
+use Elastico\Query\Query;
 
 /**
  * Elastic MoreLikeThis Query.

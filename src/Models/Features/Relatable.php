@@ -1,9 +1,9 @@
 <?php
 
-namespace Gchaumont\Models\Features;
+namespace Elastico\Models\Features;
 
-use Gchaumont\Models\Model;
-use Gchaumont\Query\Response\Collection;
+use Elastico\Models\Model;
+use Elastico\Query\Response\Collection;
 use ReflectionNamedType;
 
 trait Relatable

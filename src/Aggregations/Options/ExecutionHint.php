@@ -1,6 +1,6 @@
 <?php
 
-namespace Gchaumont\Aggregations\Options;
+namespace Elastico\Aggregations\Options;
 
 enum ExecutionHint : string
 {

@@ -1,13 +1,13 @@
 <?php
 
-namespace Gchaumont\Models\Features;
+namespace Elastico\Models\Features;
 
 use App\Support\Data\TransferObjects\DataTransferObject;
+use Elastico\Mapping\Field;
+use Elastico\Mapping\FieldType;
+use Elastico\Models\DataAccessObject;
+use Elastico\Models\Model;
 use Exception;
-use Gchaumont\Mapping\Field;
-use Gchaumont\Mapping\FieldType;
-use Gchaumont\Models\DataAccessObject;
-use Gchaumont\Models\Model;
 use stdClass;
 use Throwable;
 

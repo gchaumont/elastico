@@ -1,8 +1,8 @@
 <?php
 
-namespace Gchaumont\Query\Term;
+namespace Elastico\Query\Term;
 
-use Gchaumont\Query\Query;
+use Elastico\Query\Query;
 
 /**
  * Elastic Range Query.

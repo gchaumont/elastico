@@ -1,6 +1,6 @@
 <?php
 
-namespace Gchaumont\Query\Builder;
+namespace Elastico\Query\Builder;
 
 trait HandlesModels
 {

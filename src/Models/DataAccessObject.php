@@ -1,10 +1,10 @@
 <?php
 
-namespace Gchaumont\Models;
+namespace Elastico\Models;
 
-use Gchaumont\Models\Features\Mappable;
-use Gchaumont\Models\Features\Serialisable;
-use Gchaumont\Models\Features\Unserialisable;
+use Elastico\Models\Features\Mappable;
+use Elastico\Models\Features\Serialisable;
+use Elastico\Models\Features\Unserialisable;
 
 /**
  * Serialises Data Objects from and to the Database.

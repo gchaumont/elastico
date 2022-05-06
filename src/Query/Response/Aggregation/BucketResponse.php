@@ -1,10 +1,10 @@
 <?php
 
-namespace Gchaumont\Query\Response\Aggregation;
+namespace Elastico\Query\Response\Aggregation;
 
 use ArrayAccess;
-use Gchaumont\Aggregations\Aggregation;
-use Gchaumont\Query\Response\Response;
+use Elastico\Aggregations\Aggregation;
+use Elastico\Query\Response\Response;
 use Illuminate\Support\Collection;
 
 /**

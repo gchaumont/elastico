@@ -1,6 +1,6 @@
 <?php
 
-namespace Gchaumont\Scripting;
+namespace Elastico\Scripting;
 
 use Elasticsearch\ClientBuilder;
 

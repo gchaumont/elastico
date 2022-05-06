@@ -1,9 +1,9 @@
 <?php
 
-namespace Gchaumont\Aggregations\Bucket;
+namespace Elastico\Aggregations\Bucket;
 
-use Gchaumont\Aggregations\Aggregation;
-use Gchaumont\Query\Response\Aggregation\BucketResponse;
+use Elastico\Aggregations\Aggregation;
+use Elastico\Query\Response\Aggregation\BucketResponse;
 
 /**
  * Abstract Bucket Aggregation.

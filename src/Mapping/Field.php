@@ -1,10 +1,10 @@
 <?php
 
-namespace Gchaumont\Mapping;
+namespace Elastico\Mapping;
 
 use App\Support\Data\TransferObjects\DataTransferObject;
 use Attribute;
-use Gchaumont\Models\Model;
+use Elastico\Models\Model;
 use ReflectionProperty;
 
 #[Attribute]

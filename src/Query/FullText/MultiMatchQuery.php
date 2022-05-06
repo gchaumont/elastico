@@ -1,8 +1,8 @@
 <?php
 
-namespace Gchaumont\Query\FullText;
+namespace Elastico\Query\FullText;
 
-use Gchaumont\Query\Query;
+use Elastico\Query\Query;
 
 /**
  * Elastic Match Query.

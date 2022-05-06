@@ -1,9 +1,9 @@
 <?php
 
-namespace Gchaumont\Aggregations\Metric;
+namespace Elastico\Aggregations\Metric;
 
-use Gchaumont\Aggregations\Aggregation;
-use Gchaumont\Query\Response\Aggregation\TopHitsResponse;
+use Elastico\Aggregations\Aggregation;
+use Elastico\Query\Response\Aggregation\TopHitsResponse;
 
 /**
  * TopHits Aggregation.

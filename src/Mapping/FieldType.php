@@ -1,6 +1,6 @@
 <?php
 
-namespace Gchaumont\Mapping;
+namespace Elastico\Mapping;
 
 enum FieldType
 {

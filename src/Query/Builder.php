@@ -1,22 +1,22 @@
 <?php
 
-namespace Gchaumont\Query;
+namespace Elastico\Query;
 
 use App\Support\Elasticsearch\Elasticsearch;
 use App\Support\Traits\When;
-use Gchaumont\Query\Builder\HandlesFilters;
-use Gchaumont\Query\Builder\HandlesModels;
-use Gchaumont\Query\Builder\HandlesMonitoring;
-use Gchaumont\Query\Builder\HandlesPagination;
-use Gchaumont\Query\Builder\HandlesPayload;
-use Gchaumont\Query\Builder\HandlesRelations;
-use Gchaumont\Query\Builder\HandlesSorts;
-use Gchaumont\Query\Builder\HasAggregations;
-use Gchaumont\Query\Builder\PerformsQuery;
-use Gchaumont\Query\Compound\Boolean;
-use Gchaumont\Query\FullText\MultiMatchQuery;
-use Gchaumont\Query\Term\Prefix;
-use Gchaumont\Query\Term\Wildcard;
+use Elastico\Query\Builder\HandlesFilters;
+use Elastico\Query\Builder\HandlesModels;
+use Elastico\Query\Builder\HandlesMonitoring;
+use Elastico\Query\Builder\HandlesPagination;
+use Elastico\Query\Builder\HandlesPayload;
+use Elastico\Query\Builder\HandlesRelations;
+use Elastico\Query\Builder\HandlesSorts;
+use Elastico\Query\Builder\HasAggregations;
+use Elastico\Query\Builder\PerformsQuery;
+use Elastico\Query\Compound\Boolean;
+use Elastico\Query\FullText\MultiMatchQuery;
+use Elastico\Query\Term\Prefix;
+use Elastico\Query\Term\Wildcard;
 
  /**
   *  Elasticsearch Query Builder.

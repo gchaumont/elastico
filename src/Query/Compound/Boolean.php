@@ -1,9 +1,9 @@
 <?php
 
-namespace Gchaumont\Query\Compound;
+namespace Elastico\Query\Compound;
 
-use Gchaumont\Query\Builder\HasWhere;
-use Gchaumont\Query\Query;
+use Elastico\Query\Builder\HasWhere;
+use Elastico\Query\Query;
 
 /**
  * Elasticsearch Boolean Query.
