@@ -7,6 +7,7 @@ use Illuminate\Support\Facades\Cache;
 
  /**
   * Elastic Base Response.
+  * // TODO: remove cache from here.
   */
  class Collection extends BaseCollection
  {
@@ -18,7 +19,7 @@ use Illuminate\Support\Facades\Cache;
 
          $relations = collect($relations);
 
-         if ($this->isNotEmpty()) {
+         if ($relations->isNotEmpty() && $this->isNotEmpty()) {
              // SEPARATE RELATION LOADING
              $cachedModels = $relatedModels = [];
 

@@ -98,7 +98,7 @@ trait Unserialisable
                 },
 
             is_a($class, Model::class, true) => $class::unserialiseRelated($value),
-            is_subclass_of($class, DataAccessObject::class, true) => (new $class())->addSerialisedData($data),
+            is_subclass_of($class, DataAccessObject::class, true) => (new $class())->addSerialisedData($value),
 
             enum_exists($class) => $class::tryFrom($value) ?? $class::unserialise($value),
 

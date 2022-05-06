@@ -10,7 +10,9 @@
     }
   ],
   "require": {
-    "php" : "^8.1"
+    "php" : "^8.1",
+    "illuminate/collections": "^9.11",
+    "guzzlehttp/guzzle": "^7.4"
   },
 
    "autoload": {

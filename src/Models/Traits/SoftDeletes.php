@@ -2,7 +2,6 @@
 
 namespace Elastico\Models\Traits;
 
-use App\Support\Supervision\Dashboard\Fields\AdminField;
 use DateTime;
 use Elastico\Mapping\Field;
 use Elastico\Mapping\FieldType;
@@ -10,7 +9,6 @@ use Elastico\Mapping\FieldType;
 trait SoftDeletes
 {
     #[Field(type: FieldType::date)]
-    #[AdminField(name: 'Deleted', truncate: 25, sortable: true)]
     public null|DateTime $deleted_at;
 
     #[Field(type: FieldType::boolean)]

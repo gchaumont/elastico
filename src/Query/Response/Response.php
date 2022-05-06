@@ -92,7 +92,7 @@ use Illuminate\Support\Collection as BaseCollection;
 
      public function raw(): array|FutureArray
      {
-         // $this->wait();
+         $this->wait();
 
          return $this->response;
      }
