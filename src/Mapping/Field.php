@@ -2,8 +2,8 @@
 
 namespace Elastico\Mapping;
 
-use App\Support\Data\TransferObjects\DataTransferObject;
 use Attribute;
+use Elastico\Models\DataAccessObject;
 use Elastico\Models\Model;
 use ReflectionProperty;
 
@@ -139,7 +139,7 @@ class Field
             return false;
         }
 
-        if (is_a($this->ownerClass(), DataTransferObject::class, true)) {
+        if (is_subclass_of($this->ownerClass(), DataAccessObject::class, true)) {
             return true;
         }
         if ($asRelation && $this->related) {
@@ -160,7 +160,7 @@ class Field
         if (is_subclass_of($this->ownerClass(), Model::class, true)) {
             return false;
         }
-        if (is_subclass_of($this->ownerClass(), DataTransferObject::class, true)) {
+        if (is_subclass_of($this->ownerClass(), DataAccessObject::class, true)) {
             return true;
         }
 
@@ -188,7 +188,7 @@ class Field
                     $property['properties'] = $this->propertyType()::getIndexProperties(true);
                 }
             } elseif (class_exists($this->propertyType())
-            && is_subclass_of($this->propertyType(), DataTransferObject::class)) {
+            && is_subclass_of($this->propertyType(), DataAccessObject::class)) {
                 $property['properties'] = $this->propertyType()::getIndexProperties();
             }
             if (FieldType::nested == $this->type) {

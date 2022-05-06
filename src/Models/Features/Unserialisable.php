@@ -2,11 +2,11 @@
 
 namespace Elastico\Models\Features;
 
-use App\Models\Crawler\Domain;
-use App\Support\Data\TransferObjects\DataTransferObject;
+// use App\Models\Crawler\Domain;
 use Carbon\Carbon;
 use Elastico\Mapping\Field;
 use Elastico\Mapping\FieldType;
+use Elastico\Models\DataAccessObject;
 use Elastico\Models\Model;
 use GuzzleHttp\Ring\Future\FutureArray;
 use stdClass;
@@ -24,19 +24,12 @@ trait Unserialisable
     public static function unserialiseRelated($data): static
     {
         // HOTFIX
-        if (Domain::class == static::class) {
-            $data['id'] ??= $data['domain'];
-        }
+        // if (Domain::class == static::class) {
+        //     $data['id'] ??= $data['domain'];
+        // }
 
         return (new static(...static::prepareConstructorProperties($data)))
             ->initialiseIdentifiers(id: $data['id'])
-            ->addSerialisedData($data)
-        ;
-    }
-
-    public static function unserialiseDTO($data): static
-    {
-        return (new static())
             ->addSerialisedData($data)
         ;
     }
@@ -58,7 +51,7 @@ trait Unserialisable
 
                 continue;
             }
-            if ($this->{$field->propertyName()} instanceof DataTransferObject) {
+            if ($this->{$field->propertyName()} instanceof DataAccessObject) {
                 $this->{$field->propertyName()}->addSerialisedData($source[$field->fieldName()]);
 
                 continue;
@@ -105,7 +98,7 @@ trait Unserialisable
                 },
 
             is_a($class, Model::class, true) => $class::unserialiseRelated($value),
-            is_a($class, DataTransferObject::class, true) => $class::unserialiseDTO($value),
+            is_subclass_of($class, DataAccessObject::class, true) => (new $class())->addSerialisedData($data),
 
             enum_exists($class) => $class::tryFrom($value) ?? $class::unserialise($value),
 

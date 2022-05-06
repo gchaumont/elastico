@@ -2,10 +2,8 @@
 
 namespace Elastico\Models\Features;
 
-use App\Support\Data\TransferObjects\DataTransferObject;
 use Elastico\Mapping\Field;
 use Elastico\Mapping\FieldType;
-use Elastico\Models\DataAccessObject;
 use Elastico\Models\Model;
 use Exception;
 use stdClass;
@@ -68,7 +66,6 @@ trait Serialisable
             FieldType::object,
             FieldType::nested => match (true) {
                 is_a($value, stdClass::class) => (array) $value,
-                is_a($value, DataTransferObject::class) => $value->serialise(),
                 is_subclass_of($value, Model::class) => $value->serialiseRelated(),
                 is_subclass_of($value, DataAccessObject::class) => $value->serialise(),
                 is_subclass_of($value, Serialisable::class) => $value->serialise(asRelation: true),
