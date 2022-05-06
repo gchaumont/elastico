@@ -1,0 +1,53 @@
+<?php
+
+namespace Gchaumont\Query\Term;
+
+use Gchaumont\Query\Query;
+use RuntimeException;
+
+/**
+ * Elastic Terms Query.
+ */
+class Terms extends Query
+{
+    protected string $type = 'terms';
+
+    protected string $field;
+
+    protected array $values;
+
+    protected ?float $boost = null;
+
+    public function getPayload(): array
+    {
+        return array_filter([
+            $this->field => $this->values,
+            'boost' => $this->boost,
+        ]);
+    }
+
+    public function field(string $field): self
+    {
+        $this->field = $field;
+
+        return $this;
+    }
+
+    public function values(array $values): self
+    {
+        if (!array_filter($values, fn ($v) => !is_null($v))) {
+            throw new RuntimeException('Empty Values passed to Terms Query');
+        }
+
+        $this->values = $values;
+
+        return $this;
+    }
+
+    public function boost(float $boost): self
+    {
+        $this->boost = $boost;
+
+        return $this;
+    }
+}

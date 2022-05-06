@@ -1,0 +1,18 @@
+{
+  "name": "gchaumont/elastico",
+  "description": "Elasticsearch ORM for PHP",
+  "type": "library",
+  "license": "MIT",
+  "authors": [
+    {
+      "name": "Guy Chaumont",
+      "email": "gchaumont@me.com"
+    }
+  ],
+  "require": {},
+   "autoload": {
+    "psr-4": {
+      "Chaumont\\Elastico\\": "src"
+    }
+  }
+}

@@ -1,0 +1,34 @@
+<?php
+
+namespace Gchaumont\Query\Response\Aggregation;
+
+use ArrayAccess;
+use Gchaumont\Aggregations\Aggregation;
+use Gchaumont\Query\Response\Response;
+
+/**
+ *  Aggregation Response.
+ */
+class TopHitsResponse extends AggregationResponse implements ArrayAccess
+{
+    public function getResponse(): Response
+    {
+        return new Response(
+            hits: fn ($data): array => $data['hits']['hits'],
+            total: fn ($data): int => $data['hits']['total']['value'],
+            aggregations: fn (): array => [],
+            response: $this->response(),
+            query: $this->query,
+        );
+    }
+
+    public function hits()
+    {
+        return $this->getResponse()->hits();
+    }
+
+    public function total()
+    {
+        return $this->getResponse()->total();
+    }
+}
