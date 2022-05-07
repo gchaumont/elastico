@@ -13,8 +13,8 @@ return [
             ],
             'hosts' => ['localhost:9200'],
             // 'Handler'
-            'selector' => RoundRobinSelector::class,
-            'connectionPool' => StaticNoPingConnectionPool::class,
+            // 'selector' => RoundRobinSelector::class,
+            // 'connectionPool' => StaticNoPingConnectionPool::class,
         ],
     ],
 ];
