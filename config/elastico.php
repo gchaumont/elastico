@@ -2,19 +2,19 @@
 
 return [
     // The default connection name
-    'default' => 'default',
+    'default' => 'elastic',
 
     // The list of elasticsearch connections
     'connections' => [
-        'default' => [
-            'BasicAuthentication' => [
+        'elastic' => [
+            'basicAuthentication' => [
                 'username' => 'elastic',
                 'password' => null,
             ],
-            'Hosts' => ['localhost:9200'],
+            'hosts' => ['localhost:9200'],
             // 'Handler'
-            'Selector' => RoundRobinSelector::class,
-            'ConnectionPool' => StaticNoPingConnectionPool::class,
+            'selector' => RoundRobinSelector::class,
+            'connectionPool' => StaticNoPingConnectionPool::class,
         ],
     ],
 ];

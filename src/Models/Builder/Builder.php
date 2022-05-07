@@ -1,10 +1,25 @@
 <?php
 
-namespace Elastico\Query\Builder;
+namespace Elastico\Models\Builder;
 
-trait HandlesRelations
+use Elastico\Connection;
+use Elastico\Query\Builder as BaseBuilder;
+
+class Builder extends BaseBuilder
 {
     protected array $with = [];
+
+    public function __construct(
+        protected Connection $connection,
+        public readonly string $model,
+    ) {
+        $this->index($this->model::searchableIndexName());
+    }
+
+    public function scoped(string $scope, mixed $params = null): self
+    {
+        return $this->model::scoped($scope, $this, $params);
+    }
 
     public function getWith(): array
     {

@@ -2,13 +2,16 @@
 
 namespace Elastico\Models\Features;
 
-use Elastico\Query\Builder;
+use Elastico\Models\Builder\Builder;
 
 trait Queryable
 {
     public static function query(): Builder
     {
-        return new Builder(connection: static::getConnection(), model: static::class);
+        return new Builder(
+            connection: static::getConnection(),
+            model: static::class,
+        );
     }
 
     public function fresh()

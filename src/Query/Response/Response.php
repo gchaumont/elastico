@@ -46,9 +46,9 @@ use Illuminate\Support\Collection as BaseCollection;
      {
          return $this->hits ??= Collection::make(($this->get_hits)($this->response()))
              ->when(
-                 !empty($this->query->searchableModel),
+                 !empty($this->query->model),
                  fn ($hits) => $hits
-                     ->map(fn ($hit): Model => $this->query->searchableModel::unserialise($hit))
+                     ->map(fn ($hit): Model => $this->query->model::unserialise($hit))
                      ->load($this->query->getWith())
              )
          ;

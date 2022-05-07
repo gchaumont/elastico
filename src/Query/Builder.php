@@ -5,10 +5,8 @@ namespace Elastico\Query;
 use Elastico\Connection;
 use Elastico\Helpers\When;
 use Elastico\Query\Builder\HandlesFilters;
-use Elastico\Query\Builder\HandlesModels;
 use Elastico\Query\Builder\HandlesPagination;
 use Elastico\Query\Builder\HandlesPayload;
-use Elastico\Query\Builder\HandlesRelations;
 use Elastico\Query\Builder\HandlesScopedQueries;
 use Elastico\Query\Builder\HandlesSorts;
 use Elastico\Query\Builder\HasAggregations;
@@ -24,15 +22,11 @@ use Elastico\Query\Term\Wildcard;
  {
      use When;
      use HandlesSorts;
-     use HandlesRelations;
      use HandlesScopedQueries;
      use HasAggregations;
      use HandlesPayload;
      use HandlesFilters;
-     use HandlesModels;
      use HandlesPagination;
-
-     public readonly string $searchableModel;
 
      protected array $index;
 
@@ -55,16 +49,8 @@ use Elastico\Query\Term\Wildcard;
      protected string $filterPath;
 
      public function __construct(
-         private Connection $connection,
-         public null|string $model = null
+         protected Connection $connection
      ) {
-         if (!is_null($model)) {
-             $this->searchableModel = $model;
-         }
-         if (!empty($this->searchableModel)) {
-             // throw new \Exception('Missing searchable model for elastic query', 1);
-             $this->index = is_array($this->searchableModel::searchableIndexName()) ? $this->searchableModel::searchableIndexName() : [$this->searchableModel::searchableIndexName()];
-         }
      }
 
      public static function query(Query $query = null): self
@@ -96,9 +82,9 @@ use Elastico\Query\Term\Wildcard;
          return $this->post_filter ??= new Boolean();
      }
 
-     public function index(array $index): self
+     public function index(string|array $index): self
      {
-         $this->index = $index;
+         $this->index = is_array($index) ? $index : [$index];
 
          return $this;
      }
