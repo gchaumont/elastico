@@ -2,7 +2,7 @@
 
 namespace Elastico\Query;
 
-use App\Support\Traits\When;
+use Elastico\Helpers\When;
 
 /**
  * Elastic Base Query.

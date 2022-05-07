@@ -2,10 +2,11 @@
 
 namespace Elastico\Query\Response;
 
+use Elastic\Elasticsearch\Response\Elasticsearch;
 use Elastico\Models\Model;
 use Elastico\Query\Builder;
 use Elastico\Query\Response\Aggregation\AggregationResponse;
-use GuzzleHttp\Ring\Future\FutureArray;
+use Http\Promise\Promise;
 use Illuminate\Support\Collection as BaseCollection;
 
  /**
@@ -21,6 +22,10 @@ use Illuminate\Support\Collection as BaseCollection;
 
      protected int $total;
 
+     protected bool $resolved = false;
+
+     protected array $_response;
+
      protected Collection $hits;
 
      protected BaseCollection $aggregations;
@@ -29,8 +34,8 @@ use Illuminate\Support\Collection as BaseCollection;
          callable $total,
          callable $hits,
          callable $aggregations,
-         protected readonly array|FutureArray $response,
-         protected readonly Builder $query,
+         protected array|Elasticsearch|Promise $response,
+         protected Builder $query,
      ) {
          $this->get_total = $total;
          $this->get_hits = $hits;
@@ -73,27 +78,33 @@ use Illuminate\Support\Collection as BaseCollection;
      // Resolve and allow for serialisation
      public function wait(): static
      {
-         if ($this->response instanceof FutureArray) {
-             $this->response->wait();
-         }
-
          $this->hits();
          $this->aggregations();
          $this->total();
-         unset($this->get_aggregations, $this->get_hits, $this->get_total);
+
+         unset($this->get_aggregations, $this->get_hits, $this->get_total, $this->query);
 
          return $this;
      }
 
-     public function response(): array|FutureArray
+     public function response(): array
      {
+         if ($this->response instanceof Promise) {
+             $this->response = json_decode((string) $this->response->wait()->getBody(), true);
+         } elseif ($this->response instanceof Elasticsearch) {
+             $this->response = json_decode((string) $this->response->getBody(), true);
+         } else {
+             $this->response = $this->response;
+         }
+
          return $this->response;
      }
 
-     public function raw(): array|FutureArray
+     public function dd(): never
      {
-         $this->wait();
-
-         return $this->response;
+         if (request()->wantsJson()) {
+             response(serialize($this->aggregations))->send();
+         }
+         dd($this);
      }
  }

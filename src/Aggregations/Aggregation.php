@@ -2,7 +2,7 @@
 
 namespace Elastico\Aggregations;
 
-use App\Support\Traits\When;
+use Elastico\Helpers\When;
 use Elastico\Query\Builder;
 use Elastico\Query\Builder\HasAggregations;
 use Elastico\Query\Response\Aggregation\AggregationResponse;

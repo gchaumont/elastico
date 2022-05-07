@@ -2,7 +2,6 @@
 
 namespace Elastico\Models\Features;
 
-use Elastico\Query\Builder;
 use Exception;
 use GuzzleHttp\Ring\Future\FutureArray;
 use Illuminate\Support\Collection;
@@ -14,13 +13,14 @@ trait BatchPersistable
      */
     public static function saveBatch(array $objects, array $source = null)
     {
-        $objects = array_values($objects);
-        if (empty($objects)) {
-            return [];
+        $objects = collect($objects)->values();
+
+        if ($objects->isEmpty()) {
+            return $objects;
         }
 
         $payload = [];
-        $actions = [];
+
         foreach ($objects as $model) {
             if (empty($model->get_id())) {
                 $payload['body'][] = [
@@ -29,7 +29,6 @@ trait BatchPersistable
                     ],
                 ];
                 $payload['body'][] = $model->serialise();
-                $actions[] = 'create';
             } else {
                 $payload['body'][] = [
                     'update' => [
@@ -42,38 +41,14 @@ trait BatchPersistable
                     'doc' => $model->serialise(),
                     '_source' => $source,
                 ]);
-                $actions[] = 'update';
             }
         }
 
-        $response = Builder::bulk($payload);
+        $response = static::query()::bulk($payload);
 
         static::handleBulkError($response);
 
         return static::hydrateModelsFromSource($objects->all(), $response['items']);
-    }
-
-    public static function handleBulkError(array|FutureArray $response): void
-    {
-        $handleError = function (array|FutureArray $response) {
-            if ($response['errors']) {
-                throw new Exception('Indexing error '.json_encode($response), 1);
-            }
-        };
-
-        if ($response instanceof FutureArray) {
-            $response->then(
-                fn () => $handleError($response),
-                fn () => $handleError($response)
-            );
-        } else {
-            $handleError($response);
-        }
-    }
-
-    public static function updateBatch($objects)
-    {
-        // code...
     }
 
     public static function insertBatch($objects)
@@ -89,7 +64,7 @@ trait BatchPersistable
             $body[] = $model->serialise();
         }
 
-        $response = Builder::bulk(['body' => $body]);
+        $response = static::query()::bulk(['body' => $body]);
 
         static::handleBulkError($response);
 
@@ -120,7 +95,7 @@ trait BatchPersistable
             ->all()
         ;
 
-        $response = Builder::bulk(['body' => $payload]);
+        $response = static::query()::bulk(['body' => $payload]);
 
         if (!$proceed) {
             static::handleBulkError($response);
@@ -145,11 +120,29 @@ trait BatchPersistable
             ];
         }
 
-        $response = Builder::bulk($payload);
+        $response = static::query()::bulk($payload);
 
         static::handleBulkError($response);
 
         return $response;
+    }
+
+    private static function handleBulkError(array|FutureArray $response): void
+    {
+        $handleError = function (array|FutureArray $response) {
+            if ($response['errors']) {
+                throw new Exception('Indexing error '.json_encode($response), 1);
+            }
+        };
+
+        if ($response instanceof FutureArray) {
+            $response->then(
+                fn () => $handleError($response),
+                fn () => $handleError($response)
+            );
+        } else {
+            $handleError($response);
+        }
     }
 
     private static function hydrateModelsFromSource(array $objects, array $items): Collection

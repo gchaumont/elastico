@@ -2,6 +2,8 @@
 
 namespace Elastico\Models;
 
+use Elastico\Connection;
+use Elastico\ConnectionResolverInterface;
 use Elastico\Models\Features\BatchPersistable;
 use Elastico\Models\Features\Configurable;
 use Elastico\Models\Features\Persistable;
@@ -23,6 +25,10 @@ abstract class Model extends DataAccessObject // implements Serialisable
 
     public readonly string $_index;
 
+    private static string $_connection = 'default';
+
+    private static ConnectionResolverInterface $_resolver;
+
     public function initialiseIdentifiers(string $id, null|string $index = null): static
     {
         $this->_id = $id;
@@ -39,8 +45,30 @@ abstract class Model extends DataAccessObject // implements Serialisable
         return $this->_id ?? $this->make_id();
     }
 
+    public function has_id(): bool
+    {
+        return !empty($this->get_id());
+    }
+
     public function make_id(): ?string
     {
         return null;
+    }
+
+    public static function setConnection(string $connection): static
+    {
+        static::$_connection = $connection;
+
+        return static::class;
+    }
+
+    public static function setConnectionResolver(ConnectionResolverInterface $resolver): void
+    {
+        static::$_resolver = $resolver;
+    }
+
+    protected static function getConnection(): Connection
+    {
+        return static::$_resolver->connection(static::$_connection);
     }
 }

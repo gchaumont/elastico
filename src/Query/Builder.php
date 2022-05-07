@@ -2,17 +2,16 @@
 
 namespace Elastico\Query;
 
-use App\Support\Elasticsearch\Elasticsearch;
-use App\Support\Traits\When;
+use Elastico\Connection;
+use Elastico\Helpers\When;
 use Elastico\Query\Builder\HandlesFilters;
 use Elastico\Query\Builder\HandlesModels;
-use Elastico\Query\Builder\HandlesMonitoring;
 use Elastico\Query\Builder\HandlesPagination;
 use Elastico\Query\Builder\HandlesPayload;
 use Elastico\Query\Builder\HandlesRelations;
+use Elastico\Query\Builder\HandlesScopedQueries;
 use Elastico\Query\Builder\HandlesSorts;
 use Elastico\Query\Builder\HasAggregations;
-use Elastico\Query\Builder\PerformsQuery;
 use Elastico\Query\Compound\Boolean;
 use Elastico\Query\FullText\MultiMatchQuery;
 use Elastico\Query\Term\Prefix;
@@ -24,19 +23,16 @@ use Elastico\Query\Term\Wildcard;
  class Builder
  {
      use When;
-     use PerformsQuery;
      use HandlesSorts;
      use HandlesRelations;
+     use HandlesScopedQueries;
      use HasAggregations;
      use HandlesPayload;
      use HandlesFilters;
      use HandlesModels;
      use HandlesPagination;
-     use HandlesMonitoring;
 
      public readonly string $searchableModel;
-
-     protected static $client;
 
      protected array $index;
 
@@ -58,8 +54,10 @@ use Elastico\Query\Term\Wildcard;
 
      protected string $filterPath;
 
-     public function __construct(public null|string $model = null)
-     {
+     public function __construct(
+         private Connection $connection,
+         public null|string $model = null
+     ) {
          if (!is_null($model)) {
              $this->searchableModel = $model;
          }
@@ -192,8 +190,8 @@ use Elastico\Query\Term\Wildcard;
          return $this;
      }
 
-     private static function getClient()
+     private function getConnection(): Connection
      {
-         return static::$client ??= resolve(Elasticsearch::class);
+         return $this->connection;
      }
  }

@@ -2,7 +2,7 @@
 
 namespace Elastico\Models\Features;
 
-use App\Support\Elasticsearch\Elasticsearch; // TODO Replace with Builder
+// TODO Replace with Builder
 
 trait Persistable
 {
@@ -15,19 +15,22 @@ trait Persistable
 
     public function insert(): static
     {
-        $response = resolve(Elasticsearch::class)->index([
+        $this->_id = (string) static::getConnection()->performQuery(method: 'index', payload: [
             'index' => $this->writableIndexName(),
             'body' => $this->serialise(),
-        ]);
+        ])['_id'];
 
-        $this->_id = (string) $response['_id'];
+        // $this->_id = (string) static::getConnection()->index([
+        //     'index' => $this->writableIndexName(),
+        //     'body' => $this->serialise(),
+        // ])->response()['_id'];
 
         return $this;
     }
 
     public function upsert(null|string|array $source = null): static
     {
-        $response = resolve(Elasticsearch::class)->update([
+        $response = static::getConnection()->performQuery('update', [
             'index' => $this->writableIndexName(),
             'id' => $this->get_id(),
             'body' => array_filter([
@@ -46,7 +49,7 @@ trait Persistable
 
     public function delete()
     {
-        return resolve(Elasticsearch::class)->delete([
+        return static::getConnection()->performQuery('delete', [
             'index' => $this->writableIndexName(),
             'id' => $this->get_id(),
         ]);

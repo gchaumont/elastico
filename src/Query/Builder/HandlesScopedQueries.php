@@ -6,32 +6,30 @@ use Elastico\Exceptions\ModelNotFoundException;
 use Elastico\Models\Model;
 use Elastico\Query\Response\Response;
 use Generator;
-use GuzzleHttp\Ring\Future\FutureArray;
+use Http\Promise\Promise;
 use Illuminate\Support\Collection;
 use Illuminate\Support\LazyCollection;
 
-trait PerformsQuery
+trait HandlesScopedQueries
 {
-    protected $response;
-
     public function find(string $id): null|Model
     {
         try {
             return (new Response(
-                hits: fn ($r): array => [$r],
                 total: fn ($r): int => 1,
+                hits: fn ($r): array => [$r],
                 aggregations: fn ($r): array => [],
-                query: $this,
-                response: $this->performQuery('get', [
+                response: $this->getConnection()->performQuery('get', [
                     'index' => $this->index,
                     'id' => $id,
                     '_source_includes' => implode(',', $this->source),
                 ]),
+                query: $this,
             ))
                 ->hits()
                 ->first()
             ;
-        } catch (\Elasticsearch\Common\Exceptions\Missing404Exception $e) {
+        } catch (\Elastic\Transport\Exception\NotFoundException $e) {
             return null;
         }
     }
@@ -44,7 +42,7 @@ trait PerformsQuery
             return new LazyCollection();
         }
 
-        $response = $this->performQuery('mget', [
+        $response = $this->getConnection()->performQuery('mget', [
             'body' => [
                 'docs' => $ids
                     ->map(fn (string|int $id) => array_filter([
@@ -59,11 +57,11 @@ trait PerformsQuery
 
         return LazyCollection::make(function () use ($response) {
             yield from (new Response(
+                total: fn ($r): int => count($r['docs']),
                 hits: fn ($r): array => collect($r['docs'])
                     ->filter(fn ($d) => true === $d['found'])
                     ->keyBy(fn ($hit) => $hit['_id'])
                     ->all(),
-                total: fn ($r): int => count($r['docs']),
                 aggregations: fn ($r): array => [],
                 response: $response,
                 query: $this,
@@ -79,10 +77,10 @@ trait PerformsQuery
     public function get(): Response
     {
         return new Response(
-            hits: fn ($r): array => $r['hits']['hits'] ?? [],
             total: fn ($r): int => $r['hits']['total']['value'] ?? 0,
+            hits: fn ($r): array => $r['hits']['hits'] ?? [],
             aggregations: fn ($r): array => $r['aggregations'] ?? [],
-            response: $this->performQuery('search', $this->buildPayload()),
+            response: $this->getConnection()->performQuery('search', $this->buildPayload()),
             query: $this
         );
     }
@@ -117,8 +115,8 @@ trait PerformsQuery
                 ->combine(
                     $queries->values()
                         ->map(fn ($query, $i) => new Response(
-                            hits: fn ($r): array => $r['hits']['hits'] ?? [],
                             total: fn ($r): int => $r['hits']['total']['value'] ?? 0,
+                            hits: fn ($r): array => $r['hits']['hits'] ?? [],
                             aggregations: fn ($r): array => $r['aggregations'] ?? [],
                             response: $response['responses'][$i],
                             query: $query
@@ -159,14 +157,14 @@ trait PerformsQuery
             $payload = $this->buildPayload();
             $payload['scroll'] = $seconds.'s';
             $payload['body']['size'] = $size;
-            $response = $this->performQuery('search', $payload);
+            $response = $this->getConnection()->performQuery('search', $payload);
 
             yield from (new Response(
-                hits: fn ($r): array => $r['hits']['hits'],
                 total: fn ($r): int => count($r['hits']['total']),
+                hits: fn ($r): array => $r['hits']['hits'],
                 aggregations: fn ($r): array => [],
-                query: $this,
                 response: $response,
+                query: $this,
             ))
                 ->hits()
                 ->tap(function ($hits) use (&$total) {
@@ -176,16 +174,16 @@ trait PerformsQuery
             ;
 
             while ($total) {
-                $response = $this->performQuery('scroll', [
+                $response = $this->getConnection()->performQuery('scroll', [
                     'scroll_id' => $response['_scroll_id'],
                     'scroll' => $seconds.'s',
                 ]);
                 yield from (new Response(
-                    hits: fn ($r): array => $r['hits']['hits'],
                     total: fn ($r): int => count($r['hits']['total']),
+                    hits: fn ($r): array => $r['hits']['hits'],
                     aggregations: fn ($r): array => [],
-                    query: $this,
-                    response: $response
+                    response: $response,
+                    query: $this
                 ))
                     ->hits()
                     ->tap(function ($hits) use (&$total) {
@@ -197,7 +195,7 @@ trait PerformsQuery
             }
 
             if (isset($response['_scroll_id'])) {
-                $this->performQuery('clearScroll', ['scroll_id' => $response['_scroll_id']]);
+                $this->getConnection()->performQuery('clearScroll', ['scroll_id' => $response['_scroll_id']]);
             }
         });
     }
@@ -212,10 +210,10 @@ trait PerformsQuery
         $payload['slices'] = 'auto';
         $payload['body']['script'] = $script;
 
-        return $this->performQuery('updateByQuery', $payload);
+        return $this->getConnection()->performQuery('updateByQuery', $payload);
     }
 
-    public static function bulk(array $payload): array|FutureArray
+    public static function bulk(array $payload): array|Promise
     {
         if (empty($payload)) {
             return [];
@@ -249,7 +247,7 @@ trait PerformsQuery
 
     public function delete()
     {
-        $response = $this->performQuery('deleteByQuery', array_merge(
+        $response = $this->getConnection()->performQuery('deleteByQuery', array_merge(
             $this->buildPayload(),
             [
                 'slices' => 'auto',
@@ -280,7 +278,7 @@ trait PerformsQuery
         $payload['body']['script']['source'] = $script;
         $payload['body']['script']['params'] = $data;
 
-        $response = $this->performQuery('updateByQuery', $payload);
+        $response = $this->getConnection()->performQuery(method: 'updateByQuery', payload: $payload);
 
         if (!empty($response['failures'])) {
             throw new \Exception('Update by Query errors ', json_encode($response['failures']));
@@ -291,26 +289,6 @@ trait PerformsQuery
 
     public function count(): int
     {
-        return $this->performQuery('count', $this->buildPayload())['count'];
-    }
-
-    private function performQuery(string $method, array $payload): mixed
-    {
-        $this->startingQuery(endpoint: $method);
-
-        $payload['client']['future'] = 'async';
-
-        $response = static::getClient()->{$method}($payload);
-
-        if ($response instanceof FutureArray) {
-            $response->then(
-                fn ($r) => $this->endingQuery(method: $method, payload: $payload, response: $r),
-                fn ($r) => $this->endingQuery(method: $method, payload: $payload, response: $r),
-            );
-        } else {
-            $this->endingQuery(method: $method, payload: $payload, response: $response);
-        }
-
-        return $response;
+        return $this->getConnection()->performQuery(method: 'count', payload: $this->buildPayload())['count'];
     }
 }

@@ -2,17 +2,15 @@
 
 namespace Elastico\Models\Features;
 
-use App\Support\Traits\Reflective;
 use Elastico\Mapping\Field;
 use Elastico\Models\DataAccessObject;
 use Elastico\Models\Model;
 use Illuminate\Support\Collection;
+use ReflectionClass;
 use ReflectionUnionType;
 
 trait Mappable
 {
-    use Reflective;
-
     public static function getElasticFields(): array
     {
         static $fields;
@@ -34,13 +32,13 @@ trait Mappable
                     if (1 == count($types)) {
                         $attribute->class = reset($types);
 
-                        if (class_exists($attribute->class) && in_array('App\\Elastic\\Indexable', class_uses($attribute->class))) {
+                        if (class_exists($attribute->class) && in_array('Elastico\\Indexable', class_uses($attribute->class))) {
                             $attribute->isRelationClass = true;
                         }
                     }
                 } else {
                     $attribute->class = $property->getType()->getName();
-                    if (class_exists($attribute->class) && in_array('App\\Elastic\\Indexable', class_uses($attribute->class))) {
+                    if (class_exists($attribute->class) && in_array('Elastico\\Indexable', class_uses($attribute->class))) {
                         $attribute->isRelationClass = true;
                     }
                 }
@@ -50,6 +48,14 @@ trait Mappable
         }
 
         return $fields[static::class];
+    }
+
+    public static function get_reflection_properties(): array
+    {
+        static $reflectionProperties;
+        //$constructorParameters = $reflectionClass->getConstructor()?->getParameters() ?? [];
+
+        return $reflectionProperties[static::class] ??= (new ReflectionClass(static::class))->getProperties();
     }
 
     public static function getIndexProperties($related = false): array

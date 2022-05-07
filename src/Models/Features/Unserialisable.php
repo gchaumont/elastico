@@ -2,18 +2,17 @@
 
 namespace Elastico\Models\Features;
 
-// use App\Models\Crawler\Domain;
 use Carbon\Carbon;
 use Elastico\Mapping\Field;
 use Elastico\Mapping\FieldType;
 use Elastico\Models\DataAccessObject;
 use Elastico\Models\Model;
-use GuzzleHttp\Ring\Future\FutureArray;
 use stdClass;
+use Symfony\Component\HttpClient\Response\HttplugPromise;
 
 trait Unserialisable
 {
-    public static function unserialise(array|FutureArray $document): static
+    public static function unserialise(array|HttplugPromise $document): static
     {
         return (new static(...static::prepareConstructorProperties($document['_source'])))
             ->initialiseIdentifiers(id: $document['_id'] ?? $document['id'], index: $document['_index'] ?? null)
@@ -23,11 +22,6 @@ trait Unserialisable
 
     public static function unserialiseRelated($data): static
     {
-        // HOTFIX
-        // if (Domain::class == static::class) {
-        //     $data['id'] ??= $data['domain'];
-        // }
-
         return (new static(...static::prepareConstructorProperties($data)))
             ->initialiseIdentifiers(id: $data['id'])
             ->addSerialisedData($data)
