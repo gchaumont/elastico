@@ -9,7 +9,7 @@ return [
         'elastic' => [
             'basicAuthentication' => [
                 'username' => 'elastic',
-                'password' => null,
+                'password' => 'password',
             ],
             'hosts' => ['localhost:9200'],
             // 'Handler'
