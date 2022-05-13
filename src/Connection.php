@@ -26,7 +26,7 @@ class Connection
     ) {
     }
 
-    public function performQuery(string $method, array $payload): Promise|Elasticsearch
+    public function performQuery(string $method, array $payload): Promise|Elasticsearch|array
     {
         $identifier = $method.'.'.rand(0, 10000000);
 
@@ -54,6 +54,7 @@ class Connection
 
             if (str_contains($response->getHeader('content-encoding')[0], 'gzip')) {
                 $responseBody = gzdecode((string) $response->getBody());
+                $response = json_decode(gzdecode((string) $response->getBody()), true);
             }
 
             $this->endingQuery(
