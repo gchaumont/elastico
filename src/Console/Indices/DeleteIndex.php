@@ -3,7 +3,6 @@
 namespace Elastico\Console\Indices;
 
 use App\Support\Elasticsearch\Client\ElasticsearchClient;
-use App\Support\Elasticsearch\Elasticsearch;
 use Elastico\Exceptions\IndexNotFoundException;
 use Illuminate\Console\Command;
 
@@ -43,7 +42,7 @@ class DeleteIndex extends Command
         }
 
         try {
-            $r = resolve(Elasticsearch::class)->indices()->delete(['index' => $indexName]);
+            $r = $class::getConnection()->getClient()->indices()->delete($indexName);
             dump($r);
         } catch (IndexNotFoundException) {
             dump('Index not found');
