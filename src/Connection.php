@@ -50,10 +50,16 @@ class Connection
                 ),
             );
         } elseif ($response instanceof Elasticsearch) {
+            $responseBody = (string) $response->getBody();
+
+            if (str_contains($response->getHeader('content-encoding')[0], 'gzip')) {
+                $responseBody = gzdecode((string) $response->getBody());
+            }
+
             $this->endingQuery(
                 method: $method,
                 payload: $payload,
-                response: json_decode((string) $response->getBody(), true),
+                response: json_decode($responseBody, true),
                 identifier: $identifier
             );
         } else {
