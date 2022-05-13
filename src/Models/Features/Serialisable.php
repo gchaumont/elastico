@@ -4,6 +4,7 @@ namespace Elastico\Models\Features;
 
 use Elastico\Mapping\Field;
 use Elastico\Mapping\FieldType;
+use Elastico\Models\DataAccessObject;
 use Elastico\Models\Model;
 use Exception;
 use stdClass;
