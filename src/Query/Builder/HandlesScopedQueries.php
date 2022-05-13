@@ -158,7 +158,7 @@ trait HandlesScopedQueries
                 ->all()
         );
 
-        $response = $this->performQuery('bulk', $payload);
+        $response = $this->getConnection()->performQuery('bulk', $payload);
 
         if (true == $response['errors']) {
             $errors = collect($response['items'])

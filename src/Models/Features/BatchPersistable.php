@@ -44,7 +44,7 @@ trait BatchPersistable
             }
         }
 
-        $response = static::query()::bulk($payload);
+        $response = static::query()->bulk($payload);
 
         static::handleBulkError($response);
 
@@ -64,7 +64,7 @@ trait BatchPersistable
             $body[] = $model->serialise();
         }
 
-        $response = static::query()::bulk(['body' => $body]);
+        $response = static::query()->bulk(['body' => $body]);
 
         static::handleBulkError($response);
 
@@ -120,7 +120,7 @@ trait BatchPersistable
             ];
         }
 
-        $response = static::query()::bulk($payload);
+        $response = static::query()->bulk($payload);
 
         static::handleBulkError($response);
 
