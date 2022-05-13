@@ -148,8 +148,8 @@ trait HandlesScopedQueries
         if (empty($payload)) {
             return [];
         }
-        $static = new static();
-        $static->index(
+        // $static = new static();
+        $this->index(
             collect($payload['body'])
                 ->filter(fn ($item, $k) => 0 == $k % 2)
                 ->map(fn ($item) => collect($item)->first()['_index'])
