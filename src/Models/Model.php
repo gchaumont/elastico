@@ -67,7 +67,7 @@ abstract class Model extends DataAccessObject // implements Serialisable
         static::$_resolver = $resolver;
     }
 
-    protected static function getConnection(): Connection
+    public static function getConnection(): Connection
     {
         return static::$_resolver->connection(static::$_connection);
     }
