@@ -83,15 +83,23 @@ trait Serialisable
             FieldType::text,
             FieldType::completion,
             FieldType::search_as_you_type,
-            FieldType::token_count => (string) match (gettype($value)) {
-                'object' => $value->value, // enums
-                default => $value,
+            FieldType::token_count => (string) match (true) {
+                // 'object' => $value->value, // enums
+                enum_exists(get_class($value)) => $value->value,
+                $value instanceof Model => $value->get_id(),
+                is_string($value) => $value,
+                is_array($value) => $value,
+                default => throw new Exception('Field not castable to string'),
             },
 
-            FieldType::integer => (int) match (gettype($value)) {
-                'object' => $value->value, // enums
+          FieldType::integer => (int) match (true) {
+              // 'object' => $value->value, // enums
+                enum_exists(get_class($value)) => $value->value,
+                $value instanceof Model => $value->get_id(),
+                is_string($value) => $value,
+                is_array($value) => $value,
                 default => $value,
-            },
+          },
 
             FieldType::rank_features,
             FieldType::rank_feature,
