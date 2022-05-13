@@ -8,6 +8,7 @@ use Elastico\Models\DataAccessObject;
 use Elastico\Models\Model;
 use Exception;
 use stdClass;
+use Stringable;
 use Throwable;
 
 trait Serialisable
@@ -89,6 +90,7 @@ trait Serialisable
                 $value instanceof Model => $value->get_id(),
                 is_string($value) => $value,
                 is_array($value) => $value,
+                $value instanceof Stringable => (string) $value,
                 default => throw new Exception('Field not castable to string'),
             },
 
@@ -98,6 +100,7 @@ trait Serialisable
                 $value instanceof Model => $value->get_id(),
                 is_string($value) => $value,
                 is_array($value) => $value,
+                $value instanceof Stringable => (string) $value,
                 default => $value,
           },
 
