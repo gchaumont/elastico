@@ -95,7 +95,7 @@ trait BatchPersistable
             ->all()
         ;
 
-        $response = static::query()::bulk(['body' => $payload]);
+        $response = static::query()->bulk(['body' => $payload]);
 
         if (!$proceed) {
             static::handleBulkError($response);

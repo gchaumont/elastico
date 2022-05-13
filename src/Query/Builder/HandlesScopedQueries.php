@@ -143,7 +143,7 @@ trait HandlesScopedQueries
         return $this->getConnection()->performQuery('updateByQuery', $payload);
     }
 
-    public static function bulk(array $payload): array|Promise
+    public function bulk(array $payload): array|Promise
     {
         if (empty($payload)) {
             return [];
@@ -158,7 +158,7 @@ trait HandlesScopedQueries
                 ->all()
         );
 
-        $response = $static->performQuery('bulk', $payload);
+        $response = $this->performQuery('bulk', $payload);
 
         if (true == $response['errors']) {
             $errors = collect($response['items'])
