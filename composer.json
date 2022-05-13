@@ -15,7 +15,7 @@
     "guzzlehttp/guzzle": "^7.4",
     "elasticsearch/elasticsearch": "^8.2",
     "illuminate/support": "^9.11",
-    "nyholm/psr7": "^1.5",
+    "guzzlehttp/psr7": "^1.5",
     "symfony/http-client": "^6.0"
   },
 
