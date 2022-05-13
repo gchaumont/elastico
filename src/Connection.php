@@ -57,10 +57,8 @@ class Connection
         } elseif ($response instanceof Elasticsearch) {
             $responseBody = (string) $response->getBody();
 
-            if (str_contains($response->getHeader('content-encoding')[0], 'gzip')) {
-                $responseBody = gzdecode((string) $response->getBody());
-                $response = json_decode(gzdecode((string) $response->getBody()), true);
-            }
+            $responseBody = (string) $response->getBody();
+            $response = json_decode(((string) $response->getBody()), true);
 
             $this->endingQuery(
                 method: $method,

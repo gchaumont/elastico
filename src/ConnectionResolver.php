@@ -4,6 +4,7 @@ namespace Elastico;
 
 use Elastic\Elasticsearch\Client;
 use Elastic\Elasticsearch\ClientBuilder;
+use GuzzleHttp\Client as GuzzleClient;
 
 class ConnectionResolver implements ConnectionResolverInterface
 {
@@ -23,6 +24,7 @@ class ConnectionResolver implements ConnectionResolverInterface
             $this->addConnection(
                 name: $name,
                 client: ClientBuilder::fromConfig($connection)->setAsync(false)
+                    ->setHttpClient(new GuzzleClient())
             );
         }
     }
