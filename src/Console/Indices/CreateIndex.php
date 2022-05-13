@@ -2,7 +2,6 @@
 
 namespace Elastico\Console\Indices;
 
-use App\Support\Elasticsearch\Elasticsearch;
 use Illuminate\Console\Command;
 
 class CreateIndex extends Command
@@ -30,7 +29,7 @@ class CreateIndex extends Command
     {
         $class = $this->argument('index');
 
-        resolve(Elasticsearch::class)->indices()->create($class::getIndexConfiguration());
+        $class::getConnection()->getClient()->create($class::getIndexConfiguration());
 
         return $this->info("{$class} Index Created");
     }

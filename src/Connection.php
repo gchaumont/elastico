@@ -26,6 +26,11 @@ class Connection
     ) {
     }
 
+    public function getClient(): Client
+    {
+        return $this->client;
+    }
+
     public function performQuery(string $method, array $payload): Promise|Elasticsearch|array
     {
         $identifier = $method.'.'.rand(0, 10000000);
