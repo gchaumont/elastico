@@ -29,7 +29,9 @@ class ElasticServiceProvider extends ServiceProvider
         );
 
         $this->app->singleton(ConnectionResolverInterface::class, function () {
-            return new ConnectionResolver($this->app['config']['elastico']['connections']);
+            return (new ConnectionResolver($this->app['config']['elastico']['connections']))
+                ->setDefaultConnection($this->app['config']['elastico']['default'])
+            ;
         });
     }
 }
