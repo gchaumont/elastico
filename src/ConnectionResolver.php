@@ -21,10 +21,10 @@ class ConnectionResolver implements ConnectionResolverInterface
     public function __construct(array $connections)
     {
         foreach ($connections as $name => $connection) {
+            $connection['httpClient'] = new GuzzleClient();
             $this->addConnection(
                 name: $name,
                 client: ClientBuilder::fromConfig($connection)->setAsync(false)
-                    ->setHttpClient(new GuzzleClient())
             );
         }
     }
