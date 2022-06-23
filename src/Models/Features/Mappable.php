@@ -3,6 +3,7 @@
 namespace Elastico\Models\Features;
 
 use Elastico\Mapping\Field;
+use Elastico\Mapping\FieldType;
 use Elastico\Models\DataAccessObject;
 use Elastico\Models\Model;
 use Illuminate\Support\Collection;
@@ -11,6 +12,37 @@ use ReflectionUnionType;
 
 trait Mappable
 {
+    public static function getFieldType(string $property): FieldType
+    {
+        return static::getField($property)->type;
+    }
+
+    public static function getField(string $field): Field
+    {
+        $paths = explode('.', $field);
+
+        $field = static::getElasticFields()[array_shift($paths)];
+
+        if (count($paths)) {
+            return $field->propertyType()::getField(implode('.', $paths));
+        }
+
+        return $field;
+    }
+
+    public static function getPropertyType(string $property): string
+    {
+        $paths = explode('.', $property);
+
+        $field = static::getElasticFields(array_shift($paths));
+
+        if (count($paths)) {
+            return $field->propertyType()::getPropertyType(implode('.', $paths));
+        }
+
+        return $field->getPropertyType();
+    }
+
     public static function getElasticFields(): array
     {
         static $fields;

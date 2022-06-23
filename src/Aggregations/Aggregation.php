@@ -3,7 +3,6 @@
 namespace Elastico\Aggregations;
 
 use Elastico\Helpers\When;
-use Elastico\Query\Builder;
 use Elastico\Query\Builder\HasAggregations;
 use Elastico\Query\Response\Aggregation\AggregationResponse;
 use Elastico\Query\Response\Response;
@@ -49,16 +48,15 @@ abstract class Aggregation
     {
     }
 
-    public function toResponse(array $response, Builder $query): AggregationResponse
+    public function toResponse(array $response): AggregationResponse
     {
         return new (static::RESPONSE_CLASS)(
             aggregation: $this,
             response: $response,
-            query: $query,
         );
     }
 
-    public function formatAggregationResult(array $data, Builder $builder): array|Response
+    public function formatAggregationResult(array $data): array|Response
     {
         return $data;
     }

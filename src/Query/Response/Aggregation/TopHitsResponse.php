@@ -18,7 +18,7 @@ class TopHitsResponse extends AggregationResponse implements ArrayAccess
             total: fn ($data): int => $data['hits']['total']['value'],
             aggregations: fn (): array => [],
             response: $this->response(),
-            query: $this->query,
+            model: $this->aggregation->model,
         );
     }
 

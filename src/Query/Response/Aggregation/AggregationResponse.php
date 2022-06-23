@@ -4,7 +4,6 @@ namespace Elastico\Query\Response\Aggregation;
 
 use ArrayAccess;
 use Elastico\Aggregations\Aggregation;
-use Elastico\Query\Builder;
 use Elastico\Query\Response\Response;
 use Illuminate\Support\Collection;
 use RuntimeException;
@@ -19,18 +18,14 @@ class AggregationResponse implements ArrayAccess
     final public function __construct(
         protected readonly Aggregation $aggregation,
         protected array|Response $response,
-        protected readonly Builder $query,
     ) {
-        $this->response = $this->aggregation->formatAggregationResult($this->response, $this->query);
+        $this->response = $this->aggregation->formatAggregationResult($this->response);
     }
 
     public function aggregations(): Collection
     {
         return $this->aggregations ??= $this->aggregation->getAggregations()
-            ->map(fn ($aggregation) => $aggregation->toResponse(
-                response: $this->get($aggregation->getName()),
-                query: $this->query,
-            ))
+            ->map(fn ($aggregation) => $aggregation->toResponse(response: $this->get($aggregation->getName())))
         ;
     }
 
@@ -82,6 +77,9 @@ class AggregationResponse implements ArrayAccess
 
     public function dd(): never
     {
+        if (request()->expectsJson()) {
+            response($this->response())->send();
+        }
         dd($this);
     }
 }

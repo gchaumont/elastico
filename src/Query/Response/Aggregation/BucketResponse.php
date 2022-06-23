@@ -18,7 +18,6 @@ class BucketResponse extends AggregationResponse implements ArrayAccess
         return $this->collect('buckets')
             ->map(fn ($bucket) => $this->aggregation->toResponse(
                 response: $bucket,
-                query: $this->query,
             ))
             ;
     }

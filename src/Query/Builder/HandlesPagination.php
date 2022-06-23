@@ -48,6 +48,7 @@ trait HandlesPagination
                 ->tap(function ($hits) use (&$total) {
                     $total = $hits->count();
                 })
+                ->keyBy(fn ($hit) => $hit->get_id())
                 ->all()
             ;
 
@@ -67,6 +68,7 @@ trait HandlesPagination
                     ->tap(function ($hits) use (&$total) {
                         $total = $hits->count();
                     })
+                    ->keyBy(fn ($hit) => $hit->get_id())
                     ->all()
             ;
                 // $total = count($response['hits']['hits']);
@@ -75,6 +77,35 @@ trait HandlesPagination
             if (isset($response['_scroll_id'])) {
                 $this->getConnection()->performQuery('clearScroll', ['scroll_id' => $response['_scroll_id']]);
             }
+        });
+    }
+
+    public function enumerate(
+        string $field,
+        string $string = null,
+        string $after = null,
+        int $size = null,
+        bool $insensitive = true
+    ): LazyCollection {
+        return LazyCollection::make(function () use ($field, $string, $after, $size, $insensitive): Generator {
+            do {
+                $response = $this->getConnection()->performQuery('termsEnum', [
+                    'index' => $this->buildPayload()['index'],
+                    'body' => array_filter([
+                        'field' => $field,
+                        'size' => $size,
+                        'string' => $string,
+                        'search_after' => $after,
+                        'case_insensitive' => $insensitive,
+                    ]),
+                ]);
+
+                // response($response)->send();
+
+                yield from $response['terms'];
+
+                $after = end($response['terms']);
+            } while ($size == count($response['terms']));
         });
     }
 

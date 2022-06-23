@@ -33,6 +33,17 @@ trait HasWhere
         return $this->mustNot((new Exists())->field($field));
     }
 
+    public function whereBetween(string $field, array $values): self
+    {
+        $values = array_values($values);
+
+        if (empty($values)) {
+            return $this;
+        }
+
+        return $this->where($field, '>', $values[0])->where($field, '<', $values[1]);
+    }
+
     public function where(string $field, mixed $operator = null, mixed $value = null): self
     {
         if (2 == func_num_args()) {
@@ -62,8 +73,12 @@ trait HasWhere
             $value = $value->all();
         }
 
+        if (is_array($value)) {
+            $value = array_values($value);
+        }
+
         return match (is_object($value)) {
-            false => $value,
+            false => $value ,
             true => match (true) {
                 $value instanceof Model => $value->get_id(),
                 $value instanceof DateTime => $value->format(DateTime::ATOM),

@@ -55,6 +55,7 @@ trait Serialisable
             };
         } catch (Throwable $e) {
             throw new Exception('Field Serialisation Error: '.$e->getMessage()."\n".implode(', ', [
+                'Model: '.static::class,
                 'Property: '.$field->fieldName(),
                 'Type: '.$field->type->name,
                 'Value: '.json_encode($value),
@@ -86,10 +87,11 @@ trait Serialisable
             FieldType::search_as_you_type,
             FieldType::token_count => (string) match (true) {
                 // 'object' => $value->value, // enums
-                is_object($value) && enum_exists(get_class($value)) => $value->value,
-                $value instanceof Model => $value->get_id(),
                 is_string($value) => $value,
                 is_array($value) => $value,
+                is_numeric($value) => $value,
+                is_object($value) && enum_exists(get_class($value)) => $value->value,
+                $value instanceof Model => $value->get_id(),
                 $value instanceof Stringable => (string) $value,
                 default => throw new Exception('Field not castable to string'),
             },

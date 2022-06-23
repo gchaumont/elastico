@@ -3,6 +3,7 @@
 namespace Elastico\Models\Builder;
 
 use Elastico\Connection;
+use Elastico\Models\Model;
 use Elastico\Query\Builder as BaseBuilder;
 
 class Builder extends BaseBuilder
@@ -14,6 +15,11 @@ class Builder extends BaseBuilder
         public readonly string $model,
     ) {
         $this->index($this->model::searchableIndexName());
+    }
+
+    public function getModel(): Model
+    {
+        return new $this->model();
     }
 
     public function scoped(string $scope, mixed $params = null): self

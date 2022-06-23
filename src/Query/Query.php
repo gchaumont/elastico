@@ -19,4 +19,9 @@ abstract class Query
             $this->type => $this->getPayload() ?: new \stdClass(), // ?: new \stdClass,
         ];
     }
+
+    public static function make(): static
+    {
+        return new static();
+    }
 }

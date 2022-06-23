@@ -85,13 +85,12 @@ class Field
         if ($this->property->getType() instanceof \ReflectionUnionType) {
             $types = explode('|', (string) $this->property->getType());
 
-            $types = array_filter($types, fn ($type) => 'array' !== $type && 'null' !== $type);
+            $types = array_filter($types, fn ($type) => !in_array($type, ['array', 'null', 'string']));
 
             if (1 == count($types)) {
                 return reset($types);
             }
-        }
-        if ($this->property->getType() instanceof \ReflectionType) {
+        } elseif ($this->property->getType() instanceof \ReflectionType) {
             return $this->property->getType()->getName();
         }
     }

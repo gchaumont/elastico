@@ -8,11 +8,25 @@ use ReflectionNamedType;
 
 trait Relatable
 {
+    public static function getForeignKey(): string
+    {
+        return 'id';
+    }
+
     public function load($relations): self
     {
         return Collection::make([$this])
             ->load($relations)
             ->first()
+        ;
+    }
+
+    public static function getClassForRelation(string $relation): string
+    {
+        return collect(static::getElasticFields())
+            ->first(fn ($rel) => $rel->name = $relation)
+            // ->filter(fn ($type) => is_subclass_of($type, Model::class))
+            ->propertyType()
         ;
     }
 

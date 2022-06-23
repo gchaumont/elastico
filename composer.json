@@ -16,7 +16,8 @@
     "elasticsearch/elasticsearch": "^8.2",
     "illuminate/support": "^9.11",
     "nyholm/psr7": "^1.5",
-    "symfony/http-client": "^6.0"
+    "symfony/http-client": "^6.0",
+    "spatie/ssh": "^1.7"
   },
 
    "autoload": {

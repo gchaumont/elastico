@@ -7,12 +7,12 @@ use Elastico\Mapping\Field;
 use Elastico\Mapping\FieldType;
 use Elastico\Models\DataAccessObject;
 use Elastico\Models\Model;
+use Http\Promise\Promise;
 use stdClass;
-use Symfony\Component\HttpClient\Response\HttplugPromise;
 
 trait Unserialisable
 {
-    public static function unserialise(array|HttplugPromise $document): static
+    public static function unserialise(array|Promise $document): static
     {
         return (new static(...static::prepareConstructorProperties($document['_source'])))
             ->initialiseIdentifiers(id: $document['_id'] ?? $document['id'], index: $document['_index'] ?? null)
@@ -22,10 +22,20 @@ trait Unserialisable
 
     public static function unserialiseRelated($data): static
     {
-        return (new static(...static::prepareConstructorProperties($data)))
-            ->initialiseIdentifiers(id: $data['id'])
-            ->addSerialisedData($data)
-        ;
+        if (is_string($data)) {
+            $static = new static();
+            $static->set_id($data);
+
+            return $static;
+        }
+
+        $object = (new static(...static::prepareConstructorProperties($data)));
+
+        if (isset($data['id'])) {
+            $object->initialiseIdentifiers(id: $data['id']);
+        }
+
+        return $object->addSerialisedData($data);
     }
 
     public function addSerialisedData(array $source): static
@@ -57,17 +67,11 @@ trait Unserialisable
 
     public static function prepareConstructorProperties(array $source): array
     {
-        $constructorProperties = [];
-        foreach (static::getElasticFields() as $field) {
-            if ($field->isPromoted() && array_key_exists($field->fieldName(), $source)) {
-                // if (is_null($value) && !$field->nullable()) {
-                //     continue;
-                // }
-                $constructorProperties[$field->propertyName()] = static::unserialiseValue($field, $source[$field->fieldName()]);
-            }
-        }
-
-        return $constructorProperties;
+        return collect(static::getElasticFields())
+            ->filter(fn ($field) => $field->isPromoted() && array_key_exists($field->fieldName(), $source))
+            ->mapWithKeys(fn ($field) => [$field->propertyName() => static::unserialiseValue($field, $source[$field->fieldName()])])
+            ->all()
+        ;
     }
 
     public static function unserialiseValue(Field $field, mixed $value): mixed
@@ -84,25 +88,25 @@ trait Unserialisable
     {
         $class = $field->propertyType();
 
-        try {
-            return match (true) {
-                FieldType::date == $field->type => match (true) {
-                    is_a($class, \DateTime::class, true) => Carbon::parse($value),
+        // try {
+        return match (true) {
+            FieldType::date == $field->type => match (true) {
+                is_a($class, \DateTime::class, true) => Carbon::parse($value),
                     is_a($class, \DateTimeImmutable::class, true) => Carbon::parse($value)->toImmutable(),
-                },
+            },
 
-            is_a($class, Model::class, true) => $class::unserialiseRelated($value),
-            is_subclass_of($class, DataAccessObject::class, true) => (new $class())->addSerialisedData($value),
+                is_a($class, Model::class, true) => $class::unserialiseRelated($value),
+                is_subclass_of($class, DataAccessObject::class, true) => (new $class())->addSerialisedData($value),
 
-            enum_exists($class) => $class::tryFrom($value) ?? $class::unserialise($value),
+                enum_exists($class) => $class::tryFrom($value) ?? $class::unserialise($value),
 
-            is_a($class, stdClass::class, true) => (object) $value,
+                is_a($class, stdClass::class, true) => (object) $value,
 
-            is_scalar($value),
-            is_array($value) => $value,
-            };
-        } catch (\Throwable $e) {
-            throw new \RuntimeException("Error unserialising field {$field->fieldName()} value: ''".json_encode($value)."'' ".$e->getMessage());
-        }
+                is_scalar($value) => $value,
+                is_array($value) => $value,
+        };
+        // } catch (\Throwable $e) {
+            // throw new \RuntimeException("Error unserialising field {$field->fieldName()} value: ''".json_encode($value)."'' ".$e->getMessage());
+        // }
     }
 }

@@ -84,22 +84,21 @@ trait HandlesScopedQueries
         );
     }
 
-    public static function getMany(iterable $queries): Collection|LazyCollection
+    public function getMany(iterable $queries): Collection|LazyCollection
     {
         $queries = collect($queries);
         if ($queries->isEmpty()) {
             return collect();
         }
-        $metaQuery = new static();
-        $metaQuery->index = $queries
+
+        $this->index($queries
             ->map(fn ($q) => $q->index)
             ->collapse()
             ->unique()
             ->values()
-            ->all()
-        ;
+            ->all());
 
-        $response = $metaQuery->performQuery('msearch', ['body' => $queries
+        $response = $this->getConnection()->performQuery('msearch', ['body' => $queries
             ->map(fn ($query) => $query->buildPayload())
             ->flatMap(fn ($payload) => [
                 ['index' => $payload['index']],

@@ -2,6 +2,10 @@
 
 namespace Elastico\Query;
 
+use Elastico\Aggregations\Metric\Avg;
+use Elastico\Aggregations\Metric\Max;
+use Elastico\Aggregations\Metric\Min;
+use Elastico\Aggregations\Metric\Sum;
 use Elastico\Connection;
 use Elastico\Helpers\When;
 use Elastico\Query\Builder\HandlesFilters;
@@ -174,6 +178,28 @@ use Elastico\Query\Term\Wildcard;
          $this->suggest[] = compact('name', 'text', 'field', 'size', 'type', 'sort', 'mode', 'min_doc_freq');
 
          return $this;
+     }
+
+     public function sum(string $field): int|float
+     {
+         // response($this->buildPayload())->send();
+
+         return $this->take(0)->addAggregation((new Sum('sum'))->field($field))->get()->aggregation('sum')->get('value');
+     }
+
+     public function avg(string $field): int|float
+     {
+         return $this->take(0)->addAggregation((new Avg('avg'))->field($field))->get()->aggregation('avg')->get('value');
+     }
+
+     public function min(string $field): int|float
+     {
+         return $this->take(0)->addAggregation((new Min('min'))->field($field))->get()->aggregation('min')->get('value');
+     }
+
+     public function max(string $field): int|float
+     {
+         return $this->take(0)->addAggregation((new Max('max'))->field($field))->get()->aggregation('max')->get('value');
      }
 
      private function getConnection(): Connection

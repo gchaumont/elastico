@@ -22,6 +22,8 @@ class TopHits extends Aggregation
 
     public int $from = 0;
 
+    public string $model;
+
     public function getPayload(): array
     {
         $payload = [
@@ -41,6 +43,13 @@ class TopHits extends Aggregation
     public function from(int $from): self
     {
         $this->from = $from;
+
+        return $this;
+    }
+
+    public function model(string $model): self
+    {
+        $this->model = $model;
 
         return $this;
     }

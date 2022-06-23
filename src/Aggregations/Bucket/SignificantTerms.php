@@ -57,7 +57,7 @@ class SignificantTerms extends BucketAggregation
     public function type(string $type): self
     {
         if (!in_array($type, ['jlh', 'mutual_information', 'chi_square', 'gnd', 'percentage'])) {
-            throw new Exception('Invalid Significance Type', 1);
+            throw new Exception('Invalid Significance Type');
         }
 
         $this->significance_type = $type;

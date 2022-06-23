@@ -21,13 +21,17 @@ abstract class Model extends DataAccessObject // implements Serialisable
     use Queryable;
     use Relatable;
 
+    const CREATED_AT = 'created_at';
+
+    const UPDATED_AT = 'updated_at';
+
     public readonly string $_id;
 
     public readonly string $_index;
 
-    private static string $_connection = 'default';
+    protected static string $_connection = 'default';
 
-    private static ConnectionResolverInterface $_resolver;
+    protected static ConnectionResolverInterface $_resolver;
 
     public function initialiseIdentifiers(string $id, null|string $index = null): static
     {
@@ -43,6 +47,13 @@ abstract class Model extends DataAccessObject // implements Serialisable
     final public function get_id(): ?string
     {
         return $this->_id ?? $this->make_id();
+    }
+
+    public function set_id(string|int $id): static
+    {
+        $this->_id = (string) $id;
+
+        return $this;
     }
 
     public function has_id(): bool
@@ -70,5 +81,15 @@ abstract class Model extends DataAccessObject // implements Serialisable
     public static function getConnection(): Connection
     {
         return static::$_resolver->connection(static::$_connection);
+    }
+
+    public function getCreatedAtColumn(): string
+    {
+        return static::CREATED_AT;
+    }
+
+    public function getUpdatedAtColumn(): string
+    {
+        return static::UPDATED_AT;
     }
 }

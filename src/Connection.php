@@ -121,7 +121,7 @@ class Connection
                     'update' ,
                     'delete' ,
                     'updateByQuery' ,
-                    'deleteByQuery' => $response['total'],
+                    'deleteByQuery' => $response['total'] ?? 1,
                     'mget' => count($payload['body']['docs']),
                     'bulk' => count($payload['body']) / 2,
                     'get' => 1,

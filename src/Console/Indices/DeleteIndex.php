@@ -33,7 +33,7 @@ class DeleteIndex extends Command
     {
         if (!$this->option('raw')) {
             $class = $this->argument('index');
-            $indexName = $class::INDEX_NAME;
+            $indexName = (new $class())->writableIndexName();
         } else {
             $indexName = $this->argument('index');
         }

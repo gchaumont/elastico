@@ -9,11 +9,11 @@ trait When
         $value = is_callable($value) ? $value() : $value;
 
         if ($value) {
-            return $callback($this) ?: $this;
+            $callback($this) ?: $this;
         }
 
         if ($alternateCallback) {
-            return $alternateCallback($this) ?: $this;
+            $alternateCallback($this) ?: $this;
         }
 
         return $this;

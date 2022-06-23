@@ -22,11 +22,11 @@ use Illuminate\Support\Collection as BaseCollection;
 
      protected int $total;
 
-     protected bool $resolved = false;
-
-     protected array $_response;
+     protected array $with;
 
      protected Collection $hits;
+
+     protected BaseCollection $query_aggs;
 
      protected BaseCollection $aggregations;
 
@@ -35,21 +35,26 @@ use Illuminate\Support\Collection as BaseCollection;
          callable $hits,
          callable $aggregations,
          protected array|Elasticsearch|Promise $response,
-         protected Builder $query,
+         protected null|Builder $query = null,
+         string $model = null,
      ) {
          $this->get_total = $total;
          $this->get_hits = $hits;
          $this->get_aggregations = $aggregations;
+
+         $this->with = $this->query?->getWith() ?? [];
+         $this->model = $this->query?->model ?? $model;
+         $this->query_aggs = $this->query?->getAggregations() ?? new BaseCollection();
      }
 
      public function hits(): Collection
      {
          return $this->hits ??= Collection::make(($this->get_hits)($this->response()))
              ->when(
-                 !empty($this->query->model),
+                 !empty($this->model),
                  fn ($hits) => $hits
-                     ->map(fn ($hit): Model => $this->query->model::unserialise($hit))
-                     ->load($this->query->getWith())
+                     ->map(fn ($hit): Model => $this->model::unserialise($hit))
+                     ->load($this->with)
              )
          ;
      }
@@ -61,12 +66,8 @@ use Illuminate\Support\Collection as BaseCollection;
 
      public function aggregations(): BaseCollection
      {
-         return $this->aggregations ??= $this->query
-             ->getAggregations()
-             ->map(fn ($agg): AggregationResponse => $agg->toResponse(
-                 response: ($this->get_aggregations)($this->response())[$agg->getName()],
-                 query: $this->query,
-             ))
+         return $this->aggregations ??= $this->query_aggs
+             ->map(fn ($agg): AggregationResponse => $agg->toResponse(response: ($this->get_aggregations)($this->response())[$agg->getName()]))
          ;
      }
 
@@ -82,7 +83,7 @@ use Illuminate\Support\Collection as BaseCollection;
          $this->aggregations();
          $this->total();
 
-         unset($this->get_aggregations, $this->get_hits, $this->get_total, $this->query);
+         unset($this->get_aggregations, $this->get_hits, $this->get_total, $this->query, $this->response);
 
          return $this;
      }
@@ -103,7 +104,8 @@ use Illuminate\Support\Collection as BaseCollection;
      public function dd(): never
      {
          if (request()->wantsJson()) {
-             response(serialize($this->aggregations))->send();
+             // response($this->response())->send();
+             // response(serialize($this->aggregations()))->send();
          }
          dd($this);
      }
