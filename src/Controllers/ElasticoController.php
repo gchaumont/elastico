@@ -45,7 +45,7 @@ class ElasticoController
                     },
                     contentType: request()->header('Content-Type', 'application/json')
                 )
-                ->{request()->method()}(config('elastico.connections.'.$connection)['hosts'][0].'/'.$endpoint);
+                ->{request()->method()}($connection['hosts'][0].'/'.$endpoint);
 
             return response($http->body(), $http->status())
                 ->withHeaders($http->headers())
