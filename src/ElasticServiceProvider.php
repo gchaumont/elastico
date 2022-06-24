@@ -54,6 +54,7 @@ class ElasticServiceProvider extends ServiceProvider
                 ->domain($config['domain'])
                 ->any(($config['path'] ?? '').'/{any}', [ElasticoController::class, 'emulateElastic'])
                 ->where('any', '.*')
+                ->name('elastico.forwarding:'.$connection)
     ;
         }
     }

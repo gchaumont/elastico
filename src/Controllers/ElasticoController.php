@@ -22,6 +22,10 @@ class ElasticoController
             $headers = request()->header();
             unset($headers['content-type'], $headers['content-length']);
 
+            $connection = collect(config('elastico.forwarding'))
+                ->first(fn ($config, $connection) => 'elastico.forwarding:'.$connection == request()->route()->currentRouteName())
+            ;
+
             $http = Http::withHeaders($headers)
                 ->withBody(
                     content: new class(request()->getContent()) implements JsonSerializable {
@@ -41,19 +45,19 @@ class ElasticoController
                     },
                     contentType: request()->header('Content-Type', 'application/json')
                 )
-                ->{request()->method()}(config('batzo.elasticsearch.hosts')[0].request()->getRequestUri());
+                ->{request()->method()}(config('elastico.connections.'.$connection)['hosts'][0].request()->getRequestUri());
 
             return response($http->body(), $http->status())
                 ->withHeaders($http->headers())
         ;
         } catch (\Throwable $e) {
-            response([
-                'headers' => request()->header(),
-                'body' => request()->getContent(),
-                'method' => request()->method(),
-                'uri' => request()->getRequestUri(),
-                'error' => $e->getMessage(),
-            ], 500)->send();
+            // response([
+            //     'headers' => request()->header(),
+            //     'body' => request()->getContent(),
+            //     'method' => request()->method(),
+            //     'uri' => request()->getRequestUri(),
+            //     'error' => $e->getMessage(),
+            // ], 500)->send();
 
             throw $e;
         }
