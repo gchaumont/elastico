@@ -18,12 +18,22 @@ class ConnectionResolver implements ConnectionResolverInterface
      */
     protected string $default;
 
-    public function __construct(array $connections)
+    public function __construct(array $connections, array $forwarding = [])
     {
         foreach ($connections as $name => $connection) {
-            $connection['httpClient'] = new GuzzleClient(array_filter([
-                'verify' => $connection['CABundle'] ?? null,
-            ]));
+            $connection['httpClient'] = new GuzzleClient(array_filter(['verify' => $connection['CABundle'] ?? null]));
+
+            if (!empty($forwarding[$name])) {
+                $forwarding = $forwarding[$name];
+                $forwarding['env'] = is_array($forwarding['env']) ?: [$forwarding['env']];
+                if (in_array(app()->environment(), $forwarding['env'])) {
+                    $connection['hosts'] = [implode('/', [
+                        $forwarding['domain'],
+                        $forwarding['path'] ?? null,
+                    ])];
+                }
+            }
+
             $this->addConnection(
                 name: $name,
                 client: ClientBuilder::fromConfig($connection)->setAsync(false)

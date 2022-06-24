@@ -67,7 +67,7 @@ class Connection
                 identifier: $identifier
             );
         } else {
-            throw new RuntimeException('Unrecognised Elastic Response', 1);
+            throw new RuntimeException('Unrecognised Elastic Response');
         }
 
         return $response;

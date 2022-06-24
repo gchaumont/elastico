@@ -17,4 +17,13 @@ return [
             // 'connectionPool' => StaticNoPingConnectionPool::class,
         ],
     ],
+
+    'forwarding' => [
+        'default' => [
+            'env' => ['local'],
+            // 'domain' => 'your-domain.dev',
+            // 'middleware' => [],
+            'path' => 'elastic-forwarding',
+        ],
+    ],
 ];

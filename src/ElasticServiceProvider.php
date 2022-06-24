@@ -2,6 +2,7 @@
 
 namespace Elastico;
 
+use Elastico\Controllers\ElasticoController;
 use Elastico\Models\Model;
 use Illuminate\Support\ServiceProvider;
 
@@ -19,7 +20,12 @@ class ElasticServiceProvider extends ServiceProvider
         Model::setConnectionResolver(resolve(ConnectionResolverInterface::class));
 
         $this->registerCommands();
+
         // Model::setEventDispatcher($this->app['events']);
+
+        $this->registerForwardingRoutes(
+            $this->app['config']['elastico']['forwarding']
+        );
     }
 
     public function register()
@@ -30,10 +36,26 @@ class ElasticServiceProvider extends ServiceProvider
         );
 
         $this->app->singleton(ConnectionResolverInterface::class, function () {
-            return (new ConnectionResolver($this->app['config']['elastico']['connections']))
+            return (new ConnectionResolver(
+                connections: $this->app['config']['elastico']['connections'],
+                forwarding: $this->app['config']['elastico']['forwarding'],
+            ))
                 ->setDefaultConnection($this->app['config']['elastico']['default'])
             ;
         });
+    }
+
+    public function registerForwardingRoutes(array $forwarding): void
+    {
+        $router = $this->app->make(\Illuminate\Routing\Router::class);
+
+        foreach ($forwarding as $connection => $config) {
+            $router->withoutMiddleware(\App\Http\Middleware\VerifyCsrfToken::class)
+                ->domain($config['domain'])
+                ->any(($config['path'] ?? '').'/{any}', [ElasticoController::class, 'emulateElastic'])
+                ->where('any', '.*')
+    ;
+        }
     }
 
     public function registerCommands(): void
