@@ -52,8 +52,8 @@ class ElasticServiceProvider extends ServiceProvider
         foreach ($forwarding as $connection => $config) {
             $router->withoutMiddleware(\App\Http\Middleware\VerifyCsrfToken::class)
                 ->domain($config['domain'])
-                ->any(($config['path'] ?? '').'/{any}', [ElasticoController::class, 'emulateElastic'])
-                ->where('any', '.*')
+                ->any(($config['path'] ?? '').'/{endpoint}', [ElasticoController::class, 'emulateElastic'])
+                ->where('endpoint', '.*')
                 ->name('elastico.forwarding:'.$connection)
     ;
         }

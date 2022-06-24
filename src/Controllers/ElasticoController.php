@@ -11,7 +11,7 @@ use JsonSerializable;
  */
 class ElasticoController
 {
-    public function emulateElastic()
+    public function emulateElastic($endpoint)
     {
         try {
             if (request()->header('php-auth-user') != config('batzo.elasticsearch.username')
@@ -45,7 +45,7 @@ class ElasticoController
                     },
                     contentType: request()->header('Content-Type', 'application/json')
                 )
-                ->{request()->method()}(config('elastico.connections.'.$connection)['hosts'][0].request()->getRequestUri());
+                ->{request()->method()}(config('elastico.connections.'.$connection)['hosts'][0].'/'.$endpoint);
 
             return response($http->body(), $http->status())
                 ->withHeaders($http->headers())
