@@ -26,8 +26,12 @@ class ElasticoController
                 ->map(fn ($config, $connection) => $connection)
                 ->first(fn ($connection) => 'elastico.forwarding:'.$connection == request()->route()->getName())
             ;
+            $connection = config('elastico.connections.'.$connection);
 
             $http = Http::withHeaders($headers)
+                ->withOptions(array_filter([
+                    'verify' => $connection['CABundle'] ?? null,
+                ]))
                 ->withBody(
                     content: new class(request()->getContent()) implements JsonSerializable {
                         public function __construct(protected string $data)
@@ -46,7 +50,7 @@ class ElasticoController
                     },
                     contentType: request()->header('Content-Type', 'application/json')
                 )
-                ->{request()->method()}(config('elastico.connections.'.$connection)['hosts'][0].'/'.$endpoint);
+                ->{request()->method()}($connection['hosts'][0].'/'.$endpoint);
 
             return response($http->body(), $http->status())
                 ->withHeaders($http->headers())

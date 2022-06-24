@@ -12,6 +12,8 @@ return [
                 'password' => 'password',
             ],
             'hosts' => ['localhost:9200'],
+            //'CABundle' => storage_path('/elastic/certificate.crt'),
+
             // 'Handler'
             // 'selector' => RoundRobinSelector::class,
             // 'connectionPool' => StaticNoPingConnectionPool::class,
