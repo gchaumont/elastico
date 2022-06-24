@@ -14,19 +14,19 @@ class ElasticoController
     public function emulateElastic($endpoint)
     {
         try {
-            if (request()->header('php-auth-user') != config('batzo.elasticsearch.username')
-            || request()->header('php-auth-pw') != config('batzo.elasticsearch.password')) {
-                abort(403);
-            }
-
-            $headers = request()->header();
-            unset($headers['content-type'], $headers['content-length']);
-
             $connection = collect(config('elastico.forwarding'))
                 ->map(fn ($config, $connection) => $connection)
                 ->first(fn ($connection) => 'elastico.forwarding:'.$connection == request()->route()->getName())
             ;
             $connection = config('elastico.connections.'.$connection);
+
+            if (request()->header('php-auth-user') != $connection['basicAuthentication']['username']
+            || request()->header('php-auth-pw') != $connection['basicAuthentication']['password']) {
+                abort(403);
+            }
+
+            $headers = request()->header();
+            unset($headers['content-type'], $headers['content-length']);
 
             $http = Http::withHeaders($headers)
                 ->withOptions(array_filter([
