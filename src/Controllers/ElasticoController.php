@@ -23,7 +23,8 @@ class ElasticoController
             unset($headers['content-type'], $headers['content-length']);
 
             $connection = collect(config('elastico.forwarding'))
-                ->first(fn ($config, $connection) => 'elastico.forwarding:'.$connection == request()->route()->getName())
+                ->map(fn ($config, $connection) => $connection)
+                ->first(fn ($connection) => 'elastico.forwarding:'.$connection == request()->route()->getName())
             ;
 
             $http = Http::withHeaders($headers)
@@ -45,7 +46,7 @@ class ElasticoController
                     },
                     contentType: request()->header('Content-Type', 'application/json')
                 )
-                ->{request()->method()}($connection['hosts'][0].'/'.$endpoint);
+                ->{request()->method()}(config('elastico.connections.'.$connection)['hosts'][0].'/'.$endpoint);
 
             return response($http->body(), $http->status())
                 ->withHeaders($http->headers())
