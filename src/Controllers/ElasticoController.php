@@ -4,6 +4,7 @@ namespace Elastico\Controllers;
 
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\ServiceProvider;
+use JsonSerializable;
 
 /**
  *  Elasticsearch ServiceProvider.
