@@ -21,8 +21,6 @@ class ConnectionResolver implements ConnectionResolverInterface
     public function __construct(array $connections, array $forwarding = [])
     {
         foreach ($connections as $name => $connection) {
-            $connection['httpClient'] = new GuzzleClient(array_filter(['verify' => $connection['CABundle'] ?? null]));
-
             if (!empty($forwarding[$name])) {
                 $forwarding = $forwarding[$name];
                 $forwarding['env'] = is_array($forwarding['env']) ? $forwarding['env'] : [$forwarding['env']];
@@ -32,6 +30,8 @@ class ConnectionResolver implements ConnectionResolverInterface
                     $connection['hosts'] = [$forwarding['domain']];
                 }
             }
+
+            $connection['httpClient'] = new GuzzleClient(array_filter(['verify' => $connection['CABundle'] ?? null]));
 
             $this->addConnection(
                 name: $name,
