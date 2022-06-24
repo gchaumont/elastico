@@ -27,10 +27,7 @@ class ConnectionResolver implements ConnectionResolverInterface
                 $forwarding = $forwarding[$name];
                 $forwarding['env'] = is_array($forwarding['env']) ? $forwarding['env'] : [$forwarding['env']];
                 if (in_array(app()->environment(), $forwarding['env'])) {
-                    $connection['hosts'] = [implode('/', [
-                        $forwarding['domain'],
-                        $forwarding['path'] ?? null,
-                    ])];
+                    $connection['hosts'] = [$forwarding['domain']];
                 }
             }
 
