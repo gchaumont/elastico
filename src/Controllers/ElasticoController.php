@@ -23,7 +23,7 @@ class ElasticoController
             unset($headers['content-type'], $headers['content-length']);
 
             $connection = collect(config('elastico.forwarding'))
-                ->first(fn ($config, $connection) => 'elastico.forwarding:'.$connection == request()->route()->currentRouteName())
+                ->first(fn ($config, $connection) => 'elastico.forwarding:'.$connection == request()->route()->getName())
             ;
 
             $http = Http::withHeaders($headers)
