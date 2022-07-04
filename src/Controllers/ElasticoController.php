@@ -50,7 +50,7 @@ class ElasticoController
                     },
                     contentType: request()->header('Content-Type') ?: 'application/json'
                 )
-                ->{request()->method()}($connection['hosts'][0].'/'.request()->getRequestUri());
+                ->{request()->method()}($connection['hosts'][0].request()->getRequestUri());
 
             return response($http->body(), $http->status())
                 ->withHeaders($http->headers())
