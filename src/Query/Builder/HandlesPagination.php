@@ -33,8 +33,15 @@ trait HandlesPagination
             $total = null;
 
             $payload = $this->buildPayload();
-            $payload['scroll'] = $seconds.'s';
+            // $payload['scroll'] = $seconds.'s';
             $payload['body']['size'] = $size;
+            $payload['body']['sort'] = '_shard_doc';
+
+            $pit = $this->getConnection()->performQuery('openPointInTime', [
+                'index' => $payload['index'],
+                'keep_alive' => $seconds.'s',
+            ]);
+
             $response = $this->getConnection()->performQuery('search', $payload);
 
             yield from (new Response(
@@ -53,10 +60,12 @@ trait HandlesPagination
             ;
 
             while ($total) {
-                $response = $this->getConnection()->performQuery('scroll', [
-                    'scroll_id' => $response['_scroll_id'],
-                    'scroll' => $seconds.'s',
-                ]);
+                $response = $this->getConnection()->performQuery('search', array_merge($payload, [
+                    // 'scroll_id' => $response['_scroll_id'],
+                    // 'scroll' => $seconds.'s',
+                    'search_after' => $response['hits']['hits'][count($response['hits']['hits']) - 1]['sort'],
+                ]));
+
                 yield from (new Response(
                     total: fn ($r): int => count($r['hits']['total']),
                     hits: fn ($r): array => $r['hits']['hits'],
@@ -75,7 +84,11 @@ trait HandlesPagination
             }
 
             if (isset($response['_scroll_id'])) {
-                $this->getConnection()->performQuery('clearScroll', ['scroll_id' => $response['_scroll_id']]);
+                // $this->getConnection()->performQuery('clearScroll', ['scroll_id' => $response['_scroll_id']]);
+
+                $pit = $this->getConnection()->performQuery('closePointInTime', [
+                    'body' => [''],
+                ]);
             }
         });
     }
