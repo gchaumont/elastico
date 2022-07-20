@@ -89,7 +89,9 @@ class InstallElasticsearch extends Command
 
     public function copyCertificate()
     {
-        mkdir(storage_path('elastic'));
+        if (!file_exists(storage_path('elastic'))) {
+            mkdir(storage_path('elastic'));
+        }
 
         $this->ssh->download('/etc/elasticsearch/certs/http_ca.crt', storage_path('elastic/elastic-http-certificate.crt'));
     }

@@ -9,6 +9,7 @@ use Elastico\Models\Features\Configurable;
 use Elastico\Models\Features\Persistable;
 use Elastico\Models\Features\Queryable;
 use Elastico\Models\Features\Relatable;
+use Http\Promise\Promise;
 
 /**
  * Reads and Writes Objects to the Database.
@@ -91,5 +92,12 @@ abstract class Model extends DataAccessObject // implements Serialisable
     public function getUpdatedAtColumn(): string
     {
         return static::UPDATED_AT;
+    }
+
+    public static function unserialise(array|Promise $document): static
+    {
+        return parent::unserialise($document)
+            ->initialiseIdentifiers(id: $document['_id'] ?? $document['id'], index: $document['_index'] ?? null)
+        ;
     }
 }

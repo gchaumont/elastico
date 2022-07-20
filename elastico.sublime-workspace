@@ -1,0 +1,2357 @@
+{
+	"auto_complete":
+	{
+		"selected_items":
+		[
+			[
+				"for",
+				"forwarding"
+			],
+			[
+				"file_",
+				"file_get_contents"
+			],
+			[
+				"elas",
+				"elastic_password"
+			],
+			[
+				"pass",
+				"superuser_password"
+			],
+			[
+				"s",
+				"strpos"
+			],
+			[
+				"applica",
+				"appplication_namespace"
+			],
+			[
+				"weighterd",
+				"weightedKeywords\tabc"
+			],
+			[
+				"ag",
+				"aggregate\tabc"
+			],
+			[
+				"localt",
+				"local_token_median\tabc"
+			],
+			[
+				"globa",
+				"global_token_median\tabc"
+			],
+			[
+				"LANGUA",
+				"languageTokenFrequencies"
+			],
+			[
+				"desi",
+				"desiredWordLength\tabc"
+			],
+			[
+				"diffToA",
+				"diffToAvgWordLengthB\tabc"
+			],
+			[
+				"diffT",
+				"diffToLengthB\tabc"
+			],
+			[
+				"Elas",
+				"ElasticQueryBuilder\t(ProductAggregator.php)"
+			],
+			[
+				"getCa",
+				"getCalendarFormat\tabc"
+			],
+			[
+				"getCAl",
+				"getCalendarFormat\tabc"
+			],
+			[
+				"calden",
+				"calendarIntervals\tabc"
+			],
+			[
+				"persis",
+				"persist_duration\tabc"
+			],
+			[
+				"opti",
+				"optimal_batch_size\tabc"
+			],
+			[
+				"fetch",
+				"fetched_at\tabc"
+			],
+			[
+				"dispa",
+				"dispatchAnalysis\tabc"
+			],
+			[
+				"adv",
+				"advertisements_count\tabc"
+			],
+			[
+				"aff",
+				"affiliates-limits\t(batzo.php)"
+			],
+			[
+				"pers",
+				"persist_duration\tabc"
+			],
+			[
+				"arraf",
+				"array_filter"
+			],
+			[
+				"advet",
+				"advertisements\tabc"
+			],
+			[
+				"Signi",
+				"SignificantText\t(ShopAnalyser.php)"
+			],
+			[
+				"cate",
+				"category\t(ProductAggregator.php)"
+			],
+			[
+				"adver",
+				"advertisements_count\tabc"
+			],
+			[
+				"manufac",
+				"manufacturerMpn\tabc"
+			],
+			[
+				"MERGE",
+				"MERGE_THRESHOLD\tabc"
+			],
+			[
+				"curren",
+				"currentProduct\tabc"
+			],
+			[
+				"SPLI",
+				"SPLIT_THRESHOLD\tabc"
+			],
+			[
+				"fetat",
+				"getFetchedAt"
+			],
+			[
+				"Advertise",
+				"AdvertisementAnalyser\t(AdvertisementAnalyser.php)"
+			],
+			[
+				"ImportTr",
+				"ImportTransactionsFromNetwork\t(ImportTransactionsFromNetwork.php)"
+			],
+			[
+				"ImportAd",
+				"ImportAdvertisersFromNetwork\t(ImportAdvertisersFromNetwork.php)"
+			],
+			[
+				"candi",
+				"candidateEntity\tabc"
+			],
+			[
+				"related",
+				"relatedTokens\tabc"
+			],
+			[
+				"strongly",
+				"stronglyRelatedTokens\tabc"
+			],
+			[
+				"selec",
+				"selectValidEntities\tabc"
+			],
+			[
+				"sel",
+				"serialise\t(Brand.php)"
+			],
+			[
+				"stron",
+				"stronglyRelatedTokens\tabc"
+			],
+			[
+				"extrac",
+				"extractRelatedEntities\tabc"
+			],
+			[
+				"extr",
+				"extractRelatedTokens\tabc"
+			],
+			[
+				"tra",
+				"transaction\tabc"
+			],
+			[
+				"Advet",
+				"AdvertisementFactory\t(AwinAdvertisementFactory.php)"
+			],
+			[
+				"dynam",
+				"dynamic_templates\tabc"
+			],
+			[
+				"REQU",
+				"REQUEST_TIME\tabc"
+			],
+			[
+				"aval",
+				"availability\tabc"
+			],
+			[
+				"add",
+				"additionalProperty\t(AwinAdvertisementFactory.php)"
+			],
+			[
+				"addition",
+				"additionalProperties\tabc"
+			],
+			[
+				"Tradedoub",
+				"TradedoublerAdvertisementFactory\t(TradedoublerAdvertisementFactory.php)"
+			],
+			[
+				"name",
+				"namespace\t(ProductAggregator.php)"
+			],
+			[
+				"referr",
+				"referringDomain\tabc"
+			],
+			[
+				"htt",
+				"http_client_ip\tabc"
+			],
+			[
+				"getOri",
+				"getOriginalContent\tabc"
+			],
+			[
+				"LaravelR",
+				"LaravelRequest\tabc"
+			],
+			[
+				"Illu",
+				"IlluminateRequest\tabc"
+			],
+			[
+				"data",
+				"data_enrichment\tabc"
+			],
+			[
+				"page",
+				"page-header\t(merchantCenter.blade.php)"
+			],
+			[
+				"max-",
+				"max-height\tproperty"
+			],
+			[
+				"scetion",
+				"section-intro\t(typography.scss)"
+			],
+			[
+				"respon",
+				"m_responsekeys"
+			],
+			[
+				"http_",
+				"http_x_forwarded_for\t(CollectStats.php)"
+			],
+			[
+				"respn",
+				"response_time\tabc"
+			],
+			[
+				"text",
+				"textColor\tabc"
+			],
+			[
+				"seco",
+				"secondary-text\t(typography.scss)"
+			],
+			[
+				"backgrund-",
+				"background-color\tabc"
+			],
+			[
+				"affiliate",
+				"affiliate-networks\tabc"
+			],
+			[
+				"Affi",
+				"AffiliateNetworks\t(admin.php)"
+			],
+			[
+				"array_inr",
+				"array_intersect_key"
+			],
+			[
+				"page-hea",
+				"page-header-wraper\t(header.scss)"
+			],
+			[
+				"space-",
+				"space-between\tjustify-content"
+			],
+			[
+				"fea",
+				"feature-icon\tabc"
+			],
+			[
+				"featu",
+				"feature-icon\tabc"
+			],
+			[
+				"back",
+				"background-size\tproperty"
+			],
+			[
+				"affil",
+				"affiliate-network\tabc"
+			],
+			[
+				"backg",
+				"background-color\tabc"
+			],
+			[
+				"hasMany",
+				"HasMany"
+			],
+			[
+				"backgro",
+				"background\tabc"
+			],
+			[
+				"secodn",
+				"secondaryLabelColor\tabc"
+			],
+			[
+				"secondary",
+				"secondaryLabelColor\t(breadcrumbs.scss)"
+			],
+			[
+				"grid-area",
+				"grid-template-areas\tabc"
+			],
+			[
+				"tex",
+				"textColor\tabc"
+			],
+			[
+				"container",
+				"container-left-padding\t(containers.scss)"
+			],
+			[
+				"bac",
+				"background-color\t(search.scss)"
+			],
+			[
+				"align",
+				"align-items\tabc"
+			],
+			[
+				"secon",
+				"secondaryLabelColor\tabc"
+			],
+			[
+				"space",
+				"space-s\tabc"
+			],
+			[
+				"separa",
+				"separatorColor\t(colors.scss)"
+			],
+			[
+				"seconda",
+				"secondaryLabelColor\t(typography.scss)"
+			],
+			[
+				"white",
+				"white-space\tabc"
+			],
+			[
+				"margin-",
+				"margin-bottom\tabc"
+			],
+			[
+				"margin",
+				"margin-bottom\tabc"
+			],
+			[
+				"base",
+				"base-font-size\tabc"
+			],
+			[
+				"word",
+				"word-wrap\tproperty"
+			],
+			[
+				"a",
+				"a\t<a>"
+			],
+			[
+				"ipad",
+				"ipad-portrait\tabc"
+			],
+			[
+				"get_vars",
+				"get_defined_vars"
+			],
+			[
+				"maxD",
+				"maxDocsPerValue\t(DiversifiedSampler.php)"
+			],
+			[
+				"addA",
+				"addAggregation\tabc"
+			],
+			[
+				"off",
+				"offerFilter\tabc"
+			],
+			[
+				"ratin",
+				"rating_value\t(AdminBrandController.php)"
+			],
+			[
+				"foreignA",
+				"foreignAvg\tabc"
+			],
+			[
+				"products",
+				"products_count\tabc"
+			],
+			[
+				"deep_",
+				"standard_deep_base_average"
+			],
+			[
+				"baseC",
+				"baseCountryIdentifier\tabc"
+			],
+			[
+				"internationaA",
+				"internationalAvgPrice\tabc"
+			],
+			[
+				"natinal",
+				"national_market_avg\t(ShopsAggregation.php)"
+			],
+			[
+				"searh",
+				"searchableModel\tabc"
+			],
+			[
+				"indexa",
+				"indexableOffers\tabc"
+			],
+			[
+				"Elstics",
+				"ElasticsearchController\t(ElasticsearchController.php)"
+			],
+			[
+				"agg",
+				"aggregations\tabc"
+			],
+			[
+				"indexab",
+				"indexableProductPrices\tabc"
+			],
+			[
+				"unser",
+				"unserialisers\tabc"
+			],
+			[
+				"usneria",
+				"unserialisers\tabc"
+			],
+			[
+				"getCou",
+				"getCountries\t(ProductSerialiser.php)"
+			],
+			[
+				"indexable",
+				"indexableProductPrices\t(HasOffers.php)"
+			],
+			[
+				"idexabl",
+				"indexableProducts\tabc"
+			],
+			[
+				"baseshop",
+				"base_shop_price"
+			],
+			[
+				"manu",
+				"manufacturer_id\t(AggregateProducts.php)"
+			],
+			[
+				"transa",
+				"transactions\tabc"
+			],
+			[
+				"deleteSta",
+				"deleteStaleAdvertisements\t(AffiliateNetwork.php)"
+			],
+			[
+				"style",
+				"style\tabc"
+			],
+			[
+				"seach",
+				"searchableModel\tabc"
+			],
+			[
+				"elasti",
+				"elasticStats\tabc"
+			]
+		]
+	},
+	"buffers":
+	[
+		{
+			"file": "config/elastico.php",
+			"settings":
+			{
+				"buffer_size": 815,
+				"line_ending": "Unix"
+			}
+		},
+		{
+			"file": "src/Controllers/ElasticoController.php",
+			"settings":
+			{
+				"buffer_size": 2459,
+				"line_ending": "Unix"
+			},
+			"undo_stack":
+			[
+				[
+					85,
+					1,
+					"paste",
+					null,
+					"AgAAAH8HAAAAAAAAmQcAAAAAAAAAAAAAmQcAAAAAAACZBwAAAAAAAAkAAAAkZW5kcG9pbnQ",
+					"BQAAAAAAAAABAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAPC/AAAAAAEAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA8L8AAAAAAQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAADwvwAAAAABAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAPC/AAAAAAEAAAB/BwAAAAAAAIgHAAAAAAAAAAAAAAAA8L8"
+				],
+				[
+					92,
+					4,
+					"left_delete",
+					null,
+					"BAAAAH0HAAAAAAAAfQcAAAAAAAABAAAAJ3wHAAAAAAAAfAcAAAAAAAABAAAAL3sHAAAAAAAAewcAAAAAAAABAAAAJ3oHAAAAAAAAegcAAAAAAAABAAAALg",
+					"BQAAAAAAAAABAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAPC/AAAAAAEAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA8L8AAAAAAQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAADwvwAAAAABAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAPC/AAAAAAEAAAB+BwAAAAAAAH4HAAAAAAAAAAAAAAAA8L8"
+				],
+				[
+					96,
+					1,
+					"revert",
+					null,
+					"AgAAAAAAAAAAAAAAAAAAAAAAAACbCQAAPD9waHAKCm5hbWVzcGFjZSBFbGFzdGljb1xDb250cm9sbGVyczsKCnVzZSBJbGx1bWluYXRlXFN1cHBvcnRcRmFjYWRlc1xIdHRwOwp1c2UgSWxsdW1pbmF0ZVxTdXBwb3J0XFNlcnZpY2VQcm92aWRlcjsKdXNlIEpzb25TZXJpYWxpemFibGU7CgovKioKICogIEVsYXN0aWNzZWFyY2ggU2VydmljZVByb3ZpZGVyLgogKi8KY2xhc3MgRWxhc3RpY29Db250cm9sbGVyCnsKICAgIHB1YmxpYyBmdW5jdGlvbiBlbXVsYXRlRWxhc3RpYygkZW5kcG9pbnQpCiAgICB7CiAgICAgICAgdHJ5IHsKICAgICAgICAgICAgJGNvbm5lY3Rpb24gPSBjb2xsZWN0KGNvbmZpZygnZWxhc3RpY28uZm9yd2FyZGluZycpKQogICAgICAgICAgICAgICAgLT5tYXAoZm4gKCRjb25maWcsICRjb25uZWN0aW9uKSA9PiAkY29ubmVjdGlvbikKICAgICAgICAgICAgICAgIC0+Zmlyc3QoZm4gKCRjb25uZWN0aW9uKSA9PiAnZWxhc3RpY28uZm9yd2FyZGluZzonLiRjb25uZWN0aW9uID09IHJlcXVlc3QoKS0+cm91dGUoKS0+Z2V0TmFtZSgpKQogICAgICAgICAgICA7CiAgICAgICAgICAgICRjb25uZWN0aW9uID0gY29uZmlnKCdlbGFzdGljby5jb25uZWN0aW9ucy4nLiRjb25uZWN0aW9uKTsKCiAgICAgICAgICAgIGlmIChyZXF1ZXN0KCktPmhlYWRlcigncGhwLWF1dGgtdXNlcicpICE9ICRjb25uZWN0aW9uWydiYXNpY0F1dGhlbnRpY2F0aW9uJ11bJ3VzZXJuYW1lJ10KICAgICAgICAgICAgfHwgcmVxdWVzdCgpLT5oZWFkZXIoJ3BocC1hdXRoLXB3JykgIT0gJGNvbm5lY3Rpb25bJ2Jhc2ljQXV0aGVudGljYXRpb24nXVsncGFzc3dvcmQnXSkgewogICAgICAgICAgICAgICAgYWJvcnQoNDAzKTsKICAgICAgICAgICAgfQoKICAgICAgICAgICAgJGhlYWRlcnMgPSByZXF1ZXN0KCktPmhlYWRlcigpOwogICAgICAgICAgICB1bnNldCgkaGVhZGVyc1snY29udGVudC10eXBlJ10sICRoZWFkZXJzWydjb250ZW50LWxlbmd0aCddKTsKCiAgICAgICAgICAgICRodHRwID0gSHR0cDo6d2l0aEhlYWRlcnMoJGhlYWRlcnMpCiAgICAgICAgICAgICAgICAtPndpdGhPcHRpb25zKGFycmF5X2ZpbHRlcihbCiAgICAgICAgICAgICAgICAgICAgJ3ZlcmlmeScgPT4gJGNvbm5lY3Rpb25bJ0NBQnVuZGxlJ10gPz8gbnVsbCwKICAgICAgICAgICAgICAgIF0pKQogICAgICAgICAgICAgICAgLT53aXRoQm9keSgKICAgICAgICAgICAgICAgICAgICBjb250ZW50OiBuZXcgY2xhc3MocmVxdWVzdCgpLT5nZXRDb250ZW50KCkpIGltcGxlbWVudHMgSnNvblNlcmlhbGl6YWJsZSB7CiAgICAgICAgICAgICAgICAgICAgICAgIHB1YmxpYyBmdW5jdGlvbiBfX2NvbnN0cnVjdChwcm90ZWN0ZWQgc3RyaW5nICRkYXRhKQogICAgICAgICAgICAgICAgICAgICAgICB7CiAgICAgICAgICAgICAgICAgICAgICAgIH0KCiAgICAgICAgICAgICAgICAgICAgICAgIHB1YmxpYyBmdW5jdGlvbiBfX3RvU3RyaW5nKCk6IHN0cmluZwogICAgICAgICAgICAgICAgICAgICAgICB7CiAgICAgICAgICAgICAgICAgICAgICAgICAgICByZXR1cm4gJHRoaXMtPmRhdGE7CiAgICAgICAgICAgICAgICAgICAgICAgIH0KCiAgICAgICAgICAgICAgICAgICAgICAgIHB1YmxpYyBmdW5jdGlvbiBqc29uU2VyaWFsaXplKCk6IG1peGVkCiAgICAgICAgICAgICAgICAgICAgICAgIHsKICAgICAgICAgICAgICAgICAgICAgICAgICAgIHJldHVybiAkdGhpcy0+ZGF0YTsKICAgICAgICAgICAgICAgICAgICAgICAgfQogICAgICAgICAgICAgICAgICAgIH0sCiAgICAgICAgICAgICAgICAgICAgY29udGVudFR5cGU6IHJlcXVlc3QoKS0+aGVhZGVyKCdDb250ZW50LVR5cGUnKSA/OiAnYXBwbGljYXRpb24vanNvbicKICAgICAgICAgICAgICAgICkKICAgICAgICAgICAgICAgIC0+e3JlcXVlc3QoKS0+bWV0aG9kKCl9KCRjb25uZWN0aW9uWydob3N0cyddWzBdLnJlcXVlc3QoKS0+Z2V0UmVxdWVzdFVyaSgpKTsKCiAgICAgICAgICAgIHJldHVybiByZXNwb25zZSgkaHR0cC0+Ym9keSgpLCAkaHR0cC0+c3RhdHVzKCkpCiAgICAgICAgICAgICAgICAtPndpdGhIZWFkZXJzKCRodHRwLT5oZWFkZXJzKCkpCiAgICAgICAgOwogICAgICAgIH0gY2F0Y2ggKFxUaHJvd2FibGUgJGUpIHsKICAgICAgICAgICAgLy8gcmVzcG9uc2UoWwogICAgICAgICAgICAvLyAgICAgJ2hlYWRlcnMnID0+IHJlcXVlc3QoKS0+aGVhZGVyKCksCiAgICAgICAgICAgIC8vICAgICAnYm9keScgPT4gcmVxdWVzdCgpLT5nZXRDb250ZW50KCksCiAgICAgICAgICAgIC8vICAgICAnbWV0aG9kJyA9PiByZXF1ZXN0KCktPm1ldGhvZCgpLAogICAgICAgICAgICAvLyAgICAgJ3VyaScgPT4gcmVxdWVzdCgpLT5nZXRSZXF1ZXN0VXJpKCksCiAgICAgICAgICAgIC8vICAgICAnZXJyb3InID0+ICRlLT5nZXRNZXNzYWdlKCksCiAgICAgICAgICAgIC8vIF0sIDUwMCktPnNlbmQoKTsKCiAgICAgICAgICAgIHRocm93ICRlOwogICAgICAgIH0KICAgIH0KfQoAAAAAAAAAAJsJAAAAAAAAAAAAAA",
+					"BQAAAAAAAAABAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAPC/AAAAAAEAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA8L8AAAAAAQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAADwvwAAAAABAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAPC/AAAAAAEAAAB6BwAAAAAAAHoHAAAAAAAAAAAAAAAA8L8"
+				],
+				[
+					98,
+					1,
+					"insert",
+					{
+						"characters": "§"
+					},
+					"AQAAAHoHAAAAAAAAewcAAAAAAAAAAAAA",
+					"BQAAAAAAAAABAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAPC/AAAAAAEAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA8L8AAAAAAQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAADwvwAAAAABAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAPC/AAAAAAEAAAB6BwAAAAAAAHoHAAAAAAAAAAAAAAAA8L8"
+				],
+				[
+					101,
+					1,
+					"left_delete",
+					null,
+					"AQAAAHoHAAAAAAAAegcAAAAAAAACAAAAwqc",
+					"BQAAAAAAAAABAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAPC/AAAAAAEAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA8L8AAAAAAQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAADwvwAAAAABAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAPC/AAAAAAEAAAB7BwAAAAAAAHsHAAAAAAAAAAAAAAAA8L8"
+				],
+				[
+					112,
+					1,
+					"revert",
+					null,
+					"BgAAAAAAAAAAAAAAAAAAAAAAAACbCQAAPD9waHAKCm5hbWVzcGFjZSBFbGFzdGljb1xDb250cm9sbGVyczsKCnVzZSBJbGx1bWluYXRlXFN1cHBvcnRcRmFjYWRlc1xIdHRwOwp1c2UgSWxsdW1pbmF0ZVxTdXBwb3J0XFNlcnZpY2VQcm92aWRlcjsKdXNlIEpzb25TZXJpYWxpemFibGU7CgovKioKICogIEVsYXN0aWNzZWFyY2ggU2VydmljZVByb3ZpZGVyLgogKi8KY2xhc3MgRWxhc3RpY29Db250cm9sbGVyCnsKICAgIHB1YmxpYyBmdW5jdGlvbiBlbXVsYXRlRWxhc3RpYygkZW5kcG9pbnQpCiAgICB7CiAgICAgICAgdHJ5IHsKICAgICAgICAgICAgJGNvbm5lY3Rpb24gPSBjb2xsZWN0KGNvbmZpZygnZWxhc3RpY28uZm9yd2FyZGluZycpKQogICAgICAgICAgICAgICAgLT5tYXAoZm4gKCRjb25maWcsICRjb25uZWN0aW9uKSA9PiAkY29ubmVjdGlvbikKICAgICAgICAgICAgICAgIC0+Zmlyc3QoZm4gKCRjb25uZWN0aW9uKSA9PiAnZWxhc3RpY28uZm9yd2FyZGluZzonLiRjb25uZWN0aW9uID09IHJlcXVlc3QoKS0+cm91dGUoKS0+Z2V0TmFtZSgpKQogICAgICAgICAgICA7CiAgICAgICAgICAgICRjb25uZWN0aW9uID0gY29uZmlnKCdlbGFzdGljby5jb25uZWN0aW9ucy4nLiRjb25uZWN0aW9uKTsKCiAgICAgICAgICAgIGlmIChyZXF1ZXN0KCktPmhlYWRlcigncGhwLWF1dGgtdXNlcicpICE9ICRjb25uZWN0aW9uWydiYXNpY0F1dGhlbnRpY2F0aW9uJ11bJ3VzZXJuYW1lJ10KICAgICAgICAgICAgfHwgcmVxdWVzdCgpLT5oZWFkZXIoJ3BocC1hdXRoLXB3JykgIT0gJGNvbm5lY3Rpb25bJ2Jhc2ljQXV0aGVudGljYXRpb24nXVsncGFzc3dvcmQnXSkgewogICAgICAgICAgICAgICAgYWJvcnQoNDAzKTsKICAgICAgICAgICAgfQoKICAgICAgICAgICAgJGhlYWRlcnMgPSByZXF1ZXN0KCktPmhlYWRlcigpOwogICAgICAgICAgICB1bnNldCgkaGVhZGVyc1snY29udGVudC10eXBlJ10sICRoZWFkZXJzWydjb250ZW50LWxlbmd0aCddKTsKCiAgICAgICAgICAgICRodHRwID0gSHR0cDo6d2l0aEhlYWRlcnMoJGhlYWRlcnMpCiAgICAgICAgICAgICAgICAtPndpdGhPcHRpb25zKGFycmF5X2ZpbHRlcihbCiAgICAgICAgICAgICAgICAgICAgJ3ZlcmlmeScgPT4gJGNvbm5lY3Rpb25bJ0NBQnVuZGxlJ10gPz8gbnVsbCwKICAgICAgICAgICAgICAgIF0pKQogICAgICAgICAgICAgICAgLT53aXRoQm9keSgKICAgICAgICAgICAgICAgICAgICBjb250ZW50OiBuZXcgY2xhc3MocmVxdWVzdCgpLT5nZXRDb250ZW50KCkpIGltcGxlbWVudHMgSnNvblNlcmlhbGl6YWJsZSB7CiAgICAgICAgICAgICAgICAgICAgICAgIHB1YmxpYyBmdW5jdGlvbiBfX2NvbnN0cnVjdChwcm90ZWN0ZWQgc3RyaW5nICRkYXRhKQogICAgICAgICAgICAgICAgICAgICAgICB7CiAgICAgICAgICAgICAgICAgICAgICAgIH0KCiAgICAgICAgICAgICAgICAgICAgICAgIHB1YmxpYyBmdW5jdGlvbiBfX3RvU3RyaW5nKCk6IHN0cmluZwogICAgICAgICAgICAgICAgICAgICAgICB7CiAgICAgICAgICAgICAgICAgICAgICAgICAgICByZXR1cm4gJHRoaXMtPmRhdGE7CiAgICAgICAgICAgICAgICAgICAgICAgIH0KCiAgICAgICAgICAgICAgICAgICAgICAgIHB1YmxpYyBmdW5jdGlvbiBqc29uU2VyaWFsaXplKCk6IG1peGVkCiAgICAgICAgICAgICAgICAgICAgICAgIHsKICAgICAgICAgICAgICAgICAgICAgICAgICAgIHJldHVybiAkdGhpcy0+ZGF0YTsKICAgICAgICAgICAgICAgICAgICAgICAgfQogICAgICAgICAgICAgICAgICAgIH0sCiAgICAgICAgICAgICAgICAgICAgY29udGVudFR5cGU6IHJlcXVlc3QoKS0+aGVhZGVyKCdDb250ZW50LVR5cGUnKSA/OiAnYXBwbGljYXRpb24vanNvbicKICAgICAgICAgICAgICAgICkKICAgICAgICAgICAgICAgIC0+e3JlcXVlc3QoKS0+bWV0aG9kKCl9KCRjb25uZWN0aW9uWydob3N0cyddWzBdLnJlcXVlc3QoKS0+Z2V0UmVxdWVzdFVyaSgpKTsKCiAgICAgICAgICAgIHJldHVybiByZXNwb25zZSgkaHR0cC0+Ym9keSgpLCAkaHR0cC0+c3RhdHVzKCkpCiAgICAgICAgICAgICAgICAtPndpdGhIZWFkZXJzKCRodHRwLT5oZWFkZXJzKCkpCiAgICAgICAgOwogICAgICAgIH0gY2F0Y2ggKFxUaHJvd2FibGUgJGUpIHsKICAgICAgICAgICAgLy8gcmVzcG9uc2UoWwogICAgICAgICAgICAvLyAgICAgJ2hlYWRlcnMnID0+IHJlcXVlc3QoKS0+aGVhZGVyKCksCiAgICAgICAgICAgIC8vICAgICAnYm9keScgPT4gcmVxdWVzdCgpLT5nZXRDb250ZW50KCksCiAgICAgICAgICAgIC8vICAgICAnbWV0aG9kJyA9PiByZXF1ZXN0KCktPm1ldGhvZCgpLAogICAgICAgICAgICAvLyAgICAgJ3VyaScgPT4gcmVxdWVzdCgpLT5nZXRSZXF1ZXN0VXJpKCksCiAgICAgICAgICAgIC8vICAgICAnZXJyb3InID0+ICRlLT5nZXRNZXNzYWdlKCksCiAgICAgICAgICAgIC8vIF0sIDUwMCktPnNlbmQoKTsKCiAgICAgICAgICAgIHRocm93ICRlOwogICAgICAgIH0KICAgIH0KfQoAAAAAAAAAAJsJAAAAAAAAAAAAAAAAAAAAAAAAmwkAAAAAAAAAAAAAAAAAAAAAAACbCQAAAAAAAAAAAAAAAAAAAAAAAJsJAAAAAAAAAAAAAAAAAAAAAAAAmwkAAAAAAAAAAAAA",
+					"BQAAAAAAAAABAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAPC/AAAAAAEAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA8L8AAAAAAQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAADwvwAAAAABAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAPC/AAAAAAEAAAB6BwAAAAAAAHoHAAAAAAAAAAAAAAAA8L8"
+				]
+			]
+		},
+		{
+			"file": "src/Query/Response/Response.php",
+			"settings":
+			{
+				"buffer_size": 3197,
+				"encoding": "UTF-8",
+				"line_ending": "Unix"
+			},
+			"undo_stack":
+			[
+				[
+					21,
+					1,
+					"insert",
+					{
+						"characters": "DataAccessObjec"
+					},
+					"DwAAAMMFAAAAAAAAxAUAAAAAAAAAAAAAxAUAAAAAAADFBQAAAAAAAAAAAADFBQAAAAAAAMYFAAAAAAAAAAAAAMYFAAAAAAAAxwUAAAAAAAAAAAAAxwUAAAAAAADIBQAAAAAAAAAAAADIBQAAAAAAAMkFAAAAAAAAAAAAAMkFAAAAAAAAygUAAAAAAAAAAAAAygUAAAAAAADLBQAAAAAAAAAAAADLBQAAAAAAAMwFAAAAAAAAAAAAAMwFAAAAAAAAzQUAAAAAAAAAAAAAzQUAAAAAAADOBQAAAAAAAAAAAADOBQAAAAAAAM8FAAAAAAAAAAAAAM8FAAAAAAAA0AUAAAAAAAAAAAAA0AUAAAAAAADRBQAAAAAAAAAAAADRBQAAAAAAANIFAAAAAAAAAAAAAA",
+					"BQAAAAAAAAABAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAPC/AAAAAAEAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA8L8AAAAAAQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAADwvwAAAAABAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAPC/AAAAAAEAAADDBQAAAAAAAMMFAAAAAAAAAAAAAAAA8L8"
+				],
+				[
+					22,
+					1,
+					"insert",
+					{
+						"characters": "t|"
+					},
+					"AgAAANIFAAAAAAAA0wUAAAAAAAAAAAAA0wUAAAAAAADUBQAAAAAAAAAAAAA",
+					"BQAAAAAAAAABAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAPC/AAAAAAEAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA8L8AAAAAAQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAADwvwAAAAABAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAPC/AAAAAAEAAADSBQAAAAAAANIFAAAAAAAAAAAAAAAA8L8"
+				],
+				[
+					26,
+					1,
+					"find_use",
+					null,
+					"AQAAACsAAAAAAAAARQEAAAAAAAD0AAAAdXNlIEVsYXN0aWNcRWxhc3RpY3NlYXJjaFxSZXNwb25zZVxFbGFzdGljc2VhcmNoOwp1c2UgRWxhc3RpY29cTW9kZWxzXE1vZGVsOwp1c2UgRWxhc3RpY29cUXVlcnlcQnVpbGRlcjsKdXNlIEVsYXN0aWNvXFF1ZXJ5XFJlc3BvbnNlXEFnZ3JlZ2F0aW9uXEFnZ3JlZ2F0aW9uUmVzcG9uc2U7CnVzZSBIdHRwXFByb21pc2VcUHJvbWlzZTsKdXNlIElsbHVtaW5hdGVcU3VwcG9ydFxDb2xsZWN0aW9uIGFzIEJhc2VDb2xsZWN0aW9uOw",
+					"BQAAAAAAAAABAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAPC/AAAAAAEAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA8L8AAAAAAQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAADwvwAAAAABAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAPC/AAAAAAEAAADSBQAAAAAAANIFAAAAAAAAAAAAAAAA8L8"
+				]
+			]
+		}
+	],
+	"build_system": "",
+	"build_system_choices":
+	[
+	],
+	"build_varint": "",
+	"command_palette":
+	{
+		"height": 0.0,
+		"last_filter": "",
+		"selected_items":
+		[
+			[
+				"us",
+				"PHPCompanion:Find Use"
+			],
+			[
+				"push",
+				"Git: Push"
+			],
+			[
+				"com",
+				"Git: Commit"
+			],
+			[
+				"ad",
+				"Git: Add All"
+			],
+			[
+				"amend",
+				"Git: Amend Commit"
+			],
+			[
+				"am",
+				"Git: Amend Commit"
+			],
+			[
+				"Push",
+				"Git: Push"
+			],
+			[
+				"dupl",
+				"File: Duplicate"
+			],
+			[
+				"mov",
+				"File: Move"
+			],
+			[
+				"du",
+				"File: Duplicate"
+			],
+			[
+				"s",
+				"Sort Lines"
+			],
+			[
+				"dupls",
+				"SublimeLinter: Reload SublimeLinter and its Plugins"
+			],
+			[
+				"del",
+				"ANF: Delete Current File"
+			],
+			[
+				"d",
+				"File: Duplicate"
+			],
+			[
+				"co",
+				"Git: Commit"
+			],
+			[
+				"pus",
+				"Git: Push"
+			],
+			[
+				"mvo",
+				"File: Move"
+			],
+			[
+				"close",
+				"File: Close All"
+			],
+			[
+				"expa",
+				"PHPCompanion:Expand Fully Qualified Class Name"
+			],
+			[
+				"expafu",
+				"PHPCompanion:Expand Fully Qualified Class Name"
+			],
+			[
+				"use",
+				"PHPCompanion:Find Use"
+			],
+			[
+				"dele",
+				"ANF: Delete Current File"
+			],
+			[
+				"snake",
+				"Convert Case: snake_case"
+			],
+			[
+				"sna",
+				"Convert Case: snake_case"
+			],
+			[
+				"uise",
+				"UI: Select Theme"
+			],
+			[
+				"upper",
+				"Convert Case: Upper Case"
+			],
+			[
+				"copm",
+				"GitGutter: Compare Against Branch"
+			],
+			[
+				"comm",
+				"Git: Commit history"
+			],
+			[
+				"dif",
+				"Git: Diff All Files"
+			],
+			[
+				"lower",
+				"Convert Case: Lower Case"
+			],
+			[
+				"puh",
+				"Git: Push"
+			],
+			[
+				"goto",
+				"PHPCompanion:Goto Definition Scope"
+			],
+			[
+				"dup",
+				"File: Duplicate"
+			],
+			[
+				"mopv",
+				"Package Control: Remove Package"
+			],
+			[
+				"ay",
+				"ayu: Activate theme"
+			],
+			[
+				"sort",
+				"Sort Lines"
+			],
+			[
+				"camel",
+				"Convert Case: camelCase"
+			],
+			[
+				"php",
+				"Set Syntax: PHP"
+			],
+			[
+				"caml",
+				"Set Syntax: camlp4"
+			],
+			[
+				"html",
+				"Set Syntax: HTML"
+			],
+			[
+				"puse",
+				"PHPCompanion:Find Use"
+			],
+			[
+				"iuse",
+				"PHPCompanion:Find Use"
+			],
+			[
+				"save",
+				"Project: Save As"
+			],
+			[
+				"convertcas",
+				"Convert Case: separate\\with\\backslash"
+			],
+			[
+				"scream",
+				"Convert Case: SCREAMING_SNAKE_CASE"
+			],
+			[
+				"insta",
+				"Package Control: Install Package"
+			],
+			[
+				"uper",
+				"Convert Case: Upper Case"
+			],
+			[
+				"dle",
+				"ANF: Delete File"
+			],
+			[
+				"dpl",
+				"Plugin Development: Profile Events"
+			],
+			[
+				"udpl",
+				"Plugin Development: Profile Events"
+			],
+			[
+				"constr",
+				"PHPCompanion:Insert Constructor Property"
+			],
+			[
+				"add",
+				"Git: Add All"
+			],
+			[
+				"ue",
+				"Snippet: #!/usr/bin/env"
+			],
+			[
+				"a",
+				"Git: Add All"
+			],
+			[
+				"pu",
+				"Git: Push"
+			],
+			[
+				"dui",
+				"File: Duplicate"
+			],
+			[
+				"find",
+				"PHPCompanion:Find Use"
+			],
+			[
+				"findu",
+				"PHPCompanion:Find Use"
+			],
+			[
+				"phpcs",
+				"PHP CS Fixer: format this file"
+			],
+			[
+				"path",
+				"File: Copy Path"
+			],
+			[
+				"inst",
+				"Package Control: Install Package"
+			],
+			[
+				"sniff",
+				"PHP Code Sniffer: Sniff this file"
+			],
+			[
+				"php coding",
+				"PHP Coding Standards Fixer: Fix this file (PHP-CS-Fixer)"
+			],
+			[
+				"phpcodi",
+				"PHP Coding Standards Fixer: Fix this file (PHP-CS-Fixer)"
+			],
+			[
+				"remove",
+				"Package Control: Remove Package"
+			],
+			[
+				"disa",
+				"Package Control: Disable Package"
+			],
+			[
+				"enabl",
+				"Package Control: Enable Package"
+			],
+			[
+				"finduse",
+				"PHPCompanion:Find Use"
+			],
+			[
+				"phpcompo",
+				"PHPCompanion:Find Use"
+			],
+			[
+				"impo",
+				"PHPCompanion:Import Namespace"
+			],
+			[
+				"imp",
+				"PHPCompanion:Import Namespace"
+			],
+			[
+				"definition",
+				"PHPCompanion:Goto Definition Scope"
+			],
+			[
+				"go to",
+				"PHPCompanion:Goto Definition Scope"
+			],
+			[
+				"phpcsfis",
+				"PHP Coding Standards Fixer: Fix this file (PHP-CS-Fixer)"
+			],
+			[
+				"beaut",
+				"PHP Coding Standards Fixer: Fix this file (PHP Code Beautifier)"
+			],
+			[
+				"upgra",
+				"Package Control: Upgrade Package"
+			],
+			[
+				"im",
+				"PHPCompanion:Import Namespace"
+			],
+			[
+				"import",
+				"PHPCompanion:Import Namespace"
+			],
+			[
+				"puhs",
+				"Git: Push"
+			],
+			[
+				"impor",
+				"PHPCompanion:Import Namespace"
+			],
+			[
+				"enab",
+				"Package Control: Enable Package"
+			],
+			[
+				"ren",
+				"Rename File"
+			],
+			[
+				"delel",
+				"ANF: Delete File"
+			],
+			[
+				"instal",
+				"Package Control: Install Package"
+			],
+			[
+				"format",
+				"PHP CS Fixer: format this file"
+			],
+			[
+				"ena",
+				"Package Control: Enable Package"
+			],
+			[
+				"pick",
+				"Color Picker: Insert Color"
+			],
+			[
+				"lowe",
+				"Convert Case: Lower Case"
+			],
+			[
+				"proj",
+				"Project: Save As"
+			],
+			[
+				"ax",
+				"Set Syntax: XML"
+			],
+			[
+				"prettif",
+				"HTMLPrettify: Set Plugin Options"
+			],
+			[
+				"lint",
+				"SublimeLinter: Lint This View"
+			],
+			[
+				"dsia",
+				"Package Control: Disable Package"
+			],
+			[
+				"prett",
+				"HTMLPrettify"
+			],
+			[
+				"upgr",
+				"Package Control: Upgrade Package"
+			],
+			[
+				"pushg",
+				"Git: Push Tags"
+			],
+			[
+				"pusg",
+				"Git: Push Tags"
+			],
+			[
+				"licen",
+				"Snippet: link - license"
+			],
+			[
+				"diff",
+				"Git: Diff All Files"
+			],
+			[
+				"pretty",
+				"HTMLPrettify: Set Prettify Preferences"
+			],
+			[
+				"mo",
+				"File: Move"
+			],
+			[
+				"p",
+				"Permute Lines: Shuffle"
+			],
+			[
+				"remo",
+				"Package Control: Remove Package"
+			],
+			[
+				"packages",
+				"Package Control: List Packages"
+			],
+			[
+				"conv",
+				"Color Convert: convert"
+			],
+			[
+				"conver",
+				"Color Convert: convert"
+			],
+			[
+				"isnta",
+				"Package Control: Install Package"
+			],
+			[
+				"istall",
+				"Package Control: Install Package"
+			],
+			[
+				"ins",
+				"Package Control: Install Package"
+			],
+			[
+				"sass",
+				"SassBeautify"
+			],
+			[
+				"list",
+				"Package Control: List Packages"
+			],
+			[
+				"upl",
+				"File: Duplicate"
+			],
+			[
+				"json",
+				"Set Syntax: JSON"
+			],
+			[
+				"pish",
+				"Permute Lines: Shuffle"
+			],
+			[
+				"upp",
+				"Convert Case: Upper Case"
+			],
+			[
+				"dul",
+				"File: Duplicate"
+			],
+			[
+				"c om",
+				"Git: Commit"
+			],
+			[
+				"diupl",
+				"SublimeLinter: Reload SublimeLinter and its Plugins"
+			],
+			[
+				"pisj",
+				"Snippet: Google AJAX Libraries: SWFObject"
+			],
+			[
+				"cpm",
+				"Package Control: Remove Package"
+			],
+			[
+				"move",
+				"File: Move"
+			],
+			[
+				"blade",
+				"Set Syntax: Laravel Blade"
+			],
+			[
+				"lintreload",
+				"SublimeLinter: Reload SublimeLinter and its Plugins"
+			],
+			[
+				"subllinterset",
+				"Preferences: SublimeLinter Settings"
+			],
+			[
+				"linter",
+				"SublimeLinter: Reload SublimeLinter and its Plugins"
+			],
+			[
+				"DISA",
+				"Package Control: Disable Package"
+			],
+			[
+				"de",
+				"ANF: Delete Current File"
+			],
+			[
+				"delecu",
+				"ANF: Delete Current File"
+			]
+		],
+		"width": 0.0
+	},
+	"console":
+	{
+		"height": 402.0,
+		"history":
+		[
+			"a"
+		]
+	},
+	"distraction_free":
+	{
+		"menu_visible": true,
+		"show_minimap": false,
+		"show_open_files": false,
+		"show_tabs": false,
+		"side_bar_visible": false,
+		"status_bar_visible": false
+	},
+	"expanded_folders":
+	[
+		"/Users/gchaumont/Developer/packages/elastico",
+		"/Users/gchaumont/Developer/packages/elastico/src",
+		"/Users/gchaumont/Developer/packages/elastico/src/Controllers"
+	],
+	"file_history":
+	[
+		"/Users/gchaumont/Developer/packages/elastico/src/Models/Features/Unserialisable.php",
+		"/Users/gchaumont/Developer/packages/elastico/src/Models/Model.php",
+		"/Users/gchaumont/Developer/packages/elastico/src/Models/DataAccessObject.php",
+		"/Users/gchaumont/Developer/packages/elastico/src/Connection.php",
+		"/Users/gchaumont/Developer/packages/elastico/src/Query/Builder/HandlesPagination.php",
+		"/Users/gchaumont/Developer/packages/elastico/vendor/elasticsearch/elasticsearch/src/Traits/ClientEndpointsTrait.php",
+		"/Users/gchaumont/Developer/packages/elastico/src/ElasticServiceProvider.php",
+		"/Users/gchaumont/Developer/packages/elastico/vendor/elasticsearch/elasticsearch/src/Response/Elasticsearch.php",
+		"/Users/gchaumont/Developer/packages/elastico/src/ConnectionResolver.php",
+		"/Users/gchaumont/Developer/packages/elastico/src/Controllers/ElasticoController.php",
+		"/Users/gchaumont/Developer/packages/elastico/src/Mapping/FieldType.php",
+		"/Users/gchaumont/Developer/packages/elastico/src/Console/InstallElasticAgent.php",
+		"/Users/gchaumont/Developer/packages/elastico/src/Console/Setup/elasticsearch.yml",
+		"/Users/gchaumont/Developer/packages/elastico/src/Console/Setup/InstallKibana.php",
+		"/Users/gchaumont/Developer/packages/elastico/config/elastico.php",
+		"/Users/gchaumont/Developer/packages/elastico/src/Query/Query.php",
+		"/Users/gchaumont/Developer/packages/elastico/src/Query/Builder.php",
+		"/Users/gchaumont/Developer/packages/elastico/src/Models/Features/Serialisable.php",
+		"/Users/gchaumont/Developer/packages/elastico/src/Models/Features/Relatable.php",
+		"/Users/gchaumont/Developer/packages/elastico/src/Query/Response/Aggregation/TopHitsResponse.php",
+		"/Users/gchaumont/Developer/packages/elastico/src/Query/Response/Response.php",
+		"/Users/gchaumont/Developer/packages/elastico/src/Aggregations/Metric/TopHits.php",
+		"/Users/gchaumont/Developer/packages/elastico/src/Query/Response/Aggregation/BucketResponse.php",
+		"/Users/gchaumont/Developer/packages/elastico/src/Query/Builder/HasWhere.php",
+		"/Users/gchaumont/Developer/packages/elastico/src/Models/Builder/Builder.php",
+		"/Users/gchaumont/Developer/packages/elastico/src/Console/Indices/UpdateIndex.php",
+		"/Users/gchaumont/Developer/packages/elastico/src/Models/Features/Mappable.php",
+		"/Users/gchaumont/Developer/packages/elastico/src/Helpers/When.php",
+		"/Users/gchaumont/Developer/packages/elastico/src/Console/Setup/InstallElasticsearch.php",
+		"/Users/gchaumont/Developer/packages/elastico/src/Actions/Setup/TokenGenerator.php",
+		"/Users/gchaumont/Developer/packages/elastico/src/Console/Setup/RemoveElasticsearch.php",
+		"/Users/gchaumont/Developer/packages/elastico/src/Console/Setup/GenerateEnrollmentToken.php",
+		"/Users/gchaumont/Developer/packages/elastico/src/Query/Builder/HandlesScopedQueries.php",
+		"/Users/gchaumont/Developer/packages/elastico/vendor/symfony/process/Process.php",
+		"/Users/gchaumont/Developer/packages/elastico/src/ConnectionResolverInterface.php",
+		"/Users/gchaumont/Developer/packages/elastico/composer.json",
+		"/Users/gchaumont/Developer/packages/elastico/vendor/elasticsearch/elasticsearch/src/ClientBuilder.php",
+		"/Users/gchaumont/Developer/packages/elastico/vendor/elasticsearch/elasticsearch/src/Traits/NamespaceTrait.php",
+		"/Users/gchaumont/Developer/packages/elastico/vendor/elasticsearch/elasticsearch/src/Endpoints/Cluster.php",
+		"/Users/gchaumont/Developer/packages/elastico/vendor/spatie/ssh/src/Ssh.php",
+		"/Users/gchaumont/Developer/packages/elastico/src/Console/Indices/CreateIndex.php",
+		"/Users/gchaumont/Developer/packages/elastico/src/Models/Features/Configurable.php",
+		"/Users/gchaumont/Developer/packages/elastico/src/Console/Indices/DeleteIndex.php",
+		"/Users/gchaumont/Developer/packages/elastico/vendor/illuminate/contracts/Encryption/Encrypter.php",
+		"/Users/gchaumont/Developer/packages/elastico/src/Mapping/Field.php",
+		"/Users/gchaumont/Developer/packages/elastico/vendor/illuminate/contracts/Routing/UrlRoutable.php",
+		"/Users/gchaumont/Developer/packages/elastico/src/Aggregations/Aggregation.php",
+		"/Users/gchaumont/Developer/packages/elastico/src/Query/Response/Aggregation/AggregationResponse.php",
+		"/Users/gchaumont/Developer/packages/elastico/src/Aggregations/Bucket/Nested.php",
+		"/Users/gchaumont/Developer/packages/elastico/src/Query/Builder/HasAggregations.php",
+		"/Users/gchaumont/Developer/packages/pano/src/Application.php",
+		"/Users/gchaumont/Developer/packages/pano/src/Fields/Groups/Header.php",
+		"/Users/gchaumont/Developer/packages/pano/vendor/illuminate/support/helpers.php",
+		"/Users/gchaumont/Developer/packages/pano/src/Concerns/RegistersApplications.php",
+		"/Users/gchaumont/Developer/packages/elastico/vendor/elasticsearch/elasticsearch/src/Client.php",
+		"/Users/gchaumont/Developer/packages/elastico/src/Models/Features/BatchPersistable.php",
+		"/Users/gchaumont/Developer/packages/elastico/src/Console/CheckKibanaAlerts.php",
+		"/Users/gchaumont/Developer/packages/elastico/src/Console/CreateElasticsearchNode.php",
+		"/Users/gchaumont/Developer/packages/elastico/src/Console/CreateIndexTemplate.php",
+		"/Users/gchaumont/Developer/packages/elastico/src/Console/IndexPainless.php",
+		"/Users/gchaumont/Developer/packages/elastico/src/Console/InstallElasticsearch.php",
+		"/Users/gchaumont/Developer/packages/elastico/src/Console/InstallEnterpriseSearch.php",
+		"/Users/gchaumont/Developer/packages/elastico/src/Console/InstallFilebeat.php",
+		"/Users/gchaumont/Developer/packages/elastico/src/Console/InstallFleet.php",
+		"/Users/gchaumont/Developer/packages/elastico/src/Console/InstallMetricbeat.php",
+		"/Users/gchaumont/Developer/packages/elastico/src/Console/InstallPacketbeat.php",
+		"/Users/gchaumont/Developer/packages/elastico/src/Console/SwitchAlias.php",
+		"/Users/gchaumont/Developer/packages/elastico/src/Console/UpdateIndex.php",
+		"/Users/gchaumont/Developer/packages/elastico/src/Console/UpgradeElasticsearch.php",
+		"/Users/gchaumont/Developer/batzo/config/app.php",
+		"/Users/gchaumont/Developer/fincare/composer.json",
+		"/Users/gchaumont/Developer/fincare/routes/web.php",
+		"/Users/gchaumont/Developer/batzo/resources/Pano/js/app.js",
+		"/Users/gchaumont/Developer/batzo/resources/Pano/js/components/menu/MenuGroup.vue",
+		"/Users/gchaumont/Developer/batzo/resources/Pano/js/components/menu/MenuItem.vue",
+		"/Users/gchaumont/Developer/batzo/app/Applications/Shopping/AffiliateLink.php",
+		"/Users/gchaumont/Developer/batzo/app/Support/Pano/Controllers/ApplicationController.php",
+		"/Users/gchaumont/Developer/batzo/app/Support/Pano/Pano.php",
+		"/Users/gchaumont/Developer/batzo/app/Support/Pano/Menu/MenuItem.php",
+		"/Users/gchaumont/Developer/batzo/app/Support/Pano/Controllers/PanoController.php",
+		"/Users/gchaumont/Developer/batzo/app/Support/Pano/Resource/Resource.php",
+		"/Users/gchaumont/Developer/batzo/app/Support/Supervision/Dashboard/Fields/AdminField.php",
+		"/Users/gchaumont/Developer/batzo/app/Applications/Admin/Admin.php",
+		"/Users/gchaumont/Developer/batzo/app/Applications/Shopping/AffiliateLink/AdvertiserResource.php",
+		"/Users/gchaumont/Developer/batzo/app/Support/Pano/Resource/AutoResource.php",
+		"/Users/gchaumont/Developer/batzo/app/Http/Resources/Resource.php",
+		"/Users/gchaumont/Developer/batzo/vendor/laravel/framework/src/Illuminate/Container/Container.php",
+		"/Users/gchaumont/Developer/batzo/app/Support/Data/TransferObjects/DataTransferObject.php",
+		"/Users/gchaumont/Developer/batzo/config/database.php",
+		"/Users/gchaumont/Developer/batzo/app/Elastic/Serialisers/ProductSerialiser.php",
+		"/Users/gchaumont/Developer/batzo/app/Analysis/Matcher/CategoryMatcher.php",
+		"/Users/gchaumont/Developer/batzo/app/Http/Controllers/Admin/Resources/CategoryController.php",
+		"/Users/gchaumont/Developer/batzo/app/Analysis/Aggregators/ProductAggregator.php",
+		"/Users/gchaumont/Developer/batzo/app/Analysis/Analysers/BrandAnalyser.php",
+		"/Users/guy/Code/batzo/app/Analysis/Matcher/BrandMatcher.php",
+		"/Users/guy/Code/batzo/app/Analysis/Matcher/CategoryMatcher.php",
+		"/Users/guy/Code/batzo/app/Elastic/Serialisers/ProductSerialiser.php",
+		"/Users/guy/Code/batzo/app/Models/Category.php",
+		"/Users/guy/Code/batzo/app/Http/Controllers/Api/CategoryController.php",
+		"/Users/guy/Code/batzo/app/Objects/Category.php",
+		"/Users/guy/Code/batzo/app/Objects/ObjectCollection.php",
+		"/Users/guy/Code/batzo/app/Elastic/Serialisers/AdvertisementSerialiser.php",
+		"/Users/guy/Code/batzo/app/Elastic/Serialisers/BrandSerialiser.php",
+		"/Users/guy/Code/batzo/app/Console/Commands/Analysis/AnalyseBrands.php",
+		"/Users/guy/Code/batzo/app/Elastic/Unserialisers/BrandUnserialiser.php",
+		"/Users/guy/Code/batzo/app/Jobs/AnalyseBrand.php",
+		"/Users/guy/Code/batzo/app/Providers/RouteServiceProvider.php",
+		"/Users/guy/Code/batzo/app/Analysis/Aggregators/ProductAggregator.php",
+		"/Users/guy/Code/batzo/app/Elastic/Builders/ElasticProductQuery.php",
+		"/Users/guy/Code/batzo/app/Elastic/Builders/ElasticBrandQueryBuilder.php",
+		"/Users/guy/Code/batzo/app/Models/Product/Brand.php",
+		"/Users/guy/Code/batzo/app/Elastic/Indices/BrandsIndex.php",
+		"/Users/guy/Code/batzo/resources/views/admin/resources/brands/show.blade.php",
+		"/Users/guy/Code/batzo/app/Analysis/Analysers/BrandAnalyser.php",
+		"/Users/guy/Code/batzo/app/Console/Kernel.php",
+		"/Users/guy/Code/batzo/app/Http/Controllers/Admin/DispatchController.php",
+		"/Users/guy/Code/batzo/app/Elastic/IndexConfiguration.php",
+		"/Users/guy/Code/batzo/app/Console/Commands/Elastic/CreateIndex.php",
+		"/Users/guy/Code/batzo/app/Http/Controllers/Admin/Resources/BrandController.php",
+		"/Users/guy/Code/batzo/app/Elastic/ElasticQueryBuilder.php",
+		"/Users/guy/Code/batzo/app/Providers/AppServiceProvider.php",
+		"/Users/guy/Code/batzo/app/Http/Controllers/Resources/BrandController.php",
+		"/Users/guy/Code/batzo/app/Elastic/Serialiser.php",
+		"/Users/guy/Code/batzo/app/Elastic/CustomAggregations/CategoriesAggregation.php",
+		"/Users/guy/Code/batzo/app/Elastic/Aggregations/TopHits.php",
+		"/Users/guy/Code/batzo/app/Analysis/Matcher/ManufacturerMatcher.php",
+		"/Users/guy/Code/batzo/app/Models/Traits/Matchable.php",
+		"/Users/guy/Code/batzo/app/Analysis/Aggregators/TextAggregator.php"
+	],
+	"find":
+	{
+		"height": 31.0
+	},
+	"find_in_files":
+	{
+		"height": 134.0,
+		"where_history":
+		[
+			"/Users/gchaumont/Developer/packages/elastico/src",
+			""
+		]
+	},
+	"find_state":
+	{
+		"case_sensitive": false,
+		"find_history":
+		[
+			"pit",
+			"id",
+			"endpoi",
+			"body",
+			"openPointInTime",
+			"index",
+			"hits",
+			");\n",
+			"_id",
+			"response",
+			"username",
+			"CC",
+			"connection",
+			"CABundle",
+			"first",
+			"currentRouteName",
+			"any",
+			"hosts",
+			"elasticsearch",
+			"config",
+			"getRouteName",
+			"connection",
+			"JsonSerializable",
+			"new class",
+			"name",
+			"condition",
+			"getEnv",
+			"value",
+			"key",
+			"domain",
+			"connections",
+			"$responseBody = (string) $response->getBody();",
+			"$identifier",
+			"configureNode",
+			"elasticsearch",
+			"joinCluster",
+			"createSSH",
+			"null",
+			"node",
+			"$this->",
+			"string",
+			"this->",
+			"port",
+			"user",
+			"ip",
+			"argument",
+			"ip",
+			"GenerateEToknrollmentToken",
+			"Console",
+			"elastic_password",
+			"nul",
+			"configureNode",
+			"-r -f",
+			"stop",
+			"lib",
+			"var",
+			"log",
+			"etc",
+			"dump",
+			"tmpfile",
+			"$tmpfile",
+			"tmpfile",
+			"temp_file",
+			"tmpfile",
+			"$fileName",
+			"stream_get_meta_data($tmpfile)['uri']",
+			"Original",
+			"enrollment-token",
+			"dump",
+			"        });",
+			");\n",
+			"InstallElasticsearch",
+			"host",
+			"null",
+			"elastic_password",
+			"str_replace",
+			"superuser_password",
+			"Elastic",
+			"ip",
+			"node",
+			"22",
+			"port",
+			"node",
+			"ip",
+			"string",
+			"options",
+			"eligible",
+			"master",
+			"user",
+			"masters",
+			"initial",
+			"host",
+			"user",
+			"ip",
+			"joinCluster",
+			"hosts",
+			"seed",
+			"seed_hosts",
+			"SEED_HOSTS",
+			"CLUSTER_NAME",
+			"host",
+			"NODE_LOCAL_IP",
+			"other",
+			"existing",
+			"user",
+			"root",
+			"user",
+			"joinExistingCluster",
+			"configureElasticsearch",
+			"pushConfiguration",
+			"info",
+			",",
+			"null",
+			"to",
+			"default",
+			"from",
+			"privateKey",
+			"privatekey",
+			"privateKey",
+			"Elastico\\Console\\InstallElasticsearch",
+			"seedhosts",
+			"host",
+			"cluster",
+			"22",
+			"port",
+			"Scheduling",
+			"createSshClient",
+			"sshClient"
+		],
+		"highlight": true,
+		"in_selection": false,
+		"preserve_case": false,
+		"regex": false,
+		"replace_history":
+		[
+		],
+		"reverse": false,
+		"scrollbar_highlights": true,
+		"show_context": true,
+		"use_buffer2": true,
+		"use_gitignore": false,
+		"whole_word": false,
+		"wrap": true
+	},
+	"groups":
+	[
+		{
+			"sheets":
+			[
+				{
+					"buffer": 0,
+					"file": "config/elastico.php",
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 815,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								366,
+								374
+							]
+						],
+						"settings":
+						{
+							"rainbow_checked": true,
+							"syntax": "Packages/PHP/PHP.sublime-syntax",
+							"tab_size": 4,
+							"translate_tabs_to_spaces": true
+						},
+						"translation.x": 0.0,
+						"translation.y": 0.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 2,
+					"stack_multiselect": false,
+					"type": "text"
+				},
+				{
+					"buffer": 1,
+					"file": "src/Controllers/ElasticoController.php",
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 2459,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								1914,
+								1914
+							]
+						],
+						"settings":
+						{
+							"rainbow_checked": true,
+							"syntax": "Packages/PHP/PHP.sublime-syntax",
+							"tab_size": 4,
+							"translate_tabs_to_spaces": true
+						},
+						"translation.x": 0.0,
+						"translation.y": 0.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 1,
+					"stack_multiselect": false,
+					"type": "text"
+				},
+				{
+					"buffer": 2,
+					"file": "src/Query/Response/Response.php",
+					"selected": true,
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 3197,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								1437,
+								1437
+							]
+						],
+						"settings":
+						{
+							"rainbow_checked": true,
+							"syntax": "Packages/PHP/PHP.sublime-syntax",
+							"tab_size": 4,
+							"translate_tabs_to_spaces": true
+						},
+						"translation.x": 0.0,
+						"translation.y": 788.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 0,
+					"stack_multiselect": false,
+					"type": "text"
+				}
+			]
+		}
+	],
+	"incremental_find":
+	{
+		"height": 31.0
+	},
+	"input":
+	{
+		"height": 55.0
+	},
+	"layout":
+	{
+		"cells":
+		[
+			[
+				0,
+				0,
+				1,
+				1
+			]
+		],
+		"cols":
+		[
+			0.0,
+			1.0
+		],
+		"rows":
+		[
+			0.0,
+			1.0
+		]
+	},
+	"menu_visible": true,
+	"output.SublimeLinter":
+	{
+		"height": 152.0
+	},
+	"output.SublimeLinter Messages":
+	{
+		"height": 192.0
+	},
+	"output.find_results":
+	{
+		"height": 0.0
+	},
+	"output.git":
+	{
+		"height": 192.0
+	},
+	"output.mdpopups":
+	{
+		"height": 0.0
+	},
+	"output.unsaved_changes":
+	{
+		"height": 192.0
+	},
+	"pinned_build_system": "",
+	"project": "elastico.sublime-project",
+	"replace":
+	{
+		"height": 58.0
+	},
+	"save_all_on_build": true,
+	"select_file":
+	{
+		"height": 0.0,
+		"last_filter": "",
+		"selected_items":
+		[
+			[
+				"response",
+				"src/Query/Response/Response.php"
+			],
+			[
+				"model",
+				"src/Models/Model.php"
+			],
+			[
+				"unseri",
+				"src/Models/Features/Unserialisable.php"
+			],
+			[
+				"elasser",
+				"src/ElasticServiceProvider.php"
+			],
+			[
+				"elascontro",
+				"src/Controllers/ElasticoController.php"
+			],
+			[
+				"controller",
+				"src/Controllers/ElasticoController.php"
+			],
+			[
+				"elas",
+				"config/elastico.php"
+			],
+			[
+				"serivprovi",
+				"src/ElasticServiceProvider.php"
+			],
+			[
+				"connection",
+				"src/ConnectionResolver.php"
+			],
+			[
+				"connecreso",
+				"src/ConnectionResolver.php"
+			],
+			[
+				"elasservi",
+				"src/ElasticServiceProvider.php"
+			],
+			[
+				"connectionre",
+				"src/ConnectionResolver.php"
+			],
+			[
+				"servicepro",
+				"src/ElasticServiceProvider.php"
+			],
+			[
+				"compos",
+				"composer.json"
+			],
+			[
+				"elasti",
+				"config/elastico.php"
+			],
+			[
+				"connecres",
+				"src/ConnectionResolver.php"
+			],
+			[
+				"elastico",
+				"config/elastico.php"
+			],
+			[
+				"elastiser",
+				"src/ElasticServiceProvider.php"
+			],
+			[
+				"connectionresol",
+				"src/ConnectionResolver.php"
+			],
+			[
+				"querbuil",
+				"src/Query/Builder.php"
+			],
+			[
+				"connectionres",
+				"src/ConnectionResolver.php"
+			],
+			[
+				"composer",
+				"composer.json"
+			],
+			[
+				"elasticser",
+				"src/ElasticServiceProvider.php"
+			],
+			[
+				"instalkiba",
+				"src/Console/Setup/InstallKibana.php"
+			],
+			[
+				"installelas",
+				"src/Console/Setup/InstallElasticsearch.php"
+			],
+			[
+				"instalelas",
+				"src/Console/Setup/InstallElasticsearch.php"
+			],
+			[
+				"installkiba",
+				"src/Console/Setup/InstallKibana.php"
+			],
+			[
+				"elasserviceprovider",
+				"src/ElasticServiceProvider.php"
+			],
+			[
+				"installkib",
+				"src/Console/Setup/InstallKibana.php"
+			],
+			[
+				"removeelas",
+				"src/Console/Setup/RemoveElasticsearch.php"
+			],
+			[
+				"generalen",
+				"src/Console/Setup/GenerateEnrollmentToken.php"
+			],
+			[
+				"insta",
+				"src/Console/Setup/InstallElasticsearch.php"
+			],
+			[
+				"serviceprovi",
+				"src/ElasticServiceProvider.php"
+			],
+			[
+				"installelasti",
+				"src/Console/Setup/InstallElasticsearch.php"
+			],
+			[
+				"quer",
+				"src/Query/Query.php"
+			],
+			[
+				"whenh",
+				"src/Helpers/When.php"
+			],
+			[
+				"helperwhen",
+				"src/Helpers/When.php"
+			],
+			[
+				"createinde",
+				"src/Console/Indices/CreateIndex.php"
+			],
+			[
+				"deleteindex",
+				"src/Console/Indices/DeleteIndex.php"
+			],
+			[
+				"installel",
+				"src/Console/InstallElasticsearch.php"
+			],
+			[
+				"",
+				"src/Models/Features/Mappable.php"
+			],
+			[
+				"daataccob",
+				"src/Models/DataAccessObject.php"
+			],
+			[
+				"field",
+				"src/Mapping/Field.php"
+			],
+			[
+				"dataa",
+				"src/Models/DataAccessObject.php"
+			],
+			[
+				"mappa",
+				"src/Models/Features/Mappable.php"
+			],
+			[
+				"haswhere",
+				"src/Query/Builder/HasWhere.php"
+			],
+			[
+				"mappabl",
+				"src/Models/Features/Mappable.php"
+			],
+			[
+				"relatabl",
+				"src/Models/Features/Relatable.php"
+			],
+			[
+				"agrega",
+				"src/Aggregations/Aggregation.php"
+			],
+			[
+				"aggrega",
+				"src/Aggregations/Aggregation.php"
+			],
+			[
+				"aggrespon",
+				"src/Query/Response/Aggregation/AggregationResponse.php"
+			],
+			[
+				"tophire",
+				"src/Query/Response/Aggregation/TopHitsResponse.php"
+			],
+			[
+				"tophits",
+				"src/Aggregations/Metric/TopHits.php"
+			],
+			[
+				"nested",
+				"src/Aggregations/Bucket/Nested.php"
+			],
+			[
+				"bucketres",
+				"src/Query/Response/Aggregation/BucketResponse.php"
+			],
+			[
+				"respons",
+				"src/Query/Response/Response.php"
+			],
+			[
+				"aggregation",
+				"src/Aggregations/Aggregation.php"
+			],
+			[
+				"unser",
+				"src/Models/Features/Unserialisable.php"
+			],
+			[
+				"fieldphp",
+				"src/Mapping/Field.php"
+			],
+			[
+				"aggresponse",
+				"src/Query/Response/Aggregation/AggregationResponse.php"
+			],
+			[
+				"builder",
+				"src/Query/Builder.php"
+			],
+			[
+				"where",
+				"src/Query/Builder/HasWhere.php"
+			],
+			[
+				"when",
+				"src/Helpers/When.php"
+			],
+			[
+				"updateinde",
+				"src/Console/Indices/UpdateIndex.php"
+			],
+			[
+				"unseria",
+				"src/Models/Features/Unserialisable.php"
+			],
+			[
+				"applica",
+				"src/Application/Application.php"
+			],
+			[
+				"listapps",
+				"src/Commands/ListApps.php"
+			],
+			[
+				"linkable",
+				"src/Concerns/Linkable.php"
+			],
+			[
+				"resource",
+				"src/Resource/Resource.php"
+			],
+			[
+				"mnuitem",
+				"src/Menu/MenuItem.php"
+			],
+			[
+				"application",
+				"src/Application.php"
+			],
+			[
+				"unserial",
+				"src/Models/Features/Unserialisable.php"
+			],
+			[
+				"serialisable",
+				"src/Models/Features/Serialisable.php"
+			],
+			[
+				"deleteinde",
+				"src/Console/Indices/DeleteIndex.php"
+			],
+			[
+				"client",
+				"vendor/elasticsearch/elasticsearch/src/Client.php"
+			],
+			[
+				"creatinde",
+				"src/Console/Indices/CreateIndex.php"
+			],
+			[
+				"createindex",
+				"src/Console/Indices/CreateIndex.php"
+			],
+			[
+				"elaserpro",
+				"src/ElasticServiceProvider.php"
+			],
+			[
+				"elasticoser",
+				"src/ElasticServiceProvider.php"
+			],
+			[
+				"serialisa",
+				"src/Models/Features/Serialisable.php"
+			],
+			[
+				"connectionreso",
+				"src/ConnectionResolver.php"
+			],
+			[
+				"panoserp",
+				"src/PanoServiceProvider.php"
+			],
+			[
+				"config/app",
+				"config/app.php"
+			],
+			[
+				"conf/app",
+				"config/app.php"
+			],
+			[
+				"appser",
+				"app/Providers/AppServiceProvider.php"
+			],
+			[
+				"bill",
+				"app/Models/Billing/Bill.php"
+			],
+			[
+				"routeweb",
+				"routes/web.php"
+			],
+			[
+				"menuitem",
+				"app/Support/Pano/Menu/MenuItem.php"
+			],
+			[
+				"pano",
+				"app/Support/Pano/Pano.php"
+			],
+			[
+				"panomiddl",
+				"app/Support/Pano/Middleware/PanoMiddleware.php"
+			],
+			[
+				"panolistvue",
+				"resources/Pano/js/components/resources/ListResource.vue"
+			],
+			[
+				"resourcecont",
+				"app/Support/Pano/Controllers/ResourceController.php"
+			],
+			[
+				"resourcontr",
+				"app/Support/Pano/Controllers/ResourceController.php"
+			],
+			[
+				"menugroupvue",
+				"resources/Pano/js/components/menu/MenuGroup.vue"
+			],
+			[
+				"panoapjs",
+				"resources/Pano/js/app.js"
+			],
+			[
+				"panoappjs",
+				"resources/Pano/js/app.js"
+			],
+			[
+				"panomenuitemvue",
+				"resources/Pano/js/components/menu/MenuItem.vue"
+			],
+			[
+				"panomenuvue",
+				"resources/Pano/js/components/menu/Menu.vue"
+			],
+			[
+				"menuitemvue",
+				"resources/Pano/js/components/menu/MenuItem.vue"
+			],
+			[
+				"affiliatelin",
+				"app/Applications/Shopping/AffiliateLink.php"
+			],
+			[
+				"adminadmin",
+				"app/Applications/Admin/Admin.php"
+			],
+			[
+				"app",
+				"app/Support/Pano/Application.php"
+			],
+			[
+				"panoser",
+				"app/Support/Pano/PanoServiceProvider.php"
+			],
+			[
+				"appl",
+				"app/Support/Pano/Application.php"
+			],
+			[
+				"testcomm",
+				"app/Console/Commands/Dev/TestCommand.php"
+			],
+			[
+				"testcomma",
+				"app/Console/Commands/Dev/TestCommand.php"
+			],
+			[
+				"panobl",
+				"app/Support/Pano/Resources/Views/pano.blade.php"
+			],
+			[
+				"panom",
+				"app/Support/Pano/Middleware/PanoMiddleware.php"
+			],
+			[
+				"menugroupphp",
+				"app/Support/Pano/Menu/MenuGroup.php"
+			],
+			[
+				"panomid",
+				"app/Support/Pano/Middleware/PanoMiddleware.php"
+			],
+			[
+				"panomidd",
+				"app/Support/Pano/Middleware/PanoMiddleware.php"
+			],
+			[
+				"panoresour",
+				"app/Support/Pano/Resource/Resource.php"
+			],
+			[
+				"appli",
+				"app/Support/Pano/Application.php"
+			],
+			[
+				"panoblade",
+				"app/Support/Pano/Resources/Views/pano.blade.php"
+			],
+			[
+				"panocontr",
+				"app/Support/Pano/Controllers/PanoController.php"
+			],
+			[
+				"productphp",
+				"app/Models/Shopping/Product.php"
+			],
+			[
+				"autoresou",
+				"app/Support/Pano/Resource/AutoResource.php"
+			],
+			[
+				"affili",
+				"app/Applications/Shopping/AffiliateLink.php"
+			],
+			[
+				"panojs",
+				"resources/Pano/js/Pano.js"
+			],
+			[
+				"afflink",
+				"app/Applications/Shopping/AffiliateLink.php"
+			],
+			[
+				"resourcecontr",
+				"app/Support/Pano/Controllers/ResourceController.php"
+			],
+			[
+				"panoresource",
+				"app/Support/Pano/Resource/Resource.php"
+			],
+			[
+				"appadmin",
+				"app/Applications/Admin/Admin.php"
+			],
+			[
+				"admin",
+				"app/Support/Supervision/Dashboard/Fields/AdminField.php"
+			],
+			[
+				"advertisement",
+				"app/Models/Affiliates/Advertisement.php"
+			],
+			[
+				"appaffiliad",
+				"app/Models/Affiliates/Advertisement.php"
+			],
+			[
+				"ilumicontainer",
+				"vendor/laravel/framework/src/Illuminate/Container/Container.php"
+			],
+			[
+				"supervision",
+				"app/Support/Supervision/Supervision.php"
+			]
+		],
+		"width": 0.0
+	},
+	"select_project":
+	{
+		"height": 500.0,
+		"last_filter": "",
+		"selected_items":
+		[
+			[
+				"",
+				"~/Developer/fincare/app/Console/Commands/composer.sublime-workspace"
+			]
+		],
+		"width": 380.0
+	},
+	"select_symbol":
+	{
+		"height": 293.0,
+		"last_filter": "scroll",
+		"selected_items":
+		[
+			[
+				"scroll",
+				"scroll"
+			],
+			[
+				"emula",
+				"emulateElastic"
+			],
+			[
+				"openpoi",
+				"openPointInTime"
+			],
+			[
+				"handlespagina",
+				"HandlesPagination"
+			],
+			[
+				"changeto",
+				"changeToRoot"
+			],
+			[
+				"writableinde",
+				"writableIndexName"
+			],
+			[
+				"getkey",
+				"getKey"
+			],
+			[
+				"serialisefield",
+				"serialiseField"
+			],
+			[
+				"getroutekey",
+				"getRouteKey"
+			],
+			[
+				"torespon",
+				"toResponse"
+			],
+			[
+				"wait",
+				"wait"
+			],
+			[
+				"preparecons",
+				"prepareConstructorProperties"
+			],
+			[
+				"upsertbat",
+				"upsertBatch"
+			],
+			[
+				"getapppath",
+				"getAppPath"
+			],
+			[
+				"urikey",
+				"uriKey"
+			],
+			[
+				"unserialisedto",
+				"unserialiseDTO"
+			],
+			[
+				"setkeyfors",
+				"setKeysForSaveQuery"
+			],
+			[
+				"scrollx",
+				"scrollx"
+			],
+			[
+				"logocon",
+				"logo-container"
+			],
+			[
+				"pageheadertitle",
+				"page-header-title"
+			],
+			[
+				"performfet",
+				"performFetch"
+			],
+			[
+				"relevantoff",
+				"relevantOffers"
+			],
+			[
+				"pagin",
+				"paginate"
+			],
+			[
+				"getmigrationfiles",
+				"getMigrationFiles"
+			],
+			[
+				"getmigrationfil",
+				"getMigrationFiles"
+			],
+			[
+				"getmigrationname",
+				"getMigrationName"
+			],
+			[
+				"getmigrationfile",
+				"getMigrationFiles"
+			],
+			[
+				"textColor",
+				"textColor"
+			],
+			[
+				"hidden",
+				"hidden-xs-down"
+			],
+			[
+				"breadcru",
+				"breadcrumbs"
+			],
+			[
+				"page-h",
+				"page-header"
+			],
+			[
+				"logo-con",
+				"logo-container"
+			],
+			[
+				"indexablepro",
+				"indexableProperties"
+			],
+			[
+				"customise",
+				"customise"
+			],
+			[
+				"disable",
+				"disable"
+			],
+			[
+				"formatresult",
+				"formatResult"
+			],
+			[
+				"formatresu",
+				"formatResult"
+			],
+			[
+				"formaaggre",
+				"formatPricesAggregation"
+			],
+			[
+				"getsitemap",
+				"getSitemaps"
+			],
+			[
+				"getsitem",
+				"getSitemap"
+			]
+		],
+		"width": 580.0
+	},
+	"selected_group": 0,
+	"settings":
+	{
+	},
+	"show_minimap": true,
+	"show_open_files": false,
+	"show_tabs": true,
+	"side_bar_visible": true,
+	"side_bar_width": 213.0,
+	"status_bar_visible": true,
+	"template_settings":
+	{
+	}
+}

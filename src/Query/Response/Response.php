@@ -3,6 +3,7 @@
 namespace Elastico\Query\Response;
 
 use Elastic\Elasticsearch\Response\Elasticsearch;
+use Elastico\Models\DataAccessObject;
 use Elastico\Models\Model;
 use Elastico\Query\Builder;
 use Elastico\Query\Response\Aggregation\AggregationResponse;
@@ -53,7 +54,7 @@ use Illuminate\Support\Collection as BaseCollection;
              ->when(
                  !empty($this->model),
                  fn ($hits) => $hits
-                     ->map(fn ($hit): Model => $this->model::unserialise($hit))
+                     ->map(fn ($hit): DataAccessObject|Model => $this->model::unserialise($hit))
                      ->load($this->with)
              )
          ;

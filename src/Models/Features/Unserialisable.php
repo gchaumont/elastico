@@ -15,7 +15,6 @@ trait Unserialisable
     public static function unserialise(array|Promise $document): static
     {
         return (new static(...static::prepareConstructorProperties($document['_source'])))
-            ->initialiseIdentifiers(id: $document['_id'] ?? $document['id'], index: $document['_index'] ?? null)
             ->addSerialisedData($document['_source'])
         ;
     }
