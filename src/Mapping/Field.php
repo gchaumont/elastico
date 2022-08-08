@@ -59,6 +59,7 @@ class Field
         public null|int $position_increment_gap = null,
         public null|string $enable_position_increments = null,
         public null|array $rawProperties = null,
+        public null|string $class = null,
     ) {
         // code...
     }
@@ -82,6 +83,9 @@ class Field
 
     public function propertyType(): string
     {
+        if (!empty($this->class)) {
+            return $this->class;
+        }
         if ($this->property->getType() instanceof \ReflectionUnionType) {
             $types = explode('|', (string) $this->property->getType());
 

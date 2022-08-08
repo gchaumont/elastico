@@ -11,7 +11,7 @@ trait BatchPersistable
     /**
      * Updates models with IDs and creates models without IDs.
      */
-    public static function saveBatch(array $objects, array $source = null)
+    public static function saveBatch(iterable $objects, array $source = null)
     {
         $objects = collect($objects)->values();
 

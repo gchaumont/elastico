@@ -101,7 +101,7 @@ trait HandlesPagination
         string $field,
         string $string = null,
         string $after = null,
-        int $size = null,
+        int $size = 10,
         bool $insensitive = true
     ): LazyCollection {
         return LazyCollection::make(function () use ($field, $string, $after, $size, $insensitive): Generator {

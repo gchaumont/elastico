@@ -89,6 +89,34 @@ use Illuminate\Support\Facades\Cache;
          return $this;
      }
 
+     public function loadRelated(string $model, string|callable $key, string|callable $property)
+     {
+         if (is_string($property)) {
+             $property = fn ($o, $p) => $o->{$property} = $p;
+         }
+         if (is_string($key)) {
+             $key = fn ($o) => $o->{$key};
+         }
+
+         $map = $this->keyBy(fn ($m) => $m->get_id())
+             ->map($key)
+         ;
+
+         $related = $map
+             ->filter()
+             ->pipe(fn ($keys) => $model::query()->findMany($keys))
+         ;
+
+         return $this->map(function ($model) use ($property, $related, $map) {
+             // if ($related->has($model->get_id())) {
+             $property($model, $related->get($map->get($model->get_id())));
+             // }
+
+             return $model;
+         })
+        ;
+     }
+
      public function loadAggregate()
      {
          // code...

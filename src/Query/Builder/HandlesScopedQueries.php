@@ -18,11 +18,11 @@ trait HandlesScopedQueries
                 total: fn ($r): int => 1,
                 hits: fn ($r): array => [$r],
                 aggregations: fn ($r): array => [],
-                response: $this->getConnection()->performQuery('get', [
+                response: $this->getConnection()->performQuery('get', array_filter([
                     'index' => $this->index,
                     'id' => $id,
                     '_source_includes' => implode(',', $this->source),
-                ]),
+                ])),
                 query: $this,
             ))
                 ->hits()

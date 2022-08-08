@@ -60,19 +60,13 @@ trait Mappable
                 if ($property->getType() instanceof ReflectionUnionType) {
                     $types = explode('|', (string) $property->getType());
 
-                    $types = array_filter($types, fn ($type) => 'array' !== $type && 'null' !== $type);
+                    // $types = array_filter($types, fn ($type) => 'array' !== $type && 'null' !== $type);
+                    $types = array_filter($types, fn ($type) => 'null' !== $type);
                     if (1 == count($types)) {
-                        $attribute->class = reset($types);
-
-                        if (class_exists($attribute->class) && in_array('Elastico\\Indexable', class_uses($attribute->class))) {
-                            $attribute->isRelationClass = true;
-                        }
+                        $attribute->class ??= reset($types);
                     }
                 } else {
-                    $attribute->class = $property->getType()->getName();
-                    if (class_exists($attribute->class) && in_array('Elastico\\Indexable', class_uses($attribute->class))) {
-                        $attribute->isRelationClass = true;
-                    }
+                    $attribute->class ??= $property->getType()->getName();
                 }
 
                 $fields[static::class][$attributeInstance->fieldName()] = $attributeInstance;
