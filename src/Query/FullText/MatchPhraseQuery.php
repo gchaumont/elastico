@@ -18,7 +18,7 @@ class MatchPhraseQuery extends Query
     public function getPayload(): array
     {
         return [
-            $this->field => $this->query,
+            $this->field => $this->message,
         ];
     }
 
