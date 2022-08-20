@@ -54,8 +54,14 @@ trait BatchPersistable
         return static::hydrateModelsFromSource($objects->all(), $response['items']);
     }
 
-    public static function insertBatch($objects, bool|string $refresh = null)
+    public static function insertBatch(iterable $objects, bool|string $refresh = null)
     {
+        $objects = collect($objects)->values();
+
+        if ($objects->isEmpty()) {
+            return $objects;
+        }
+
         $body = [];
 
         foreach ($objects as $model) {
