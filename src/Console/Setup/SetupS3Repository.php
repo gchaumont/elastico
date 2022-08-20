@@ -3,8 +3,7 @@
 namespace Elastico\Console\Setup;
 
 use Closure;
-use Elastic\Elasticsearch\ClientBuilder;
-use GuzzleHttp\Client as GuzzleClient;
+use Elastico\ConnectionResolverInterface;
 use Illuminate\Console\Command;
 use Spatie\Ssh\Ssh;
 
@@ -21,10 +20,13 @@ class SetupS3Repository extends Command
                                 {--root-password= : The password for the RootUser} 
                                 {--private-key= : The path to the SSH Private Key } 
                                 {--port=22 : The SSH Port }
-
+                                {--client= : The Client name}
                                 {--endpoint= : The S3 Service endpoint}
+                                {--bucket= : The S3 Bucket}
+                                {--path= : The S3 Bucket path}
                                 {--access-key= : The S3 Access Key}
                                 {--secret-key= : The S3 Secret Key}
+                                {--connection= : The Elastic Connection to reload setttings}
                                 ';
 
     /**
@@ -50,47 +52,61 @@ class SetupS3Repository extends Command
             privateKey : $this->option('private-key') // '/Users/gchaumont/.ssh/id_ed25519'
         );
 
-        $this->configureNode(
-            cluster: $this->option('cluster') ?? $this->ask('What is the Cluster name?'),
-            host: $this->option('host'),
-            seed_hosts : $this->option('seed-hosts') ?? [],
-            master_nodes : $this->option('initial-masters') ?? [],
+        $client_name = $this->option('client') ?? 'default';
+
+        // $this->upsertSetting(
+        //     key: "s3.client.{$client_name}.endpoint",
+        //     value: $this->option('endpoint'),
+        // );
+
+        $this->addToKeystore(
+            key: $key = "s3.client.{$client_name}.access_key",
+            value: $this->option('access-key'),
         );
 
-        // // return;
-        $this->joinCluster(token: $this->option('enrollment-token'));
+        $this->addToKeystore(
+            key: $key = "s3.client.{$client_name}.secret_key",
+            value: $this->option('secret-key')
+        );
+        $connection = $this->option('connection') ?? 'default';
 
-        $this->startElasticsearch();
+        $this->reloadSecure(connection: $connection);
 
-        $this->testConnection();
-        $this->copyCertificate();
+        resolve(ConnectionResolverInterface::class)->connection($connection)
+            ->getClient()
+            ->snapshot()
+            ->createRepository([
+                'repository' => 'spaces',
+                'body' => [
+                    'type' => 's3',
+                    'settings' => [
+                        'client' => $client_name,
+                        'bucket' => $this->option('bucket'),
+                        'base_path' => $this->option('path'),
+                        'endpoint' => $this->option('endpoint'),
+                    ],
+                ],
+            ])
+        ;
 
-        $this->info('Elastic password: '.($this->elastic_password ?? null));
-        $this->info('Certificate File: '.__DIR__.'/elastic-http-certificate.crt');
+        // $this->ssh->execute('systemctl restart elasticsearch.service');
     }
 
-    public function testConnection(): void
+    public function reloadSecure(string $connection)
     {
-        // $client = ClientBuilder::create()
-        //     ->setHosts([$this->argument('ip')])
-        //     ->setBasicAuthentication('elastic', ($this->elastic_password ?? 'I9NOUIdPTG2*E3yGrMmK'))
-        //     ->setHttpClient(new GuzzleClient())
-        //     ->setCABundle(__DIR__.'/elastic-http-certificate.crt')
-        //     ->build()
-        // ;
+        $response = resolve(ConnectionResolverInterface::class)->connection($connection)
+            ->getClient()
+            ->nodes()
+            ->reloadSecureSettings()
+        ;
 
-        $this->ssh->execute("curl --cacert /etc/elasticsearch/certs/http_ca.crt -u elastic:{$this->elastic_password} https://localhost:9200/_cluster/health ");
+        $response = json_decode((string) $response->getBody());
 
-        // dump($client->cluster()->health());
-    }
-
-    public function copyCertificate()
-    {
-        if (!file_exists(storage_path('elastic'))) {
-            mkdir(storage_path('elastic'));
+        if ($response->_nodes->successful != $response->_nodes->total) {
+            $this->error('Error reloading secure settings');
+        } else {
+            $this->info('Settings reloaded successfully on '.$response->_nodes->successful.' nodes.');
         }
-
-        $this->ssh->download('/etc/elasticsearch/certs/http_ca.crt', storage_path('elastic/elastic-http-certificate.crt'));
     }
 
     public function createSSH(
@@ -120,10 +136,6 @@ class SetupS3Repository extends Command
     public function handleOutput(): Closure
     {
         return function ($type, $line) {
-            $match = preg_match('#The generated password for the elastic built-in superuser is : (\S*)#', $line, $matches);
-            if (1 === $match) {
-                $this->elastic_password = $matches[1];
-            }
             match ($type) {
                 'err' => $this->warn($line),
                 'out' => $this->line($line),
@@ -131,68 +143,19 @@ class SetupS3Repository extends Command
         };
     }
 
-    public function joinCluster(null|string $token): void
+    public function addToKeystore(string $key, string $value): void
     {
-        if (!is_null($token)) {
-            $this->info('Preparing node to join existing cluster');
-
-            // If this node should join an existing cluster, you can reconfigure this with
-            $this->ssh->execute("yes | /usr/share/elasticsearch/bin/elasticsearch-reconfigure-node --enrollment-token {$token}");
+        foreach ([
+            "/usr/share/elasticsearch/bin/elasticsearch-keystore remove {$key}",
+            "echo {$value} | /usr/share/elasticsearch/bin/elasticsearch-keystore add {$key} --stdin ",
+        ] as $command) {
+            $this->ssh->execute($command);
         }
+
+        $this->info('Added to the Keystore: '.$key);
     }
 
-    public function installElasticsearch(): void
-    {
-        $this->ssh->execute([
-            'echo ">> Updating apt"',
-            'apt update',
-
-            'echo ">> Installing Elastic GPG Key"',
-            'wget -qO - https://artifacts.elastic.co/GPG-KEY-elasticsearch | sudo gpg --yes --dearmor -o /usr/share/keyrings/elasticsearch-keyring.gpg',
-
-            'echo ">> Install apt-transport-https"',
-            'sudo apt-get install apt-transport-https',
-            'echo "deb [signed-by=/usr/share/keyrings/elasticsearch-keyring.gpg] https://artifacts.elastic.co/packages/8.x/apt stable main" | sudo tee /etc/apt/sources.list.d/elastic-8.x.list',
-
-            'echo ">> Installing Elasticsearch"',
-            'sudo apt-get update && sudo apt-get install elasticsearch',
-            'echo ">> Elastic Search Installed"',
-
-            // 'echo ">> Adding deb package"',
-            // 'echo "deb https://artifacts.elastic.co/packages/7.x/apt stable main" | sudo tee -a /etc/apt/sources.list.d/elastic-7.x.list',
-
-            // 'echo ">> Installing Java and Elastic Search"',
-            // 'apt -y install default-jre elasticsearch',
-        ]);
-    }
-
-    // public function installS3(): string
-    // {
-    //     return implode("\n", [
-    //         '/usr/share/elasticsearch/bin/elasticsearch-plugin install repository-s3 -b',
-    //         //'/usr/share/elasticsearch/bin/elasticsearch-keystore remove s3.client.default.access_key',
-    //         //'/usr/share/elasticsearch/bin/elasticsearch-keystore remove s3.client.default.secret_key',
-    //         'AWS_ACCESS_KEY_ID=P73OHM6HXT2OFJ6CLQCE',
-    //         'echo $AWS_ACCESS_KEY_ID | /usr/share/elasticsearch/bin/elasticsearch-keystore add --stdin s3.client.default.access_key',
-    //         'AWS_SECRET_ACCESS_KEY=EVmND92kuuf/abjl98EPBVldxhhfcgGv8lGASkXSZhg',
-    //         'echo $AWS_SECRET_ACCESS_KEY | /usr/share/elasticsearch/bin/elasticsearch-keystore add --stdin s3.client.default.secret_key',
-    //         // POST _nodes/reload_secure_settings
-    //     ]);
-    // }
-
-    public function startElasticsearch(): void
-    {
-        $this->ssh->execute([
-            'echo ">> Scheduling Elasticsearch"',
-            '/bin/systemctl daemon-reload',
-            '/bin/systemctl enable elasticsearch.service',
-
-            'echo ">> Starting Elasticsearch"',
-            'systemctl restart elasticsearch.service',
-        ]);
-    }
-
-    public function configureNode(string $cluster, string $host, array $seed_hosts, array $master_nodes = []): void
+    public function upsertSetting(string $key, string $value): void
     {
         $temp_file = tmpfile();
 
@@ -204,26 +167,18 @@ class SetupS3Repository extends Command
 
         fclose($temp_file);
 
+        // $contents = "s3.client.spaces.endpoint: amazooonasdas.asdas\n".$contents;
+
+        $input = "{$key}: {$value}"."\n";
+        if (str_contains($contents, $key)) {
+            $contents = preg_replace('/'.preg_quote($key).".*\n/", $input, $contents);
+        } else {
+            $contents = $input.$contents;
+        }
+
         $temp_file = tmpfile();
 
         $temp_file_name = stream_get_meta_data($temp_file)['uri'];
-
-        $config = [
-            '#cluster.name: my-application' => "cluster.name: {$cluster}",
-            // '#network.host: 192.168.0.1' => "network.host: {$host}",
-            '#network.host: 192.168.0.1' => "network.host: {$host}",
-        ];
-
-        // if ($seed_hosts) {
-        //     $config['#discovery.seed_hosts: ["host1", "host2"]'] = 'discovery.seed_hosts: ['.implode(',', $seed_hosts).']';
-        // }
-        // if ($master_nodes) {
-        //     $config['#cluster.initial_master_nodes: ["node-1", "node-2"]'] = 'cluster.initial_master_nodes: ['.implode(',', $master_nodes).']';
-        // }
-
-        foreach ($config as $key => $value) {
-            $contents = str_replace($key, $value, $contents);
-        }
 
         fwrite($temp_file, $contents);
 

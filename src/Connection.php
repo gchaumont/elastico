@@ -40,20 +40,13 @@ class Connection
         $response = $this->client->{$method}($payload);
 
         if ($response instanceof Promise) {
-            $response->then(
-                fn ($r) => $this->endingQuery(
-                    method: $method,
-                    payload: $payload,
-                    response: json_decode((string) $r->getBody(), true),
-                    identifier: $identifier
-                ),
-                fn ($r) => $this->endingQuery(
-                    method: $method,
-                    payload: $payload,
-                    response: json_decode((string) $r->getBody(), true),
-                    identifier: $identifier
-                ),
+            $handlePromise = fn ($response) => $this->endingQuery(
+                method: $method,
+                payload: $payload,
+                response: json_decode((string) $response->getBody(), true),
+                identifier: $identifier
             );
+            $response->then($handlePromise, $handlePromise);
         } elseif ($response instanceof Elasticsearch) {
             $responseBody = (string) $response->getBody();
 

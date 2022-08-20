@@ -169,20 +169,6 @@ class InstallElasticsearch extends Command
         ]);
     }
 
-    // public function installS3(): string
-    // {
-    //     return implode("\n", [
-    //         '/usr/share/elasticsearch/bin/elasticsearch-plugin install repository-s3 -b',
-    //         //'/usr/share/elasticsearch/bin/elasticsearch-keystore remove s3.client.default.access_key',
-    //         //'/usr/share/elasticsearch/bin/elasticsearch-keystore remove s3.client.default.secret_key',
-    //         'AWS_ACCESS_KEY_ID=P73OHM6HXT2OFJ6CLQCE',
-    //         'echo $AWS_ACCESS_KEY_ID | /usr/share/elasticsearch/bin/elasticsearch-keystore add --stdin s3.client.default.access_key',
-    //         'AWS_SECRET_ACCESS_KEY=EVmND92kuuf/abjl98EPBVldxhhfcgGv8lGASkXSZhg',
-    //         'echo $AWS_SECRET_ACCESS_KEY | /usr/share/elasticsearch/bin/elasticsearch-keystore add --stdin s3.client.default.secret_key',
-    //         // POST _nodes/reload_secure_settings
-    //     ]);
-    // }
-
     public function startElasticsearch(): void
     {
         $this->ssh->execute([

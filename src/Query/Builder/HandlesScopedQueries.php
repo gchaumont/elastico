@@ -58,7 +58,7 @@ trait HandlesScopedQueries
             yield from (new Response(
                 total: fn ($r): int => count($r['docs']),
                 hits: fn ($r): array => collect($r['docs'])
-                    ->filter(fn ($d) => true === $d['found'])
+                    ->filter(fn ($d) => !empty($d['found']) && true === $d['found'])
                     ->keyBy(fn ($hit) => $hit['_id'])
                     ->all(),
                 aggregations: fn ($r): array => [],

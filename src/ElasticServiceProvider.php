@@ -70,6 +70,7 @@ class ElasticServiceProvider extends ServiceProvider
                 Console\Setup\InstallKibana::class,
                 Console\Setup\RemoveElasticsearch::class,
                 Console\Setup\GenerateEnrollmentToken::class,
+                Console\Setup\SetupS3Repository::class,
                 Console\InstallEnterpriseSearch::class,
                 Console\InstallFilebeat::class,
                 Console\InstallFleet::class,

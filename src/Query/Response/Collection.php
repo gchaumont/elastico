@@ -37,7 +37,7 @@ use Illuminate\Support\Facades\Cache;
                  }
 
                  $cachedModels[$relation] = collect(Cache::many(
-                     collect($relatedIds)->map(fn ($id) => 'rel:'.$relation.'.'.$id)->all()
+                     collect($relatedIds)->map(fn ($id) => 'rel:'.$relation.'.'.$id)->unique()->values()->all()
                  ))
                      ->filter()
                      ->keyBy(fn ($m) => $m->get_id())
