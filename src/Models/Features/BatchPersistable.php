@@ -155,7 +155,7 @@ trait BatchPersistable
                     throw new Exception('Upsert Model Hydration Mismatch', 1);
                 }
             } else {
-                $objects[$key]->id = $result[$actionType]['_id'];
+                $objects[$key]->set_id($result[$actionType]['_id']);
             }
 
             if (!empty($result[$actionType]['get']['_source'])) {
