@@ -8,15 +8,16 @@ trait Persistable
 {
     // INDEXABLE
 
-    public function save(string|array $source = null): static
+    public function save(string|array $source = null, bool|string $refresh = null): static
     {
-        return $this->get_id() ? $this->upsert($source) : $this->insert();
+        return $this->get_id() ? $this->upsert($source, $refresh) : $this->insert($refresh);
     }
 
-    public function insert(): static
+    public function insert(null|bool|string $refresh = null): static
     {
         $this->_id = (string) static::getConnection()->performQuery(method: 'index', payload: [
             'index' => $this->writableIndexName(),
+            'refresh' => $refresh,
             'body' => $this->serialise(),
         ])['_id'];
 
@@ -28,11 +29,12 @@ trait Persistable
         return $this;
     }
 
-    public function upsert(null|string|array $source = null): static
+    public function upsert(null|string|array $source = null, null|bool|string $refresh = null): static
     {
         $response = static::getConnection()->performQuery('update', [
             'index' => $this->writableIndexName(),
             'id' => $this->get_id(),
+            'refresh' => $refresh,
             'body' => array_filter([
                 'doc_as_upsert' => true,
                 'doc' => $this->serialise(),
@@ -47,10 +49,11 @@ trait Persistable
         return $this;
     }
 
-    public function delete()
+    public function delete(null|bool|string $refresh = null)
     {
         return static::getConnection()->performQuery('delete', [
             'index' => $this->writableIndexName(),
+            'refresh' => $refresh,
             'id' => $this->get_id(),
         ]);
     }

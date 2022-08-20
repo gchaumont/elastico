@@ -11,7 +11,7 @@ trait BatchPersistable
     /**
      * Updates models with IDs and creates models without IDs.
      */
-    public static function saveBatch(iterable $objects, array $source = null)
+    public static function saveBatch(iterable $objects, array $source = null, bool|string $refresh = null)
     {
         $objects = collect($objects)->values();
 
@@ -43,6 +43,9 @@ trait BatchPersistable
                 ]);
             }
         }
+        if (null !== $refresh) {
+            $payload['refresh'] = $refresh;
+        }
 
         $response = static::query()->bulk($payload);
 
@@ -51,7 +54,7 @@ trait BatchPersistable
         return static::hydrateModelsFromSource($objects->all(), $response['items']);
     }
 
-    public static function insertBatch($objects)
+    public static function insertBatch($objects, bool|string $refresh = null)
     {
         $body = [];
 
@@ -64,6 +67,12 @@ trait BatchPersistable
             $body[] = $model->serialise();
         }
 
+        $payload['body'] = $body;
+
+        if (null !== $refresh) {
+            $payload['refresh'] = $refresh;
+        }
+
         $response = static::query()->bulk(['body' => $body]);
 
         static::handleBulkError($response);
@@ -71,8 +80,12 @@ trait BatchPersistable
         return $response;
     }
 
-    public static function upsertBatch(iterable $objects, array $source = null, bool $proceed = false): Collection
-    {
+    public static function upsertBatch(
+        iterable $objects,
+        array $source = null,
+        bool $proceed = false,
+        bool|string $refresh = null
+    ): Collection {
         $objects = collect($objects)->values();
 
         if ($objects->isEmpty()) {
@@ -94,6 +107,9 @@ trait BatchPersistable
         ])
             ->all()
         ;
+        if (null !== $refresh) {
+            $payload['refresh'] = $refresh;
+        }
 
         $response = static::query()->bulk(['body' => $payload]);
 
@@ -104,7 +120,7 @@ trait BatchPersistable
         return static::hydrateModelsFromSource($objects->all(), $response['items']);
     }
 
-    public static function deleteBatch(array $objects)
+    public static function deleteBatch(array $objects, bool|string $refresh = null)
     {
         if (empty($objects)) {
             return [];
@@ -118,6 +134,9 @@ trait BatchPersistable
                     '_index' => $model->writableIndexName(),
                 ],
             ];
+        }
+        if (null !== $refresh) {
+            $payload['refresh'] = $refresh;
         }
 
         $response = static::query()->bulk($payload);
