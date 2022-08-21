@@ -98,7 +98,7 @@ trait BatchPersistable
             return $objects;
         }
 
-        $payload = $objects->flatMap(fn ($model) => [
+        $body = $objects->flatMap(fn ($model) => [
             [
                 'update' => [
                     '_id' => $model->get_id(),
@@ -113,11 +113,13 @@ trait BatchPersistable
         ])
             ->all()
         ;
+        $payload = ['body' => $body];
+
         if (null !== $refresh) {
             $payload['refresh'] = $refresh;
         }
 
-        $response = static::query()->bulk(['body' => $payload]);
+        $response = static::query()->bulk($payload);
 
         if (!$proceed) {
             static::handleBulkError($response);
