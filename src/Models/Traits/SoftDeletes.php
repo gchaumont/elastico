@@ -14,11 +14,11 @@ trait SoftDeletes
     #[Field(type: FieldType::boolean)]
     public bool $deleted;
 
-    public function delete(): void
+    public function delete(null|bool|string $refresh = null): void
     {
         $this->deleted();
 
-        $this->save();
+        $this->save($refresh);
     }
 
     public function deleted(DateTime $timestamp = new DateTime()): static
