@@ -15,18 +15,13 @@ trait Persistable
 
     public function insert(null|bool|string $refresh = null): static
     {
-        $this->_id = (string) static::getConnection()->performQuery(method: 'index', payload: [
-            'index' => $this->writableIndexName(),
-            'refresh' => $refresh,
-            'body' => $this->serialise(),
-        ])['_id'];
-
-        // $this->_id = (string) static::getConnection()->index([
-        //     'index' => $this->writableIndexName(),
-        //     'body' => $this->serialise(),
-        // ])->response()['_id'];
-
-        return $this;
+        return $this->set_id(
+            (string) static::getConnection()->performQuery(method: 'index', payload: [
+                'index' => $this->writableIndexName(),
+                'refresh' => $refresh,
+                'body' => $this->serialise(),
+            ])['_id']
+        );
     }
 
     public function upsert(null|string|array $source = null, null|bool|string $refresh = null): static

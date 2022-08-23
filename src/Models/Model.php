@@ -26,7 +26,7 @@ abstract class Model extends DataAccessObject // implements Serialisable
 
     const UPDATED_AT = 'updated_at';
 
-    public readonly string $_id;
+    public readonly string $id;
 
     public readonly string $_index;
 
@@ -36,7 +36,7 @@ abstract class Model extends DataAccessObject // implements Serialisable
 
     public function initialiseIdentifiers(string $id, null|string $index = null): static
     {
-        $this->_id = $id;
+        $this->set_id($id);
 
         if ($index) {
             $this->_index = $index;
@@ -47,12 +47,19 @@ abstract class Model extends DataAccessObject // implements Serialisable
 
     final public function get_id(): ?string
     {
-        return $this->_id ?? $this->make_id();
+        return $this->id ?? $this->make_id();
     }
 
     public function set_id(string|int $id): static
     {
-        $this->_id = (string) $id;
+        $this->id = (string) $id;
+
+        return $this;
+    }
+
+    public function set_index(string|null $index): static
+    {
+        $this->_index = $index;
 
         return $this;
     }
@@ -97,7 +104,8 @@ abstract class Model extends DataAccessObject // implements Serialisable
     public static function unserialise(array|Promise $document): static
     {
         return parent::unserialise($document)
-            ->initialiseIdentifiers(id: $document['_id'] ?? $document['id'], index: $document['_index'] ?? null)
+            ->set_id($document['_id'] ?? $document['id'])
+            ->set_index($document['_index'] ?? null)
         ;
     }
 }

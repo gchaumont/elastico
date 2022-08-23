@@ -31,7 +31,7 @@ trait Unserialisable
         $object = (new static(...static::prepareConstructorProperties($data)));
 
         if (isset($data['id'])) {
-            $object->initialiseIdentifiers(id: $data['id']);
+            $object->set_id($data['id']);
         }
 
         return $object->addSerialisedData($data);
