@@ -13,7 +13,7 @@
         "php": "^8.1",
         "illuminate/collections": "^9.11",
         "illuminate/support": "^9.11",
-        "guzzlehttp/guzzle": "^7.4",
+        "php-http/guzzle7-adapter": "^1.0",
         "elasticsearch/elasticsearch": "^8.2",
         "spatie/ssh": "^1.7"
     },

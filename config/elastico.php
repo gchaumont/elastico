@@ -13,9 +13,6 @@ return [
             ],
             'hosts' => ['localhost:9200'],
             //'CABundle' => storage_path('/elastic/certificate.crt'),
-            // 'HttpClientOptions' => [
-            //     'async' => true,
-            // ],
         ],
     ],
 ];
