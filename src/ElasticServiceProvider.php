@@ -23,9 +23,9 @@ class ElasticServiceProvider extends ServiceProvider
 
         // Model::setEventDispatcher($this->app['events']);
 
-        $this->registerForwardingRoutes(
-            $this->app['config']['elastico']['forwarding']
-        );
+        // $this->registerForwardingRoutes(
+        //     $this->app['config']['elastico']['forwarding']
+        // );
     }
 
     public function register()

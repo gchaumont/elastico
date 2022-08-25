@@ -4,7 +4,7 @@ return [
     // The default connection name
     'default' => 'elastic',
 
-    // The list of elasticsearch connections
+    // The list of ElasticSearch connections
     'connections' => [
         'elastic' => [
             'basicAuthentication' => [
@@ -13,19 +13,9 @@ return [
             ],
             'hosts' => ['localhost:9200'],
             //'CABundle' => storage_path('/elastic/certificate.crt'),
-
-            // 'Handler'
-            // 'selector' => RoundRobinSelector::class,
-            // 'connectionPool' => StaticNoPingConnectionPool::class,
-        ],
-    ],
-
-    'forwarding' => [
-        'default' => [
-            'env' => ['local'],
-            // 'domain' => 'your-domain.dev',
-            // 'middleware' => [],
-            'path' => 'elastic-forwarding',
+            // 'HttpClientOptions' => [
+            //     'async' => true,
+            // ],
         ],
     ],
 ];

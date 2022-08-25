@@ -1,35 +1,37 @@
 {
-  "name": "gchaumont/elastico",
-  "description": "Elasticsearch ORM for PHP",
-  "type": "library",
-  "license": "MIT",
-  "authors": [
+    "name": "gchaumont/elastico",
+    "description": "Elasticsearch ORM for PHP",
+    "type": "library",
+    "license": "MIT",
+    "authors": [
     {
-      "name": "Guy Chaumont",
-      "email": "gchaumont@me.com"
-    }
-  ],
-  "require": {
-    "php" : "^8.1",
-    "illuminate/collections": "^9.11",
-    "guzzlehttp/guzzle": "^7.4",
-    "elasticsearch/elasticsearch": "^8.2",
-    "illuminate/support": "^9.11",
-    "nyholm/psr7": "^1.5",
-    "symfony/http-client": "^6.0",
-    "spatie/ssh": "^1.7"
-  },
+        "name": "Guy Chaumont",
+        "email": "gchaumont@me.com"
+    }],
+    "require":
+    {
+        "php": "^8.1",
+        "illuminate/collections": "^9.11",
+        "illuminate/support": "^9.11",
+        "guzzlehttp/guzzle": "^7.4",
+        "elasticsearch/elasticsearch": "^8.2",
+        "spatie/ssh": "^1.7"
+    },
 
-   "autoload": {
-    "psr-4": {
-      "Elastico\\": "src"
+    "autoload":
+    {
+        "psr-4":
+        {
+            "Elastico\\": "src"
+        }
+    },
+    "extra":
+    {
+        "laravel":
+        {
+            "providers": [
+                "Elastico\\ElasticServiceProvider"
+            ]
+        }
     }
-  },
-  "extra": {
-    "laravel": {
-        "providers": [
-            "Elastico\\ElasticServiceProvider"
-        ]
-    }
-}
 }
