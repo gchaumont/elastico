@@ -83,7 +83,7 @@ trait BatchPersistable
 
         static::handleBulkError($response);
 
-        return $response;
+        return static::hydrateModelsFromSource($objects->all(), $response['items']);
     }
 
     public static function upsertBatch(

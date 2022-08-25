@@ -30,6 +30,12 @@ abstract class Model extends DataAccessObject // implements Serialisable
 
     public readonly string $_index;
 
+    // public readonly string $_version;
+
+    // public readonly string $_seq_no;
+
+    // public readonly string $_primary_term;
+
     protected static string $_connection = 'default';
 
     protected static ConnectionResolverInterface $_resolver;
