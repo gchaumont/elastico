@@ -26,6 +26,13 @@ class Connection
     ) {
     }
 
+    public function setAsync(bool $async): static
+    {
+        $this->client->setAsync($async);
+
+        return $this;
+    }
+
     public function getClient(): Client
     {
         return $this->client;

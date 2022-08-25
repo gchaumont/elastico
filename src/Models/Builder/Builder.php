@@ -46,11 +46,6 @@ class Builder extends BaseBuilder
         return $this;
     }
 
-    public function relatedTo(Model $model): static
-    {
-        return $this->where($model->getForeignKey());
-    }
-
     // protected function loadRelations(Collection $hits): Collection
     // {
     //     if (empty($hits) || empty($this->with)) {

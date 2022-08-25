@@ -4,7 +4,7 @@ namespace Elastico;
 
 use Elastic\Elasticsearch\Client;
 use Elastic\Elasticsearch\ClientBuilder;
-use GuzzleHttp\Client as GuzzleClient;
+use Http\Adapter\Guzzle7\Client as GuzzleAdapter;
 
 class ConnectionResolver implements ConnectionResolverInterface
 {
@@ -20,9 +20,8 @@ class ConnectionResolver implements ConnectionResolverInterface
 
     public function __construct(array $connections)
     {
-        // $connection['httpClient'] = new GuzzleClient(array_filter(['verify' => $connection['CABundle'] ?? null]));
-
         collect($connections)
+            ->map(fn ($config) => $this->createClientConfigFromConnection($config))
             ->each(fn ($connection, $name) => $this->addConnection(
                 name: $name,
                 client: ClientBuilder::fromConfig($connection)
@@ -69,5 +68,19 @@ class ConnectionResolver implements ConnectionResolverInterface
         $this->default = $name;
 
         return $this;
+    }
+
+    private function createClientConfigFromConnection(array $connection): array
+    {
+        return $connection['client'] ?? [] + array_filter([
+            'basicAuthentication' => array_filter([
+                'username' => $connection['username'] ?? null,
+                'password' => $connection['password'] ?? null,
+            ]),
+            'hosts' => $connection['hosts'] ?? null,
+            //'CABundle' => storage_path('/elastic/certificate.crt'),
+            'AsyncHttpClient' => $connection['client']['AsyncHttpClient'] ?? GuzzleAdapter::createWithConfig(array_filter(['verify' => $connection['CABundle'] ?? null])),
+            'ElasticCloudId' => $connection['cloud'] ?? null,
+        ]);
     }
 }

@@ -2,17 +2,20 @@
 
 return [
     // The default connection name
-    'default' => 'elastic',
+    'default' => 'main',
 
     // The list of ElasticSearch connections
     'connections' => [
-        'elastic' => [
-            'basicAuthentication' => [
-                'username' => 'elastic',
-                'password' => 'password',
+        'main' => [
+            'async' => true,
+            'username' => 'elastic',
+            'password' => '*****',
+            // 'cloud' => 'cloud_id',
+            'hosts' => [
+                'localhost:9200',
             ],
-            'hosts' => ['localhost:9200'],
-            //'CABundle' => storage_path('/elastic/certificate.crt'),
+            'certificate' => storage_path('/certificate.crt'),
+            // 'client' => [/*custom client configuration*/],
         ],
     ],
 ];
