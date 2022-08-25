@@ -78,7 +78,7 @@ class ConnectionResolver implements ConnectionResolverInterface
                 'password' => $connection['password'] ?? null,
             ]),
             'hosts' => $connection['hosts'] ?? null,
-            //'CABundle' => storage_path('/elastic/certificate.crt'),
+            'CABundle' => $connection['certificate'] ?? null,
             'AsyncHttpClient' => $connection['client']['AsyncHttpClient'] ?? GuzzleAdapter::createWithConfig(array_filter(['verify' => $connection['CABundle'] ?? null])),
             'ElasticCloudId' => $connection['cloud'] ?? null,
         ]);
