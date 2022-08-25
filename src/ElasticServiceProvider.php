@@ -38,7 +38,6 @@ class ElasticServiceProvider extends ServiceProvider
         $this->app->singleton(ConnectionResolverInterface::class, function () {
             return (new ConnectionResolver(
                 connections: $this->app['config']['elastico']['connections'],
-                forwarding: $this->app['config']['elastico']['forwarding'],
             ))
                 ->setDefaultConnection($this->app['config']['elastico']['default'])
             ;
