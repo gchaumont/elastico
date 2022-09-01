@@ -2,6 +2,8 @@
 
 namespace Elastico\Models\Features;
 
+use Http\Promise\Promise;
+
 // TODO Replace with Builder
 
 trait Persistable
@@ -15,12 +17,17 @@ trait Persistable
 
     public function insert(null|bool|string $refresh = null): static
     {
+        $response = static::getConnection()->performQuery(method: 'index', payload: [
+            'index' => $this->writableIndexName(),
+            'refresh' => $refresh,
+            'body' => $this->serialise(),
+        ]);
+        if ($response instanceof Promise) {
+            $response = $response->wait()->asArray();
+        }
+
         return $this->set_id(
-            (string) static::getConnection()->performQuery(method: 'index', payload: [
-                'index' => $this->writableIndexName(),
-                'refresh' => $refresh,
-                'body' => $this->serialise(),
-            ])['_id']
+            (string) $response['_id']
         );
     }
 
@@ -36,6 +43,10 @@ trait Persistable
                 '_source' => $source,
             ]),
         ]);
+
+        if ($response instanceof Promise) {
+            $response = $response->wait()->asArray();
+        }
 
         if ($source) {
             $this->addSerialisedData($response['get']['_source']);

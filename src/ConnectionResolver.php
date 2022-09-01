@@ -21,10 +21,12 @@ class ConnectionResolver implements ConnectionResolverInterface
     public function __construct(array $connections)
     {
         collect($connections)
-            ->map(fn ($config) => $this->createClientConfigFromConnection($config))
             ->each(fn ($connection, $name) => $this->addConnection(
                 name: $name,
-                client: ClientBuilder::fromConfig($connection)
+                client: ClientBuilder::fromConfig(
+                    $this->createClientConfigFromConnection($connection)
+                )
+                    ->setAsync($connection['async'] ?? false)
             ))
         ;
     }
@@ -39,9 +41,11 @@ class ConnectionResolver implements ConnectionResolverInterface
     /**
      * Add a connection to the resolver.
      */
-    public function addConnection(string $name, Client $client)
+    public function addConnection(string $name, Client $client): static
     {
         $this->connections[$name] = new Connection($name, $client);
+
+        return $this;
     }
 
     /**
@@ -72,14 +76,14 @@ class ConnectionResolver implements ConnectionResolverInterface
 
     private function createClientConfigFromConnection(array $connection): array
     {
-        return $connection['client'] ?? [] + array_filter([
+        return ($connection['client'] ?? []) + array_filter([
             'basicAuthentication' => array_filter([
                 'username' => $connection['username'] ?? null,
                 'password' => $connection['password'] ?? null,
             ]),
             'hosts' => $connection['hosts'] ?? null,
             'CABundle' => $connection['certificate'] ?? null,
-            'AsyncHttpClient' => $connection['client']['AsyncHttpClient'] ?? GuzzleAdapter::createWithConfig(array_filter(['verify' => $connection['CABundle'] ?? null])),
+            'AsyncHttpClient' => $connection['client']['AsyncHttpClient'] ?? GuzzleAdapter::createWithConfig(array_filter(['verify' => $connection['certificate'] ?? null])),
             'ElasticCloudId' => $connection['cloud'] ?? null,
         ]);
     }

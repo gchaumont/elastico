@@ -2,31 +2,33 @@
 
 namespace Elastico\Query\Response;
 
-use Illuminate\Support\Collection as BaseCollection;
 use Illuminate\Support\Facades\Cache;
+use Illuminate\Support\LazyCollection;
 
  /**
   * Elastic Base Response.
   * // TODO: remove cache from here.
   */
- class Collection extends BaseCollection
+ class Collection extends LazyCollection
  {
      public function load($relations): static
      {
+         $static = $this;
+
          if (['*'] === $relations) {
-             $relations = $this->first()::getAllRelations();
+             $relations = $static->first()::getAllRelations();
          }
 
          $relations = collect($relations);
 
-         if ($relations->isNotEmpty() && $this->isNotEmpty()) {
+         if ($relations->isNotEmpty() && $static->isNotEmpty()) {
              // SEPARATE RELATION LOADING
              $cachedModels = $relatedModels = [];
 
              foreach ($relations as $relation) {
-                 $propName = $this->first()->getPropertyNameForClass($relation);
+                 $propName = $static->first()->getPropertyNameForClass($relation);
 
-                 $relatedIds = $this
+                 $relatedIds = $static
                      ->filter(fn ($hit) => isset($hit->{$propName}))
                      ->map(fn ($hit) => $hit->{$propName}->get_id())
                      ->values()
@@ -64,9 +66,9 @@ use Illuminate\Support\Facades\Cache;
 
                  $models = $models->concat(collect($cachedModels[$relation]))->keyBy(fn ($m) => $m->get_id());
 
-                 $propName = $this->first()->getPropertyNameForClass($relation);
+                 $propName = $static->first()->getPropertyNameForClass($relation);
 
-                 $this->transform(function ($hit) use ($propName, $models) {
+                 $static = $static->map(function ($hit) use ($propName, $models) {
                      if (isset($hit->{$propName})) {
                          $id = $hit->{$propName}->get_id();
                          if ($models->has($id)) {
@@ -86,7 +88,7 @@ use Illuminate\Support\Facades\Cache;
              }
          }
 
-         return $this;
+         return $static;
      }
 
      public function loadRelated(string $model, string|callable $key, string|callable $property)

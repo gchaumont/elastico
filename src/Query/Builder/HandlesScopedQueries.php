@@ -4,6 +4,7 @@ namespace Elastico\Query\Builder;
 
 use Elastico\Exceptions\ModelNotFoundException;
 use Elastico\Models\Model;
+use Elastico\Query\Response\PromiseResponse;
 use Elastico\Query\Response\Response;
 use Http\Promise\Promise;
 use Illuminate\Support\Collection;
@@ -14,7 +15,7 @@ trait HandlesScopedQueries
     public function find(string $id): null|Model
     {
         try {
-            return (new Response(
+            return (new PromiseResponse(
                 total: fn ($r): int => 1,
                 hits: fn ($r): array => [$r],
                 aggregations: fn ($r): array => [],
@@ -55,7 +56,7 @@ trait HandlesScopedQueries
         ]);
 
         return LazyCollection::make(function () use ($response) {
-            yield from (new Response(
+            yield from (new PromiseResponse(
                 total: fn ($r): int => count($r['docs']),
                 hits: fn ($r): array => collect($r['docs'])
                     ->filter(fn ($d) => !empty($d['found']) && true === $d['found'])
@@ -75,7 +76,7 @@ trait HandlesScopedQueries
 
     public function get(): Response
     {
-        return new Response(
+        return new PromiseResponse(
             total: fn ($r): int => $r['hits']['total']['value'] ?? 0,
             hits: fn ($r): array => $r['hits']['hits'] ?? [],
             aggregations: fn ($r): array => $r['aggregations'] ?? [],
@@ -112,7 +113,7 @@ trait HandlesScopedQueries
                 ->keys()
                 ->combine(
                     $queries->values()
-                        ->map(fn ($query, $i) => new Response(
+                        ->map(fn ($query, $i) => new PromiseResponse(
                             total: fn ($r): int => $r['hits']['total']['value'] ?? 0,
                             hits: fn ($r): array => $r['hits']['hits'] ?? [],
                             aggregations: fn ($r): array => $r['aggregations'] ?? [],
@@ -158,7 +159,9 @@ trait HandlesScopedQueries
         );
 
         $response = $this->getConnection()->performQuery('bulk', $payload);
-
+        if ($response instanceof Promise) {
+            $response = $response->wait()->asArray();
+        }
         if (true == $response['errors']) {
             $errors = collect($response['items'])
                 ->map(fn ($item) => [
@@ -183,6 +186,9 @@ trait HandlesScopedQueries
                 'conflicts' => 'proceed',
             ]
         ));
+        if ($response instanceof Promise) {
+            $response = $response->wait()->asArray();
+        }
 
         if (!empty($response['failures'])) {
             throw new \Exception('Delete by Query errors ', json_encode($response['failures']));
@@ -208,7 +214,9 @@ trait HandlesScopedQueries
         $payload['body']['script']['params'] = $data;
 
         $response = $this->getConnection()->performQuery(method: 'updateByQuery', payload: $payload);
-
+        if ($response instanceof Promise) {
+            $response = $response->wait()->asArray();
+        }
         if (!empty($response['failures'])) {
             throw new \Exception('Update by Query errors ', json_encode($response['failures']));
         }
@@ -218,6 +226,25 @@ trait HandlesScopedQueries
 
     public function count(): int
     {
-        return $this->getConnection()->performQuery(method: 'count', payload: $this->buildPayload())['count'];
+        $response = $this->getConnection()->performQuery(method: 'count', payload: $this->buildPayload());
+        if ($response instanceof Promise) {
+            $response = $response->wait()->asArray();
+        }
+
+        return $response['count'];
+    }
+
+    public function exists(): bool
+    {
+        $payload = $this->take(0)->buildPayload();
+        $payload['terminate_after'] = 1;
+
+        $response = $this->getConnection()->performQuery(method: 'search', payload: $payload);
+
+        if ($response instanceof Promise) {
+            $response = $response->wait()->asArray();
+        }
+
+        return $response['hits']['total']['value'] > 0;
     }
 }

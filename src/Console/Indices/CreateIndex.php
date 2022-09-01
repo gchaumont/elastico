@@ -29,7 +29,7 @@ class CreateIndex extends Command
     {
         $class = $this->argument('index');
 
-        $class::getConnection()->getClient()->indices()->create($class::getIndexConfiguration());
+        $class::getConnection()->getSyncClient()->indices()->create($class::getIndexConfiguration());
 
         return $this->info("{$class} Index Created");
     }

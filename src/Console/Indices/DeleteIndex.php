@@ -42,7 +42,7 @@ class DeleteIndex extends Command
         }
 
         try {
-            $r = $class::getConnection()->getClient()->indices()->delete(['index' => $indexName]);
+            $r = $class::getConnection()->getSyncClient()->indices()->delete(['index' => $indexName]);
         } catch (IndexNotFoundException) {
             dump('Index not found');
         }

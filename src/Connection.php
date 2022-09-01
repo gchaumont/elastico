@@ -38,6 +38,11 @@ class Connection
         return $this->client;
     }
 
+    public function getSyncClient(): Client
+    {
+        return (clone $this->client)->setAsync(false);
+    }
+
     public function performQuery(string $method, array $payload): Promise|Elasticsearch|array
     {
         $identifier = $method.'.'.rand(0, 10000000);
@@ -55,19 +60,16 @@ class Connection
             );
             $response->then($handlePromise, $handlePromise);
         } elseif ($response instanceof Elasticsearch) {
-            $responseBody = (string) $response->getBody();
-
-            $responseBody = (string) $response->getBody();
             $response = json_decode(((string) $response->getBody()), true);
 
             $this->endingQuery(
                 method: $method,
                 payload: $payload,
-                response: json_decode($responseBody, true),
+                response: $response,
                 identifier: $identifier
             );
         } else {
-            throw new RuntimeException('Unrecognised Elastic Response');
+            throw new RuntimeException('Unsupported Elasticsearch Response');
         }
 
         return $response;

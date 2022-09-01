@@ -2,8 +2,9 @@
 
 namespace Elastico\Query\Builder;
 
-use Elastico\Query\Response\Response;
+use Elastico\Query\Response\PromiseResponse;
 use Generator;
+use Http\Promise\Promise;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use Illuminate\Support\LazyCollection;
 
@@ -42,6 +43,10 @@ trait HandlesPagination
                 'keep_alive' => $seconds.'s',
             ]);
 
+            if ($pit instanceof Promise) {
+                $pit = $pit->wait()->asArray();
+            }
+
             $pit['keep_alive'] = $seconds.'s';
 
             $payload['body']['pit'] = $pit;
@@ -49,7 +54,7 @@ trait HandlesPagination
 
             $response = $this->getConnection()->performQuery('search', $payload);
 
-            yield from (new Response(
+            yield from (new PromiseResponse(
                 total: fn ($r): int => count($r['hits']['total']),
                 hits: fn ($r): array => $r['hits']['hits'],
                 aggregations: fn ($r): array => [],
@@ -70,7 +75,7 @@ trait HandlesPagination
 
                 $response = $this->getConnection()->performQuery('search', $payload);
 
-                yield from (new Response(
+                yield from (new PromiseResponse(
                     total: fn ($r): int => count($r['hits']['total']),
                     hits: fn ($r): array => $r['hits']['hits'],
                     aggregations: fn ($r): array => [],
@@ -117,7 +122,9 @@ trait HandlesPagination
                     ]),
                 ]);
 
-                // response($response)->send();
+                if ($response instanceof Promise) {
+                    $response = $response->wait()->asArray();
+                }
 
                 yield from $response['terms'];
 
