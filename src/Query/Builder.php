@@ -180,24 +180,24 @@ use Elastico\Query\Term\Wildcard;
          return $this;
      }
 
-     public function sum(string $field): int|float
+     public function sum(string $field): null|int|float
      {
          // response($this->buildPayload())->send();
 
          return $this->take(0)->addAggregation((new Sum('sum'))->field($field))->get()->aggregation('sum')->get('value');
      }
 
-     public function avg(string $field): int|float
+     public function avg(string $field): null|int|float
      {
          return $this->take(0)->addAggregation((new Avg('avg'))->field($field))->get()->aggregation('avg')->get('value');
      }
 
-     public function min(string $field): int|float
+     public function min(string $field): null|int|float
      {
          return $this->take(0)->addAggregation((new Min('min'))->field($field))->get()->aggregation('min')->get('value');
      }
 
-     public function max(string $field): int|float
+     public function max(string $field): null|int|float
      {
          return $this->take(0)->addAggregation((new Max('max'))->field($field))->get()->aggregation('max')->get('value');
      }
