@@ -68,12 +68,19 @@ trait HandlesPagination
                 ->keyBy(fn ($hit) => $hit->get_id())
                 ->all()
             ;
+            if ($response instanceof Promise) {
+                $response = $response->wait()->asArray();
+            }
 
             while ($total) {
                 $payload['body']['pit']['id'] = $response['pit_id'];
                 $payload['body']['search_after'] = $response['hits']['hits'][count($response['hits']['hits']) - 1]['sort'];
 
                 $response = $this->getConnection()->performQuery('search', $payload);
+
+                if ($response instanceof Promise) {
+                    $response = $response->wait()->asArray();
+                }
 
                 yield from (new PromiseResponse(
                     total: fn ($r): int => count($r['hits']['total']),
