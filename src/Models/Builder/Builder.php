@@ -11,9 +11,11 @@ class Builder extends BaseBuilder
     protected array $with = [];
 
     public function __construct(
-        protected Connection $connection,
+        null|Connection $connection = null,
         public readonly string $model,
     ) {
+        parent::__construct($connection);
+
         $this->index($this->model::searchableIndexName());
     }
 

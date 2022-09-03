@@ -7,6 +7,7 @@ use Elastico\Aggregations\Metric\Max;
 use Elastico\Aggregations\Metric\Min;
 use Elastico\Aggregations\Metric\Sum;
 use Elastico\Connection;
+use Elastico\ConnectionResolverInterface;
 use Elastico\Helpers\When;
 use Elastico\Query\Builder\HandlesFilters;
 use Elastico\Query\Builder\HandlesPagination;
@@ -52,9 +53,19 @@ use Elastico\Query\Term\Wildcard;
 
      protected string $filterPath;
 
+     protected Connection $connection;
+
      public function __construct(
-         protected Connection $connection
+         null|Connection $connection = null
      ) {
+         $this->connection = $connection ?? resolve(ConnectionResolverInterface::class)->connection();
+     }
+
+     public function connection(string $connection): static
+     {
+         $this->connection = resolve(ConnectionResolverInterface::class)->connection();
+
+         return $this;
      }
 
      public static function query(Query $query = null): self
