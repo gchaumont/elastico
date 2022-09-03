@@ -39,6 +39,11 @@ class AggregationResponse implements ArrayAccess
         return $this->response;
     }
 
+    public function getAggregation(): Aggregation
+    {
+        return $this->aggregation;
+    }
+
     public function get(string $key): mixed
     {
         return $this->response()[$key];
