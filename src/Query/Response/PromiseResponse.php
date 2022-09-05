@@ -66,7 +66,7 @@ use Illuminate\Support\LazyCollection;
                  !empty($this->model),
                  fn ($hits) => $hits
                      ->map(fn ($hit): DataAccessObject|Model => $this->model::unserialise($hit))
-                     ->when($this->with, fn ($a) => $a->load($this->with))
+                     ->when(!empty($this->with), fn ($a) => $a->load($this->with))
              )
          ;
      }
