@@ -3,6 +3,7 @@
 namespace Elastico\Query\Response;
 
 use Elastic\Elasticsearch\Response\Elasticsearch;
+use Elastico\Models\Builder\Builder as ModelBuilder;
 use Elastico\Models\DataAccessObject;
 use Elastico\Models\Model;
 use Elastico\Query\Builder;
@@ -51,7 +52,9 @@ use Illuminate\Support\LazyCollection;
 
          $this->promiseResponse = $response;
 
-         $this->with = $this->query?->getWith() ?? [];
+         if ($this->query instanceof ModelBuilder) {
+             $this->with = $this->query?->getWith() ?? [];
+         }
          $this->model = $this->query?->model ?? $model;
          $this->query_aggs = $this->query?->getAggregations() ?? new BaseCollection();
      }
@@ -63,7 +66,7 @@ use Illuminate\Support\LazyCollection;
                  !empty($this->model),
                  fn ($hits) => $hits
                      ->map(fn ($hit): DataAccessObject|Model => $this->model::unserialise($hit))
-                     ->load($this->with)
+                     ->when($this->with, fn ($a) => $a->load($this->with))
              )
          ;
      }

@@ -20,13 +20,29 @@ trait Configurable
             'index' => static::searchableIndexName(),
             'body' => [
                 'settings' => defined('static::INDEX_SETTINGS') ? static::INDEX_SETTINGS : new \stdClass(),
-                'mappings' => [
+                'mappings' => array_filter([
+                    '_source' => static::getSourceSettings(),
                     'dynamic' => defined('static::DYNAMIC_MAPPING') ? static::DYNAMIC_MAPPING : 'strict',
                     'properties' => static::getIndexProperties(),
                     'dynamic_templates' => static::getDynamicTemplates(),
-                ],
+                ]),
             ],
         ];
+    }
+
+    public static function getSourceSettings(): array
+    {
+        $settings = [];
+
+        if (defined('static::SYNTHETIC_SOURCE') && true === static::SYNTHETIC_SOURCE) {
+            $settings['mode'] = 'synthetic';
+        }
+
+        if (defined('static::DISABLES_SOURCE') && true === static::DISABLES_SOURCE) {
+            $settings['enabled'] = false;
+        }
+
+        return $settings;
     }
 
     public static function getDynamicTemplates(): array

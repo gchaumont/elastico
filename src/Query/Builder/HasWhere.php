@@ -5,6 +5,7 @@ namespace Elastico\Query\Builder;
 use BackedEnum;
 use DateTime;
 use Elastico\Models\Model;
+use Elastico\Query\Compound\Boolean;
 use Elastico\Query\Term\Exists;
 use Elastico\Query\Term\Range;
 use Elastico\Query\Term\Term;
@@ -44,8 +45,19 @@ trait HasWhere
         return $this->where($field, '>', $values[0])->where($field, '<', $values[1]);
     }
 
-    public function where(string $field, mixed $operator = null, mixed $value = null): self
+    /**
+     * Filter by
+     * - key operator value
+     * - key value (and equal operator)
+     * - callable for grouped condition.
+     */
+    public function where(string|callable $field, mixed $operator = null, mixed $value = null): self
     {
+        if (is_callable($field)) {
+            $this->getQuery()->must($field(new Boolean()));
+
+            return $this;
+        }
         if (2 == func_num_args()) {
             $value = $operator;
             $operator = '=';

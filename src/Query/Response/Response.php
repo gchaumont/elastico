@@ -2,6 +2,7 @@
 
 namespace Elastico\Query\Response;
 
+use Elastico\Models\Builder\Builder as ModelBuilder;
 use Elastico\Query\Builder;
 use Elastico\Query\Response\Aggregation\AggregationResponse;
 use Illuminate\Support\Collection as BaseCollection;
@@ -22,8 +23,11 @@ use Illuminate\Support\LazyCollection;
          protected BaseCollection|LazyCollection $aggregations,
          protected array $response,
          protected null|Builder $query = null,
+         string $model = null,
      ) {
-         $this->with = $this->query?->getWith() ?? [];
+         if ($this->query instanceof ModelBuilder) {
+             $this->with = $this->query?->getWith() ?? [];
+         }
          $this->model = $this->query?->model ?? $model;
          $this->query_aggs = $this->query?->getAggregations() ?? new BaseCollection();
      }
