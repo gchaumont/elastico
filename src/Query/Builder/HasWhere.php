@@ -3,6 +3,7 @@
 namespace Elastico\Query\Builder;
 
 use BackedEnum;
+use Closure;
 use DateTime;
 use Elastico\Models\Model;
 use Elastico\Query\Compound\Boolean;
@@ -51,9 +52,9 @@ trait HasWhere
      * - key value (and equal operator)
      * - callable for grouped condition.
      */
-    public function where(string|callable $field, mixed $operator = null, mixed $value = null): self
+    public function where(string|Closure $field, mixed $operator = null, mixed $value = null): self
     {
-        if (!is_string($field) && is_callable($field)) {
+        if ($field instanceof Closure) {
             $this->getQuery()->must($field(new Boolean()));
 
             return $this;
