@@ -53,7 +53,7 @@ trait HasWhere
      */
     public function where(string|callable $field, mixed $operator = null, mixed $value = null): self
     {
-        if (is_callable($field)) {
+        if (!is_string($field) && is_callable($field)) {
             $this->getQuery()->must($field(new Boolean()));
 
             return $this;
