@@ -51,7 +51,7 @@ abstract class Model extends DataAccessObject // implements Serialisable
         return $this;
     }
 
-    final public function get_id(): ?string
+    public function get_id(): ?string
     {
         return $this->id ?? $this->make_id();
     }

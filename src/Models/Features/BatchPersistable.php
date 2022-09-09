@@ -178,8 +178,8 @@ trait BatchPersistable
             $actionType = array_key_first($result);
 
             if (!empty($objects[$key]->get_id())) {
-                if (($result[$actionType]['_id']) !== $objects[$key]->get_id()) {
-                    throw new Exception('Upsert Model Hydration Mismatch', 1);
+                if ($result[$actionType]['_id'] !== $objects[$key]->get_id()) {
+                    throw new Exception('Upsert Model Hydration Mismatch : '.$result[$actionType]['_id'].' '.$objects[$key]->get_id());
                 }
             } else {
                 $objects[$key]->set_id($result[$actionType]['_id']);
