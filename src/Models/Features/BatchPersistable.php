@@ -22,7 +22,7 @@ trait BatchPersistable
         $payload = [];
 
         foreach ($objects as $model) {
-            if (empty($model->get_id())) {
+            if (empty($model->getKey())) {
                 $payload['body'][] = [
                     'create' => [
                         '_index' => $model->writableIndexName(),
@@ -32,7 +32,7 @@ trait BatchPersistable
             } else {
                 $payload['body'][] = [
                     'update' => [
-                        '_id' => $model->get_id(),
+                        '_id' => $model->getKey(),
                         '_index' => $model->writableIndexName(),
                     ],
                 ];
@@ -101,7 +101,7 @@ trait BatchPersistable
         $body = $objects->flatMap(fn ($model) => [
             [
                 'update' => [
-                    '_id' => $model->get_id(),
+                    '_id' => $model->getKey(),
                     '_index' => $model->writableIndexName(),
                 ],
             ],
@@ -138,7 +138,7 @@ trait BatchPersistable
         foreach ($objects as $model) {
             $payload['body'][] = [
                 'delete' => [
-                    '_id' => $model->get_id(),
+                    '_id' => $model->getKey(),
                     '_index' => $model->writableIndexName(),
                 ],
             ];
@@ -177,9 +177,9 @@ trait BatchPersistable
         foreach ($items as $key => $result) {
             $actionType = array_key_first($result);
 
-            if (!empty($objects[$key]->get_id())) {
-                if ($result[$actionType]['_id'] !== $objects[$key]->get_id()) {
-                    throw new Exception('Upsert Model Hydration Mismatch : '.$result[$actionType]['_id'].' '.$objects[$key]->get_id());
+            if (!empty($objects[$key]->getKey())) {
+                if ($result[$actionType]['_id'] !== $objects[$key]->getKey()) {
+                    throw new Exception('Upsert Model Hydration Mismatch : '.$result[$actionType]['_id'].' '.$objects[$key]->getKey());
                 }
             } else {
                 $objects[$key]->set_id($result[$actionType]['_id']);

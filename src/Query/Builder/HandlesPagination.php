@@ -66,7 +66,7 @@ trait HandlesPagination
                 ->tap(function ($hits) use (&$total) {
                     $total = $hits->count();
                 })
-                ->keyBy(fn ($hit) => $hit instanceof Model ? $hit->get_id() : $hit['_id'])
+                ->keyBy(fn ($hit) => $hit instanceof Model ? $hit->getKey() : $hit['_id'])
                 ->all()
             ;
             if ($response instanceof Promise) {
@@ -94,7 +94,7 @@ trait HandlesPagination
                     ->tap(function ($hits) use (&$total) {
                         $total = $hits->count();
                     })
-                    ->keyBy(fn ($hit) => $hit instanceof Model ? $hit->get_id() : $hit['_id'])
+                    ->keyBy(fn ($hit) => $hit instanceof Model ? $hit->getKey() : $hit['_id'])
                     ->all()
             ;
                 // $total = count($response['hits']['hits']);

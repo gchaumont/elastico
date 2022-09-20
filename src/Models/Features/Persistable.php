@@ -12,7 +12,7 @@ trait Persistable
 
     public function save(string|array $source = null, bool|string $refresh = null): static
     {
-        return $this->get_id() ? $this->upsert($source, $refresh) : $this->insert($refresh);
+        return $this->getKey() ? $this->upsert($source, $refresh) : $this->insert($refresh);
     }
 
     public function insert(null|bool|string $refresh = null): static
@@ -35,7 +35,7 @@ trait Persistable
     {
         $response = static::getConnection()->performQuery('update', [
             'index' => $this->writableIndexName(),
-            'id' => $this->get_id(),
+            'id' => $this->getKey(),
             'refresh' => $refresh,
             'body' => array_filter([
                 'doc_as_upsert' => true,
@@ -60,7 +60,7 @@ trait Persistable
         return static::getConnection()->performQuery('delete', [
             'index' => $this->writableIndexName(),
             'refresh' => $refresh,
-            'id' => $this->get_id(),
+            'id' => $this->getKey(),
         ]);
     }
 }

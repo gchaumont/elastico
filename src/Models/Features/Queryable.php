@@ -16,7 +16,7 @@ trait Queryable
 
     public function fresh()
     {
-        return static::query()->find($this->get_id());
+        return static::query()->find($this->getKey());
     }
 
     public function refresh()

@@ -30,7 +30,7 @@ use Illuminate\Support\LazyCollection;
 
                  $relatedIds = $static
                      ->filter(fn ($hit) => isset($hit->{$propName}))
-                     ->map(fn ($hit) => $hit->{$propName}->get_id())
+                     ->map(fn ($hit) => $hit->{$propName}->getKey())
                      ->values()
             ;
 
@@ -42,7 +42,7 @@ use Illuminate\Support\LazyCollection;
                      collect($relatedIds)->map(fn ($id) => 'rel:'.$relation.'.'.$id)->unique()->values()->all()
                  ))
                      ->filter()
-                     ->keyBy(fn ($m) => $m->get_id())
+                     ->keyBy(fn ($m) => $m->getKey())
                  ;
 
                  $remainingIds = $relatedIds->reject(fn ($id) => $cachedModels[$relation]->has($id));
@@ -59,18 +59,18 @@ use Illuminate\Support\LazyCollection;
              foreach ($relatedModels as $relation => $models) {
                  if (!$models->isEmpty()) {
                      Cache::putMany(
-                         $models->keyBy(fn ($m) => 'rel:'.$relation.'.'.$m->get_id())->all(),
+                         $models->keyBy(fn ($m) => 'rel:'.$relation.'.'.$m->getKey())->all(),
                          now()->addMinutes(60)
                      );
                  }
 
-                 $models = $models->concat(collect($cachedModels[$relation]))->keyBy(fn ($m) => $m->get_id());
+                 $models = $models->concat(collect($cachedModels[$relation]))->keyBy(fn ($m) => $m->getKey());
 
                  $propName = $static->first()->getPropertyNameForClass($relation);
 
                  $static = $static->map(function ($hit) use ($propName, $models) {
                      if (isset($hit->{$propName})) {
-                         $id = $hit->{$propName}->get_id();
+                         $id = $hit->{$propName}->getKey();
                          if ($models->has($id)) {
                              $hit->{$propName} = $models->get($id);
                          }
@@ -100,7 +100,7 @@ use Illuminate\Support\LazyCollection;
              $key = fn ($o) => $o->{$key};
          }
 
-         $map = $this->keyBy(fn ($m) => $m->get_id())
+         $map = $this->keyBy(fn ($m) => $m->getKey())
              ->map($key)
          ;
 
@@ -110,8 +110,8 @@ use Illuminate\Support\LazyCollection;
          ;
 
          return $this->map(function ($model) use ($property, $related, $map) {
-             // if ($related->has($model->get_id())) {
-             $property($model, $related->get($map->get($model->get_id())));
+             // if ($related->has($model->getKey())) {
+             $property($model, $related->get($map->get($model->getKey())));
              // }
 
              return $model;

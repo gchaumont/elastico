@@ -27,6 +27,6 @@ trait Cacheable
 
     private static function getCacheKey(Model $that): string
     {
-        return static::class.'.'.$that->get_id();
+        return static::class.'.'.$that->getKey();
     }
 }

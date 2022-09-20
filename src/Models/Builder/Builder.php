@@ -65,7 +65,7 @@ class Builder extends BaseBuilder
     //         $docs = $docs->concat(
     //             collect($hits)
     //                 ->filter(fn ($hit) => isset($hit->{$propName}))
-    //                 ->map(fn ($hit) => $hit->{$propName}->get_id())
+    //                 ->map(fn ($hit) => $hit->{$propName}->getKey())
     //                 ->filter()
     //                 ->unique()
     //                 ->map(fn ($id) => [
@@ -100,8 +100,8 @@ class Builder extends BaseBuilder
     //             $propName = $hits[0]::getPropertyNameForClass($relatedClass);
     //             $hits = collect($hits);
     //             $hits = $hits->transform(function ($hit) use ($propName, $relatedModels, $relatedClass) {
-    //                 if ($id = (isset($hit->{$propName}) ? $hit->{$propName}->get_id() : null)) {
-    //                     $relatedClassModels = array_filter($relatedModels, fn ($model) => $model instanceof $relatedClass && $model->get_id() == $id);
+    //                 if ($id = (isset($hit->{$propName}) ? $hit->{$propName}->getKey() : null)) {
+    //                     $relatedClassModels = array_filter($relatedModels, fn ($model) => $model instanceof $relatedClass && $model->getKey() == $id);
     //                     // response($relatedClassModels)->send();
     //                     if (!empty($relatedClassModels)) {
     //                         $hit->{$propName} = reset($relatedClassModels); // TODO : handle model not found better

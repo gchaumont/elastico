@@ -15,7 +15,7 @@ trait Serialisable
 {
     public function serialiseRelated(): array
     {
-        return ['id' => $this->get_id()];
+        return ['id' => $this->getKey()];
     }
 
     public function serialise(bool $asRelation = false): array
@@ -91,7 +91,7 @@ trait Serialisable
                 is_array($value) => $value,
                 is_numeric($value) => $value,
                 is_object($value) && enum_exists(get_class($value)) => $value->value,
-                $value instanceof Model => $value->get_id(),
+                $value instanceof Model => $value->getKey(),
                 $value instanceof Stringable => (string) $value,
                 default => throw new Exception('Field not castable to string'),
             },
@@ -99,7 +99,7 @@ trait Serialisable
           FieldType::integer => (int) match (true) {
               // 'object' => $value->value, // enums
                 is_object($value) && enum_exists(get_class($value)) => $value->value,
-                $value instanceof Model => $value->get_id(),
+                $value instanceof Model => $value->getKey(),
                 is_string($value) => $value,
                 is_array($value) => $value,
                 $value instanceof Stringable => (string) $value,

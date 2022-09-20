@@ -15,6 +15,16 @@ abstract class DataAccessObject
     use Serialisable;
     use Unserialisable;
 
+    public function getAttribute(string $field): mixed
+    {
+        return $this->getFieldValue(field: $field);
+    }
+
+    public function setAttribute(string $field, mixed $value): static
+    {
+        return $this->setFieldValue(field: $field, value: $value);
+    }
+
     public function getFieldValue(string $field): mixed
     {
         $path = explode('.', $field);

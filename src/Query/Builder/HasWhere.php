@@ -55,7 +55,7 @@ trait HasWhere
     public function where(string|Closure $field, mixed $operator = null, mixed $value = null): self
     {
         if ($field instanceof Closure) {
-            $this->getQuery()->must($field(new Boolean()));
+            $this->getQuery()->filter($field(new Boolean()));
 
             return $this;
         }
@@ -93,7 +93,7 @@ trait HasWhere
         return match (is_object($value)) {
             false => $value ,
             true => match (true) {
-                $value instanceof Model => $value->get_id(),
+                $value instanceof Model => $value->getKey(),
                 $value instanceof DateTime => $value->format(DateTime::ATOM),
                 $value instanceof BackedEnum => $value->value,
                 $value instanceof UnitEnum => $value->name,
