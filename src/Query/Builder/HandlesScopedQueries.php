@@ -2,6 +2,7 @@
 
 namespace Elastico\Query\Builder;
 
+use Elastic\Elasticsearch\Exception\ClientResponseException;
 use Elastico\Exceptions\ModelNotFoundException;
 use Elastico\Models\Model;
 use Elastico\Query\Response\PromiseResponse;
@@ -29,9 +30,17 @@ trait HandlesScopedQueries
                 ->hits()
                 ->first()
             ;
-        } catch (\Elastic\Transport\Exception\NotFoundException $e) {
-            return null;
+
+            // } catch (\Elastic\Transport\Exception\NotFoundException $e) {
+        //     return null;
+        } catch (ClientResponseException $e) {
+            if ('404' == $e->getResponse()->getStatusCode()) {
+                return null;
+            }
         }
+        // catch (\Http\Client\Exception\TransferException $e) {
+
+        // }
     }
 
     public function findMany(iterable $ids): LazyCollection
