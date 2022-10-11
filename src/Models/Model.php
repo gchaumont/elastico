@@ -66,7 +66,7 @@ abstract class Model extends DataAccessObject // implements Serialisable
     {
         return $this->setAttribute(
             attribute: $this->getKeyName(),
-            value: (string) $id
+            value: (string) $key
         );
     }
 
