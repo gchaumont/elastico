@@ -11,7 +11,7 @@ use Illuminate\Support\LazyCollection;
  /**
   * Elastic Base Response.
   */
- class Response
+ class Response extends Collection
  {
      protected array $with;
 
@@ -19,12 +19,15 @@ use Illuminate\Support\LazyCollection;
 
      public function __construct(
          protected int $total,
-         protected Collection $hits,
+         LazyCollection $hits,
          protected BaseCollection|LazyCollection $aggregations,
          protected array $response,
          protected null|Builder $query = null,
          string $model = null,
      ) {
+         $this->hits = $hits;
+         $this->source = $hits;
+
          if ($this->query instanceof ModelBuilder) {
              $this->with = $this->query?->getWith() ?? [];
          }
@@ -44,8 +47,7 @@ use Illuminate\Support\LazyCollection;
 
      public function aggregations(): LazyCollection|BaseCollection
      {
-         return $this->aggregations
-         ;
+         return $this->aggregations;
      }
 
      public function aggregation(string $name): null|AggregationResponse
@@ -58,7 +60,7 @@ use Illuminate\Support\LazyCollection;
          return $this->response;
      }
 
-     public function dd(): never
+     public function dd(...$args)
      {
          if (request()->wantsJson()) {
              // response($this->response())->send();

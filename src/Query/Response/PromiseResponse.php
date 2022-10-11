@@ -57,6 +57,8 @@ use Illuminate\Support\LazyCollection;
          }
          $this->model = $this->query?->model ?? $model;
          $this->query_aggs = $this->query?->getAggregations() ?? new BaseCollection();
+
+         $this->source = $this->hits();
      }
 
      public function hits(): Collection
@@ -144,14 +146,5 @@ use Illuminate\Support\LazyCollection;
      {
          $this->onFulfilled = $onFulfilled;
          $this->onRejected = $onRejected;
-     }
-
-     public function dd(): never
-     {
-         if (request()->wantsJson()) {
-             // response($this->response())->send();
-             // response(serialize($this->aggregations()))->send();
-         }
-         dd($this);
      }
  }

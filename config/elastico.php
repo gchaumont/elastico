@@ -7,7 +7,7 @@ return [
     // The list of ElasticSearch connections
     'connections' => [
         'main' => [
-            'async' => true,
+            'async' => false,
             'username' => 'elastic',
             'password' => '*****',
             // 'cloud' => 'cloud_id',

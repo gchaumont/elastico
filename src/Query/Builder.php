@@ -53,17 +53,17 @@ use Elastico\Query\Term\Wildcard;
 
      protected string $filterPath;
 
-     protected Connection $connection;
+     protected null|string $connection = null;
 
      public function __construct(
-         null|Connection $connection = null
+         null|string $connection = null
      ) {
-         $this->connection = $connection ?? resolve(ConnectionResolverInterface::class)->connection();
+         $this->connection = $connection;
      }
 
      public function connection(string $connection): static
      {
-         $this->connection = resolve(ConnectionResolverInterface::class)->connection();
+         $this->connection = $connection;
 
          return $this;
      }
@@ -215,6 +215,6 @@ use Elastico\Query\Term\Wildcard;
 
      private function getConnection(): Connection
      {
-         return $this->connection;
+         return resolve(ConnectionResolverInterface::class)->connection($this->connection);
      }
  }

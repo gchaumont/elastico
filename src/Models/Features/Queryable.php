@@ -9,7 +9,7 @@ trait Queryable
     public static function query(): Builder
     {
         return new Builder(
-            connection: static::getConnection(),
+            connection: static::getConnectionName(),
             model: static::class,
         );
     }

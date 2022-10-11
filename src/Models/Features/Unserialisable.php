@@ -23,7 +23,7 @@ trait Unserialisable
     {
         if (is_string($data)) {
             $static = new static();
-            $static->set_id($data);
+            $static->setKey(key: $data);
 
             return $static;
         }
@@ -31,7 +31,7 @@ trait Unserialisable
         $object = (new static(...static::prepareConstructorProperties($data)));
 
         if (isset($data['id'])) {
-            $object->set_id($data['id']);
+            $object->setKey(key: $data['id']);
         }
 
         return $object->addSerialisedData($data);

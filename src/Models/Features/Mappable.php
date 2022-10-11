@@ -140,20 +140,4 @@ trait Mappable
 
         return collect($fields);
     }
-
-    public static function getTotalFieldCount(): int
-    {
-        // return count(static::getIndexProperties());
-        $props = static::getIndexProperties();
-
-        $total = 0;
-        do {
-            $total += count($props);
-            $props = array_values(array_filter($props, fn ($prop) => isset($prop['properties'])));
-            $total -= count($props);
-            $props = array_merge(...(array_map(fn ($prop) => array_values($prop['properties']), $props)));
-        } while ($props);
-
-        return $total;
-    }
 }

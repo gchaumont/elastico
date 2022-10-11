@@ -26,9 +26,7 @@ trait Persistable
             $response = $response->wait()->asArray();
         }
 
-        return $this->set_id(
-            (string) $response['_id']
-        );
+        return $this->setKey(key: $response['_id']);
     }
 
     public function upsert(null|string|array $source = null, null|bool|string $refresh = null): static

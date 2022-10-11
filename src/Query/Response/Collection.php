@@ -2,19 +2,27 @@
 
 namespace Elastico\Query\Response;
 
-use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\LazyCollection;
 
- /**
+/**
   * Elastic Base Response.
-  * // TODO: remove cache from here.
   */
  class Collection extends LazyCollection
  {
-     public function load($relations): static
+     public function load(array|string $relations): static
      {
-         $static = $this;
+         if ($this->isEmpty()) {
+             return $this;
+         }
+         $relations = is_string($relations) ? func_get_args() : $relations;
 
+         $query = $this->first()->query()->with($relations);
+
+         $this->source = $query->eagerLoadRelations($this->all());
+
+         return $this;
+         $static = $this;
+         dd('asd');
          if (['*'] === $relations) {
              $relations = $static->first()::getAllRelations();
          }
@@ -89,73 +97,5 @@ use Illuminate\Support\LazyCollection;
          }
 
          return $static;
-     }
-
-     public function loadRelated(string $model, string|callable $key, string|callable $property)
-     {
-         if (is_string($property)) {
-             $property = fn ($o, $p) => $o->{$property} = $p;
-         }
-         if (is_string($key)) {
-             $key = fn ($o) => $o->{$key};
-         }
-
-         $map = $this->keyBy(fn ($m) => $m->getKey())
-             ->map($key)
-         ;
-
-         $related = $map
-             ->filter()
-             ->pipe(fn ($keys) => $model::query()->findMany($keys))
-         ;
-
-         return $this->map(function ($model) use ($property, $related, $map) {
-             // if ($related->has($model->getKey())) {
-             $property($model, $related->get($map->get($model->getKey())));
-             // }
-
-             return $model;
-         })
-        ;
-     }
-
-     public function loadAggregate()
-     {
-         // code...
-     }
-
-     public function loadCount()
-     {
-         // code...
-     }
-
-     public function loadMax($value = '')
-     {
-         // code...
-     }
-
-     public function loadMin()
-     {
-         // code...
-     }
-
-     public function loadSum($value = '')
-     {
-         // code...
-     }
-
-     public function loadAvg()
-     {
-         // code...
-     }
-
-     public function loadExist()
-     {
-         // code...
-     }
-
-     public function loadMissing()
-     {
-         // code...
      }
  }

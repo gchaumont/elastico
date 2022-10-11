@@ -8,7 +8,7 @@ use Elastico\Models\Features\BatchPersistable;
 use Elastico\Models\Features\Configurable;
 use Elastico\Models\Features\Persistable;
 use Elastico\Models\Features\Queryable;
-use Elastico\Models\Features\Relatable;
+use Elastico\Models\Relations\Relatable;
 use Http\Promise\Promise;
 
 /**
@@ -26,7 +26,7 @@ abstract class Model extends DataAccessObject // implements Serialisable
 
     const UPDATED_AT = 'updated_at';
 
-    public readonly string $id;
+    // public readonly string $id;
 
     public readonly string $_index;
 
@@ -42,7 +42,7 @@ abstract class Model extends DataAccessObject // implements Serialisable
 
     public function initialiseIdentifiers(string $id, null|string $index = null): static
     {
-        $this->set_id($id);
+        $this->setKey($id);
 
         if ($index) {
             $this->_index = $index;
@@ -53,14 +53,21 @@ abstract class Model extends DataAccessObject // implements Serialisable
 
     public function getKey(): ?string
     {
-        return $this->id ?? $this->make_id();
+        return $this->getAttribute($this->getKeyName());
     }
 
-    public function set_id(string|int $id): static
+    public function getKeyName(): string
     {
-        $this->id = (string) $id;
+        // get attribute name with Attribute ID
+        return 'id';
+    }
 
-        return $this;
+    public function setKey(string|int $key): static
+    {
+        return $this->setAttribute(
+            attribute: $this->getKeyName(),
+            value: (string) $id
+        );
     }
 
     public function set_index(string|null $index): static
@@ -68,16 +75,6 @@ abstract class Model extends DataAccessObject // implements Serialisable
         $this->_index = $index;
 
         return $this;
-    }
-
-    public function has_id(): bool
-    {
-        return !empty($this->getKey());
-    }
-
-    public function make_id(): ?string
-    {
-        return null;
     }
 
     public static function setConnection(string $connection): static
@@ -97,6 +94,11 @@ abstract class Model extends DataAccessObject // implements Serialisable
         return static::$_resolver->connection(static::$_connection);
     }
 
+    public static function getConnectionName(): string
+    {
+        return static::$_connection;
+    }
+
     public function getCreatedAtColumn(): string
     {
         return static::CREATED_AT;
@@ -110,7 +112,7 @@ abstract class Model extends DataAccessObject // implements Serialisable
     public static function unserialise(array|Promise $document): static
     {
         return parent::unserialise($document)
-            ->set_id($document['_id'] ?? $document['id'])
+            ->setKey($document['_id'] ?? $document['id'])
             ->set_index($document['_index'] ?? null)
         ;
     }

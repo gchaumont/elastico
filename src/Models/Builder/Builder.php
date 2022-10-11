@@ -2,8 +2,9 @@
 
 namespace Elastico\Models\Builder;
 
-use Elastico\Connection;
+use Closure;
 use Elastico\Models\Model;
+use Elastico\Models\Relations\Relation;
 use Elastico\Query\Builder as BaseBuilder;
 
 class Builder extends BaseBuilder
@@ -11,7 +12,7 @@ class Builder extends BaseBuilder
     protected array $with = [];
 
     public function __construct(
-        null|Connection $connection = null,
+        null|string $connection = null,
         public readonly string $model,
     ) {
         parent::__construct($connection);
@@ -34,11 +35,46 @@ class Builder extends BaseBuilder
         return $this->with;
     }
 
-    public function with(string|array $relations): self
+    public function with(string|array $relations /*, Closure $callback = null*/): self
     {
-        $this->with = is_array($relations) ? $relations : [$relations];
+        $this->with = is_string($relations) ? func_get_args() : $relations;
 
         return $this;
+    }
+
+    public function eagerLoadRelations(iterable $models): iterable
+    {
+        foreach ($this->with as $relation) {
+            if (!str_contains($relation, '.')) {
+                $models = $this->eagerLoadRelation(
+                    models: collect($models)->all(),
+                    name: $relation,
+                    // constraints: $constraints
+                );
+            }
+        }
+
+        return $models;
+    }
+
+    public function getRelation(string $relation): Relation
+    {
+        return $this->getModel()->getRelation(relation: $relation);
+    }
+
+    public function eagerLoadRelation(array $models, string $name /*, Closure $constraints*/)
+    {
+        $relation = $this->getRelation(relation: $name);
+
+        $relation->addEagerConstraints($models);
+
+        // $constraints($relation);
+
+        return $relation->match(
+            models: $models,
+            results: $relation->getResults(),
+            relation: $name,
+        );
     }
 
     public function withAllRelations(): self
@@ -46,6 +82,21 @@ class Builder extends BaseBuilder
         $this->with = ['*'];
 
         return $this;
+    }
+
+    protected function parseWithRelations(array $relations): array
+    {
+        if ([] === $relations) {
+            return [];
+        }
+        $results = [];
+
+        foreach ($relations as $relation) {
+            $results[$relation] ??= static function () {
+            };
+        }
+
+        return $results;
     }
 
     // protected function loadRelations(Collection $hits): Collection
