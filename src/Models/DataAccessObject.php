@@ -18,7 +18,7 @@ abstract class DataAccessObject
     public function getAttribute(string $attribute): mixed
     {
         if (false !== ($pos = strpos($attribute, '.'))) {
-            return $this->{substr($attribute, 0, $pos)}->getAttribute(substr($attribute, 1 + $pos));
+            return $this->{substr($attribute, 0, $pos)}?->getAttribute(substr($attribute, 1 + $pos));
         }
 
         return $this->{$attribute} ?? null;
