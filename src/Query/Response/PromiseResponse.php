@@ -28,6 +28,7 @@ use Illuminate\Support\LazyCollection;
      protected array $with;
 
      protected $onFulfilled;
+
      protected $onRejected;
 
      protected Collection $hits;
@@ -68,7 +69,7 @@ use Illuminate\Support\LazyCollection;
                  !empty($this->model),
                  fn ($hits) => $hits
                      ->map(fn ($hit): DataAccessObject|Model => $this->model::unserialise($hit))
-                     ->when(!empty($this->with), fn ($a) => $a->load($this->with))
+                     ->when(!empty($this->with), fn ($collection) => $collection->load($this->with))
              )
          ;
      }
@@ -101,30 +102,35 @@ use Illuminate\Support\LazyCollection;
              $response = new Response(
                  total: $this->total(),
                  hits: $this->hits(),
-                 aggregations: $this->aggregations(),
+                 aggregations: $this->aggregations()->collect(),
                  query: $this->query,
                  response: $this->response(),
              );
 
+             // dd($response);
              if (!empty($this->onFulfilled)) {
                  ($this->onFulfilled)($response);
              }
-
-             return $response;
          } catch (\Throwable $e) {
              if (!empty($this->onRejected)) {
                  ($this->onRejected)($e);
              }
+             dd($e);
          }
+
          unset(
-            $this->get_aggregations,
-            $this->get_hits,
+             $this->get_aggregations,
+             $this->get_hits,
              $this->get_total,
              $this->query,
              $this->response,
              $this->onFulfilled,
              $this->onRejected,
          );
+
+         // response(($this))->send();
+
+         return $response ?? null;
      }
 
      public function response(): array

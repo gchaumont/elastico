@@ -26,7 +26,7 @@ use Illuminate\Support\LazyCollection;
          string $model = null,
      ) {
          $this->hits = $hits;
-         $this->source = $hits;
+         $this->source = $this->hits;
 
          if ($this->query instanceof ModelBuilder) {
              $this->with = $this->query?->getWith() ?? [];

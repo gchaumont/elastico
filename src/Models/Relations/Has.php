@@ -36,11 +36,21 @@ abstract class Has extends Relation
     {
         $foreignKey = $this->getForeignKey();
 
+        $localKey = $this->getLocalKey();
+
+        $results = collect($results);
+
+        if (is_array(collect($results)->first()?->getAttribute($foreignKey))) {
+            return collect($models)->each(function (Model $model) use ($relation, $results, $foreignKey, $localKey) {
+                $related = $results->filter(fn ($r) => collect($r->getAttribute($foreignKey))->contains($model->getAttribute($localKey)));
+
+                $model->setRelated($relation, $related);
+            });
+        }
+
         $results = collect($results)
             ->keyBy(fn (object $result) => $result->getAttribute($foreignKey))
         ;
-
-        $localKey = $this->getLocalKey();
 
         return collect($models)->each(function (Model $model) use ($relation, $results, $foreignKey, $localKey) {
             $related = $results->filter(fn ($r) => $r->getAttribute($foreignKey) == $model->getAttribute($localKey));

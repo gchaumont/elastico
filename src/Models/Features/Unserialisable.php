@@ -44,18 +44,23 @@ trait Unserialisable
                 continue;
             }
             if (!isset($this->{$field->propertyName()})) {
-                $this->{$field->propertyName()} = static::unserialiseValue($field, $source[$field->fieldName()]);
+                $this->setAttribute(
+                    attribute: $field->propertyName(),
+                    value: static::unserialiseValue($field, $source[$field->fieldName()])
+                );
 
                 continue;
             }
 
-            if ($this->{$field->propertyName()} instanceof Model) {
-                $this->{$field->propertyName()}->addSerialisedData($source[$field->fieldName()]);
+            $attribute = $this->getAttribute($field->propertyName());
+
+            if ($attribute instanceof Model) {
+                $attribute->addSerialisedData($source[$field->fieldName()]);
 
                 continue;
             }
-            if ($this->{$field->propertyName()} instanceof DataAccessObject) {
-                $this->{$field->propertyName()}->addSerialisedData($source[$field->fieldName()]);
+            if ($attribute instanceof DataAccessObject) {
+                $attribute->addSerialisedData($source[$field->fieldName()]);
 
                 continue;
             }

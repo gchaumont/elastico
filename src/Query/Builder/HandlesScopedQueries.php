@@ -118,6 +118,10 @@ trait HandlesScopedQueries
         ]);
 
         return LazyCollection::make(function () use ($response, $queries) {
+            if ($response instanceof Promise) {
+                $response = $response->wait()->asArray();
+            }
+
             return $queries
                 ->keys()
                 ->combine(

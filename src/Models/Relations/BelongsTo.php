@@ -25,12 +25,26 @@ class BelongsTo extends Relation
 
     public function getResults(): iterable|object
     {
+        if (!empty($this->foreignKey)) {
+            return $this->where($this->getForeignKey(), $this->ids)
+                ->take(10000)
+                ->get()
+                ->hits()
+            ;
+        }
+
         return $this->findMany($this->ids);
     }
 
     public function addEagerConstraints(iterable $models): static
     {
-        $this->ids = collect($models)->map(fn (Model $m) => $m->getAttribute($this->getLocalKey()));
+        $this->ids = collect($models)
+            // ->pipe(fn ($s) => response($s)->send())
+            ->map(fn (Model $m) => $m->getAttribute($this->getLocalKey()))
+            ->filter()
+            ->unique()
+            ->values()
+        ;
 
         return $this;
         // return $this->where(
@@ -50,9 +64,17 @@ class BelongsTo extends Relation
         $localKey = $this->getLocalKey();
 
         return collect($models)->each(function (Model $model) use ($relation, $results, $localKey) {
-            if ($related = $results->get($model->getAttribute($localKey))) {
-                $model->setRelated($relation, $related);
-            }
+            $model->setRelated(
+                relation: $relation,
+                value: $results->get($model->getAttribute($localKey))
+            )
+
+            ;
+            // if ($related = $results->get($model->getAttribute($localKey))) {
+            //     $model->setRelated($relation, $related);
+            // } elseif (!$model->isRelationLoaded(relation: $related)) {
+            //     $model->setRelated($relation, null);
+            // }
         });
     }
 
@@ -63,6 +85,6 @@ class BelongsTo extends Relation
 
     public function getLocalKey(): string
     {
-        return $this->localKey ?? $this->name.'.'.$this->getRelated()->getKeyName();
+        return $this->ownerKey ?? $this->name.'.'.$this->getRelated()->getKeyName();
     }
 }

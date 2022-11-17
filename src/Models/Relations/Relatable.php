@@ -31,6 +31,11 @@ trait Relatable
         return $this;
     }
 
+    public function isRelationLoaded(string $relation): bool
+    {
+        return $this->attributeIsSet(attribute: $relation);
+    }
+
     public function isRelation(string $relation): bool
     {
         return $this->getRelations()->has($relation);

@@ -18,7 +18,17 @@ abstract class DataAccessObject
     public function getAttribute(string $attribute): mixed
     {
         if (false !== ($pos = strpos($attribute, '.'))) {
-            return $this->{substr($attribute, 0, $pos)}?->getAttribute(substr($attribute, 1 + $pos));
+            $attr = substr($attribute, 0, $pos);
+
+            if (!isset($this->{$attr})) {
+                return null;
+            }
+
+            return $this->{$attr}?->getAttribute(substr($attribute, 1 + $pos));
+        }
+
+        if (!isset($this->{$attribute})) {
+            return null;
         }
 
         return $this->{$attribute} ?? null;
@@ -63,5 +73,10 @@ abstract class DataAccessObject
         // $this->{$f} = $value;
 
         return $this;
+    }
+
+    public function attributeIsSet(string $attribute): bool
+    {
+        return isset($this->{$attribute});
     }
 }
