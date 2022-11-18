@@ -97,7 +97,6 @@ trait HandlesPagination
                     ->keyBy(fn ($hit) => $hit instanceof Model ? $hit->getKey() : $hit['_id'])
                     ->all()
             ;
-                // $total = count($response['hits']['hits']);
             }
 
             if (isset($response['pit_id'])) {

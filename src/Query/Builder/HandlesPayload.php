@@ -14,6 +14,13 @@ trait HandlesPayload
         dd($this->buildPayload());
     }
 
+    public function dump(...$args)
+    {
+        dump($this);
+
+        return $this;
+    }
+
     public function buildPayload(): array
     {
         $this->payload['index'] = $this->index;

@@ -4,7 +4,7 @@ namespace Elastico\Query\Response;
 
 use Illuminate\Support\LazyCollection;
 
-/**
+ /**
   * Elastic Base Response.
   */
  class Collection extends LazyCollection

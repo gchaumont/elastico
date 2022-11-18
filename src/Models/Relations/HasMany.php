@@ -9,6 +9,8 @@ class HasMany extends Has
 {
     public function getResults(): iterable|object
     {
-        return $this->get();
+        // return $this->scroll();
+
+        return $this->take(10000)->get();
     }
 }
