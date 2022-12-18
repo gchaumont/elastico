@@ -8,32 +8,32 @@ use Elastico\Mapping\FieldType;
 
 trait SoftDeletes
 {
-    #[Field(type: FieldType::date)]
-    public null|DateTime $deleted_at;
+    // #[Field(type: FieldType::date)]
+    // public null|DateTime $deleted_at;
 
-    #[Field(type: FieldType::boolean)]
-    public bool $deleted;
+    // #[Field(type: FieldType::boolean)]
+    // public bool $deleted;
 
-    public function delete(null|bool|string $refresh = null): void
-    {
-        $this->deleted();
+    // public function delete(null|bool|string $refresh = null): void
+    // {
+    //     $this->deleted();
 
-        $this->save($refresh);
-    }
+    //     $this->save($refresh);
+    // }
 
-    public function deleted(DateTime $timestamp = new DateTime()): static
-    {
-        $this->deleted_at = $timestamp;
-        $this->deleted = true;
+    // public function deleted(DateTime $timestamp = new DateTime()): static
+    // {
+    //     $this->deleted_at = $timestamp;
+    //     $this->deleted = true;
 
-        return $this;
-    }
+    //     return $this;
+    // }
 
-    public function restored(): static
-    {
-        $this->deleted_at = null;
-        $this->deleted = false;
+    // public function restored(): static
+    // {
+    //     $this->deleted_at = null;
+    //     $this->deleted = false;
 
-        return $this;
-    }
+    //     return $this;
+    // }
 }

@@ -2,9 +2,6 @@
 
 namespace Elastico\Query\Builder;
 
-use BackedEnum;
-use Closure;
-use DateTime;
 use Elastico\Models\Model;
 use Elastico\Query\Compound\Boolean;
 use Elastico\Query\Term\Exists;
@@ -12,49 +9,53 @@ use Elastico\Query\Term\Range;
 use Elastico\Query\Term\Term;
 use Elastico\Query\Term\Terms;
 use Illuminate\Support\Collection;
-use InvalidArgumentException;
-use Stringable;
-use UnitEnum;
 
 trait HasWhere
 {
-    public function whereNot(string $field, $value): self
-    {
-        $value = static::formatFilterValue($value);
+    // public function whereNot(string $field, $value): self
+    // // public function whereNot($column, $operator = null, $value = null, $boolean = 'and')
+    // {
+    //     $value = static::formatFilterValue($value);
 
-        return $this->mustNot((new Term())->field($field)->value($value));
-    }
+    //     return $this->mustNot((new Term())->field($field)->value($value));
+    // }
 
-    public function whereExists(string $field): self
-    {
-        return $this->filter((new Exists())->field($field));
-    }
+    // public function whereExists(string $field): self
+    // {
+    //     return $this->filter((new Exists())->field($field));
+    // }
 
-    public function whereNull(string $field): self
-    {
-        return $this->mustNot((new Exists())->field($field));
-    }
+    // public function whereNull(string $field): self
+    // {
+    //     return $this->mustNot((new Exists())->field($field));
+    // }
 
-    public function whereBetween(string $field, array $values): self
-    {
-        $values = array_values($values);
+    // public function whereBetween(string $field, array $values): self
+    // {
+    //     $values = array_values($values);
 
-        if (empty($values)) {
-            return $this;
-        }
+    //     if (empty($values)) {
+    //         return $this;
+    //     }
 
-        return $this->where($field, '>', $values[0])->where($field, '<', $values[1]);
-    }
+    //     return $this->where($field, '>', $values[0])->where($field, '<', $values[1]);
+    // }
 
     /**
      * Filter by
      * - key operator value
      * - key value (and equal operator)
      * - callable for grouped condition.
+     *
+     * @param mixed      $column
+     * @param null|mixed $operator
+     * @param null|mixed $value
+     * @param mixed      $boolean
      */
-    public function where(string|Closure $field, mixed $operator = null, mixed $value = null): self
+    // public function where(string|\Closure $field, mixed $operator = null, mixed $value = null): self
+    public function where($column, $operator = null, $value = null, $boolean = 'and'): self
     {
-        if ($field instanceof Closure) {
+        if ($field instanceof \Closure) {
             $this->getQuery()->filter($field(new Boolean()));
 
             return $this;
@@ -74,7 +75,7 @@ trait HasWhere
                 true => $this->filter((new Terms())->field($field)->values($value)),
                 false => $this->filter((new Term())->field($field)->value($value)),
             },
-            default => throw new InvalidArgumentException('Invalid where opterator')
+            default => throw new \InvalidArgumentException('Invalid where opterator')
         };
 
         return $this;
@@ -94,10 +95,10 @@ trait HasWhere
             false => $value ,
             true => match (true) {
                 $value instanceof Model => $value->getKey(),
-                $value instanceof DateTime => $value->format(DateTime::ATOM),
-                $value instanceof BackedEnum => $value->value,
-                $value instanceof UnitEnum => $value->name,
-                $value instanceof Stringable => (string) $value,
+                $value instanceof \DateTime => $value->format(\DateTime::ATOM),
+                $value instanceof \BackedEnum => $value->value,
+                $value instanceof \UnitEnum => $value->name,
+                $value instanceof \Stringable => (string) $value,
                 default => $value,
             }
         };

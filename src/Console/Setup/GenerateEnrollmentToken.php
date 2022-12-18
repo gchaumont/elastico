@@ -12,7 +12,7 @@ class GenerateEnrollmentToken extends Command
      *
      * @var string
      */
-    protected $signature = 'elastico:elasticsearch:token  
+    protected $signature = 'elastic:elasticsearch:token  
                                 {ip : The SSH IP Adress} 
                                 {--user=root : The SSH User} 
                                 {--root-password= : The password for the RootUser} 

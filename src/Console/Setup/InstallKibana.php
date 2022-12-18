@@ -2,7 +2,6 @@
 
 namespace Elastico\Console\Setup;
 
-use Closure;
 use Illuminate\Console\Command;
 use Spatie\Ssh\Ssh;
 
@@ -13,7 +12,7 @@ class InstallKibana extends Command
      *
      * @var string
      */
-    protected $signature = 'elastico:kibana:install 
+    protected $signature = 'elastic:kibana:install 
                                 {ip : The SSH IP Adress} 
                                 {--user=root : The SSH User} 
                                 {--root-password= : The password for the RootUser} 
@@ -79,7 +78,7 @@ class InstallKibana extends Command
         )
             ->disableStrictHostKeyChecking()
             ->onOutput($this->handleOutput())
-            ;
+        ;
 
         if ($privateKey) {
             $this->ssh->usePrivateKey($privateKey);
@@ -90,7 +89,7 @@ class InstallKibana extends Command
         }
     }
 
-    public function handleOutput(): Closure
+    public function handleOutput(): \Closure
     {
         return function ($type, $line) {
             match ($type) {

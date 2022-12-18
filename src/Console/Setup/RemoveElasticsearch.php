@@ -2,7 +2,6 @@
 
 namespace Elastico\Console\Setup;
 
-use Closure;
 use Illuminate\Console\Command;
 use Spatie\Ssh\Ssh;
 
@@ -13,7 +12,7 @@ class RemoveElasticsearch extends Command
      *
      * @var string
      */
-    protected $signature = 'elastico:elasticsearch:remove 
+    protected $signature = 'elastic:elasticsearch:remove 
                                 {ip : The SSH IP Adress} 
                                 {--user=root : The SSH User} 
                                 {--root-password= : The password for the RootUser} 
@@ -79,7 +78,7 @@ class RemoveElasticsearch extends Command
         )
             ->disableStrictHostKeyChecking()
             ->onOutput($this->handleOutput())
-            ;
+        ;
 
         if ($privateKey) {
             $this->ssh->usePrivateKey($privateKey);
@@ -90,7 +89,7 @@ class RemoveElasticsearch extends Command
         }
     }
 
-    public function handleOutput(): Closure
+    public function handleOutput(): \Closure
     {
         return function ($type, $line) {
             $match = preg_match('#The generated password for the elastic built-in superuser is : (\w*)#', $line, $matches);

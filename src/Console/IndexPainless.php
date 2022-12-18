@@ -10,7 +10,7 @@ class IndexPainless extends Command
     /**
      * The name and signature of the console command.
      */
-    protected $signature = 'elastico:painless';
+    protected $signature = 'elastic:painless';
 
     /**
      * The console command description.

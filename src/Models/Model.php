@@ -3,13 +3,14 @@
 namespace Elastico\Models;
 
 use Elastico\Connection;
-use Elastico\ConnectionResolverInterface;
+// use Elastico\ConnectionResolverInterface;
 use Elastico\Models\Features\BatchPersistable;
 use Elastico\Models\Features\Configurable;
 use Elastico\Models\Features\Persistable;
 use Elastico\Models\Features\Queryable;
 use Elastico\Models\Relations\Relatable;
 use Http\Promise\Promise;
+use Illuminate\Database\ConnectionResolverInterface;
 
 /**
  * Reads and Writes Objects to the Database.
@@ -20,7 +21,7 @@ abstract class Model extends DataAccessObject // implements Serialisable
     use Configurable;
     use Persistable;
     use Queryable;
-    use Relatable;
+    // use Relatable;
 
     const CREATED_AT = 'created_at';
 

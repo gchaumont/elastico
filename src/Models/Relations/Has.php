@@ -68,7 +68,11 @@ abstract class Has extends Relation
     {
         return $this->where(
             $this->getForeignKey(),
-            collect($models)->map(fn (Model $model) => $model->getAttribute($this->getLocalKey()))
+            collect($models)
+                ->map(fn (Model $model) => $model->getAttribute($this->getLocalKey()))
+                ->filter()
+                ->unique()
+                ->all()
         );
     }
 }

@@ -14,7 +14,7 @@ class CreateIndexTemplate extends Command
      *
      * @var string
      */
-    protected $signature = 'elastico:index:createTemplate {model}';
+    protected $signature = 'elastic:index:createTemplate {model}';
 
     protected ElasticsearchClient $client;
 

@@ -5,66 +5,41 @@ namespace Elastico\Mapping;
 use Attribute;
 use Elastico\Models\DataAccessObject;
 use Elastico\Models\Model;
-use ReflectionProperty;
 
-#[Attribute]
+#[\Attribute]
 class Field
 {
-    public readonly ReflectionProperty $property;
+    public readonly \ReflectionProperty $property;
 
     public function __construct(
-        public null|FieldType $type = null,
-        public null|string $name = null,
-        public null|string $locale = null,
-        public null|bool $doc_values = null,
-        public null|bool $eager_global_ordinals = null,
-        public null|array $fields = null,
-        public null|int $ignore_above = null,
-        public null|bool $index = null,
-        public null|string|array $copy_to = null,
-        public null|string $index_options = null,
-        public null|array $meta = null,
-        public null|bool $norms = null,
-        public null|string $null_value = null,
-        public null|string $on_script_error = null,
-        public null|string $script = null, // uses script instead of _source to calc value
-        public null|bool $store = null,
-        public null|string $similarity = null,
-        public null|string $normalizer = null,
-        public null|bool $split_queries_on_whitespace = null,
-        public null|int $scaling_factor = null,
-        public null|float $boost = null,
-        public null|int $depth_limit = null,
-        public null|array $relations = null,
-        public null|bool|string $dynamic = null,
-        public null|array $properties = null,
-        public null|bool $include_in_parent = null,
-        public null|bool $include_in_root = null,
-        public null|bool $enabled = null,
-        public int|null $dims = null,
-        public bool|null $positive_score_impact = null,
-        public null|bool $ignore_malformed = null,
-        public null|bool $coerce = null,
-        public null|int $max_shingle_size = null,
-        public null|string $analyzer = null,
-        public null|string $search_analyzer = null,
-        public null|string $search_quote_analyzer = null,
-        public null|string $term_vector = null,
-        public null|bool $preserve_separators = null,
-        public null|bool $preserve_position_increments = null,
-        public null|int $max_input_length = null,
-        public null|bool $fielddata = null,
-        public null|array $index_prefixes = null,
-        public null|bool $index_phrases = null,
-        public null|int $position_increment_gap = null,
-        public null|string $enable_position_increments = null,
-        public null|array $rawProperties = null,
-        public null|string $class = null,
+        protected FieldType $type,
+        protected string $name,
     ) {
         // code...
     }
 
-    public function withProp(ReflectionProperty $property): static
+    public static function make(string|FieldType $type, string $name): static
+    {
+        if (!$type instanceof FieldType) {
+            $type = FieldType::from($type);
+        }
+
+        return new static(type: $type, name: $name);
+    }
+
+    public function getName(): string
+    {
+        return $this->name;
+    }
+
+    public function toArray(): array
+    {
+        $config['type'] = $this->type->name;
+
+        return $config;
+    }
+
+    public function withProp(\ReflectionProperty $property): static
     {
         $this->property = $property;
 

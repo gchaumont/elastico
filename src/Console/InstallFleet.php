@@ -12,7 +12,7 @@ class InstallFleet extends Command
      *
      * @var string
      */
-    protected $signature = 'elastico:fleet:install';
+    protected $signature = 'elastic:fleet:install';
 
     /**
      * The console command description.
@@ -34,7 +34,7 @@ class InstallFleet extends Command
             '159.89.17.204', // elastic APM
         ];
 
-        //$this->generateCertificateAuthority($esIp, fleetIp: $nodes[0]);
+        // $this->generateCertificateAuthority($esIp, fleetIp: $nodes[0]);
 
         foreach ($nodes as $nodeIp) {
             $sshClient = Ssh::create('root', $nodeIp)
@@ -80,10 +80,10 @@ class InstallFleet extends Command
 
             $process = $sshClient
                 ->execute([
-                    //$this->changeToRoot(),
-                    //$this->prepareFleet(),
-                    //$this->copyFleetConfig(),
-                    //$this->addKeystorePassword(),
+                    // $this->changeToRoot(),
+                    // $this->prepareFleet(),
+                    // $this->copyFleetConfig(),
+                    // $this->addKeystorePassword(),
                     $this->installFleet($nodeIp, $esPrivateIp),
                 ])
             ;
@@ -98,7 +98,7 @@ class InstallFleet extends Command
         if ($this->password) {
             return implode("\n", [
                 "printf \"{$this->password}\n\" | sudo -S su -",
-                //"printf \"{$this->password}\n\" | sudo -S ls /etc/filebeat",
+                // "printf \"{$this->password}\n\" | sudo -S ls /etc/filebeat",
             ]);
         }
 
@@ -127,7 +127,7 @@ class InstallFleet extends Command
 
     public function installFleet($fleetip, $esPrivateIp): string
     {
-        //return 'sudo ~/elastic-agent-7.15.2-linux-x86_64/elastic-agent install';
+        // return 'sudo ~/elastic-agent-7.15.2-linux-x86_64/elastic-agent install';
 
         // sudo ~/elastic-agent-7.15.2-linux-x86_64/elastic-agent install -f \n
         return " sudo ~/elastic-agent-7.15.2-linux-x86_64/elastic-agent enroll \\
@@ -150,7 +150,7 @@ class InstallFleet extends Command
             ->disableStrictHostKeyChecking()
             ->usePrivateKey('/Users/gchaumont/.ssh/id_ed25519')
             ->onOutput(fn ($type, $line) => $this->info($type.' '.$line))
-            ;
+        ;
 
         $sshClient->execute([
             'rm /tmp/fleet-ca.zip',

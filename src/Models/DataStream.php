@@ -2,7 +2,7 @@
 
 namespace Elastico\Models;
 
-use DateTime;
+use Elastico\Eloquent\Model;
 use Elastico\Mapping\Field;
 use Elastico\Mapping\FieldType;
 
@@ -12,5 +12,5 @@ use Elastico\Mapping\FieldType;
 abstract class DataStream extends Model // implements Serialisable, Recordable
 {
     #[Field(type: FieldType::date, name: '@timestamp')]
-    public DateTime $timestamp;
+    public \DateTime $timestamp;
 }

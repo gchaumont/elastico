@@ -14,7 +14,7 @@ class UpgradeElasticsearch extends Command
      *
      * @var string
      */
-    protected $signature = 'elastico:elasticsearch:upgrade';
+    protected $signature = 'elastic:elasticsearch:upgrade';
 
     /**
      * The console command description.
@@ -36,7 +36,7 @@ class UpgradeElasticsearch extends Command
 
         $this->elastic = app()->make(Elasticsearch::class);
 
-        //$this->elastic->indices()->flush(['index' => '*']);
+        // $this->elastic->indices()->flush(['index' => '*']);
         $this->call('system:elastic:shards:allocate', ['--disable' => true]);
 
         foreach ($nodes as $node) {

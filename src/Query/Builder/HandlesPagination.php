@@ -4,7 +4,6 @@ namespace Elastico\Query\Builder;
 
 use Elastico\Models\Model;
 use Elastico\Query\Response\PromiseResponse;
-use Generator;
 use Http\Promise\Promise;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use Illuminate\Support\LazyCollection;
@@ -31,7 +30,7 @@ trait HandlesPagination
 
     public function scroll(int $size = 500, int $seconds = 10): LazyCollection
     {
-        return LazyCollection::make(function () use ($size, $seconds): Generator {
+        return LazyCollection::make(function () use ($size, $seconds): \Generator {
             $total = null;
 
             $payload = $this->buildPayload();
@@ -56,8 +55,8 @@ trait HandlesPagination
             $response = $this->getConnection()->performQuery('search', $payload);
 
             yield from (new PromiseResponse(
+                source: fn ($r): array => $r['hits']['hits'],
                 total: fn ($r): int => count($r['hits']['total']),
-                hits: fn ($r): array => $r['hits']['hits'],
                 aggregations: fn ($r): array => [],
                 response: $response,
                 query: $this,
@@ -84,8 +83,8 @@ trait HandlesPagination
                 }
 
                 yield from (new PromiseResponse(
+                    source: fn ($r): array => $r['hits']['hits'],
                     total: fn ($r): int => count($r['hits']['total']),
-                    hits: fn ($r): array => $r['hits']['hits'],
                     aggregations: fn ($r): array => [],
                     response: $response,
                     query: $this
@@ -96,7 +95,7 @@ trait HandlesPagination
                     })
                     ->keyBy(fn ($hit) => $hit instanceof Model ? $hit->getKey() : $hit['_id'])
                     ->all()
-            ;
+                ;
             }
 
             if (isset($response['pit_id'])) {
@@ -116,7 +115,7 @@ trait HandlesPagination
         int $size = 10,
         bool $insensitive = true
     ): LazyCollection {
-        return LazyCollection::make(function () use ($field, $string, $after, $size, $insensitive): Generator {
+        return LazyCollection::make(function () use ($field, $string, $after, $size, $insensitive): \Generator {
             do {
                 $response = $this->getConnection()->performQuery('termsEnum', [
                     'index' => $this->buildPayload()['index'],

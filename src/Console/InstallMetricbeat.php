@@ -12,7 +12,7 @@ class InstallMetricbeat extends Command
      *
      * @var string
      */
-    protected $signature = 'elastico:metricbeat:install';
+    protected $signature = 'elastic:metricbeat:install';
 
     /**
      * The console command description.
@@ -44,7 +44,7 @@ class InstallMetricbeat extends Command
             // '206.81.24.217' => '0oD8LUTTKwyDz1Buxy3d', // worker 2
 
             // '167.172.99.165' => 'uMC37YyEjtZr5OUioupj', // websockets
-            //'68.183.215.173' => '', // elasticsearch-01,
+            // '68.183.215.173' => '', // elasticsearch-01,
         ];
 
         foreach ($nodes as $nodeIp => $password) {
@@ -59,7 +59,7 @@ class InstallMetricbeat extends Command
             $process = $sshClient
                 ->execute([
                     $this->changeToRoot(),
-                    //$this->installMetricbeat(),
+                    // $this->installMetricbeat(),
                     $this->copyMetricbeatConfig(),
                     $this->setMetricbeatConfigOwner(),
                     $this->addKeystorePassword(),
@@ -78,7 +78,7 @@ class InstallMetricbeat extends Command
         if ($this->password) {
             return implode("\n", [
                 "printf \"{$this->password}\n\" | sudo -S su -",
-                //"printf \"{$this->password}\n\" | sudo -S ls /etc/metricbeat",
+                // "printf \"{$this->password}\n\" | sudo -S ls /etc/metricbeat",
             ]);
         }
 

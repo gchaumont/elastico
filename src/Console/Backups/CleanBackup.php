@@ -12,7 +12,7 @@ class CleanBackup extends Command
      *
      * @var string
      */
-    protected $signature = 'elastico:backup:clean';
+    protected $signature = 'elastic:backup:clean';
 
     /**
      * The console command description.

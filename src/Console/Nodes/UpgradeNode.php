@@ -12,7 +12,7 @@ class UpgradeNode extends Command
      *
      * @var string
      */
-    protected $signature = 'elastico:test';
+    protected $signature = 'elastic:test';
 
     /**
      * The console command description.

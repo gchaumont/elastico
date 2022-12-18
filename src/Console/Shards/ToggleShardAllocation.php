@@ -3,7 +3,6 @@
 namespace Elastico\Console\Shards;
 
 use App\Support\Elasticsearch\Elasticsearch;
-use Exception;
 use Illuminate\Console\Command;
 
 class ToggleShardAllocation extends Command
@@ -13,7 +12,7 @@ class ToggleShardAllocation extends Command
      *
      * @var string
      */
-    protected $signature = 'elastico:shards:allocate {--enable} {--disable}';
+    protected $signature = 'elastic:shards:allocate {--enable} {--disable}';
 
     /**
      * The console command description.
@@ -34,7 +33,7 @@ class ToggleShardAllocation extends Command
         } elseif ($this->option('disable')) {
             $enabled = 'primaries';
         } else {
-            throw new Exception('Enable or Disable option required');
+            throw new \Exception('Enable or Disable option required');
         }
 
         $elastic = app()->make(Elasticsearch::class);

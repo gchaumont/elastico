@@ -4,7 +4,6 @@ namespace Elastico\Console\Cluster;
 
 use App\Support\Elasticsearch\Elasticsearch;
 use Illuminate\Console\Command;
-use Throwable;
 
 class ClusterHealth extends Command
 {
@@ -13,7 +12,7 @@ class ClusterHealth extends Command
      *
      * @var string
      */
-    protected $signature = 'elastico:cluster:health';
+    protected $signature = 'elastic:cluster:health';
 
     /**
      * The console command description.
@@ -33,12 +32,12 @@ class ClusterHealth extends Command
 
         try {
             $r = $elastic->cluster()->health();
-        } catch (Throwable $e) {
+        } catch (\Throwable $e) {
             dd($e->getMessage());
         }
 
-        //$r = $elastic->nodes()->info();
-        //$r = $elastic->nodes()->stats();
+        // $r = $elastic->nodes()->info();
+        // $r = $elastic->nodes()->stats();
 
         dump($r);
     }

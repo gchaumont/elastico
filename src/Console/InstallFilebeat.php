@@ -13,7 +13,7 @@ class InstallFilebeat extends Command
      *
      * @var string
      */
-    protected $signature = 'elastico:filebeat:install {hostname?}';
+    protected $signature = 'elastic:filebeat:install {hostname?}';
 
     /**
      * The console command description.
@@ -67,7 +67,7 @@ class InstallFilebeat extends Command
         if ($this->password) {
             return implode("\n", [
                 "printf \"{$this->password}\n\" | sudo -S su -",
-                //"printf \"{$this->password}\n\" | sudo -S ls /etc/filebeat",
+                // "printf \"{$this->password}\n\" | sudo -S ls /etc/filebeat",
             ]);
         }
 

@@ -8,6 +8,8 @@ use Elastico\Models\Model;
 #[Attribute(Attribute::TARGET_PROPERTY)]
 class BelongsTo extends Relation
 {
+    public array $ids = [];
+
     public function __construct(
         // Related (owner) Model (inferred from attribute type / method return type)
         protected null|string $related = null,
@@ -26,6 +28,10 @@ class BelongsTo extends Relation
     public function getResults(): iterable|object
     {
         if (!empty($this->foreignKey)) {
+            if (empty($this->ids)) {
+                return collect();
+            }
+
             return $this->where($this->getForeignKey(), $this->ids)
                 ->take(10000)
                 ->get()
@@ -44,6 +50,7 @@ class BelongsTo extends Relation
             ->filter()
             ->unique()
             ->values()
+            ->all()
         ;
 
         return $this;

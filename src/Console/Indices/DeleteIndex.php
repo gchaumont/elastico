@@ -13,7 +13,7 @@ class DeleteIndex extends Command
      *
      * @var string
      */
-    protected $signature = 'elastico:index:delete {index} {--raw}';
+    protected $signature = 'elastic:index:delete {index} {--raw}';
 
     protected ElasticsearchClient $client;
 

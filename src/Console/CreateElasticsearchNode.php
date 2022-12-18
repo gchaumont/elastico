@@ -11,7 +11,7 @@ class CreateElasticsearchNode extends Command
      *
      * @var string
      */
-    protected $signature = 'elastico:node:make {hostname}';
+    protected $signature = 'elastic:node:make {hostname}';
 
     /**
      * The console command description.
@@ -30,7 +30,7 @@ class CreateElasticsearchNode extends Command
         $this->call('system:elastic:elasticsearch:install', ['hostname' => $this->argument('hostname')]);
         $this->call('system:elastic:tls:transport', ['hostname' => $this->argument('hostname')]);
         $this->call('system:elastic:tls:http', ['hostname' => $this->argument('hostname')]);
-        //$this->call('system:elastic:agent:install', ['hostname' => $this->argument('hostname')]);
-        //$this->call('system:elastic:filebeat:install', ['hostname' => $this->argument('hostname')]);
+        // $this->call('system:elastic:agent:install', ['hostname' => $this->argument('hostname')]);
+        // $this->call('system:elastic:filebeat:install', ['hostname' => $this->argument('hostname')]);
     }
 }

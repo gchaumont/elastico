@@ -2,16 +2,14 @@
 
 namespace Elastico\Query\Response\Aggregation;
 
-use ArrayAccess;
 use Elastico\Aggregations\Aggregation;
 use Elastico\Query\Response\Response;
-use Illuminate\Support\Collection;
-use RuntimeException;
+use Illuminate\Database\Eloquent\Collection;
 
 /**
  *  Aggregation Response.
  */
-class AggregationResponse implements ArrayAccess
+class AggregationResponse implements \ArrayAccess
 {
     protected Collection $aggregations;
 
@@ -72,12 +70,12 @@ class AggregationResponse implements ArrayAccess
 
     public function offsetSet(mixed $offset, mixed $value): void
     {
-        throw new RuntimeException('Aggregation results shall not be modified');
+        throw new \RuntimeException('Aggregation results shall not be modified');
     }
 
     public function offsetUnset(mixed $offset): void
     {
-        throw new RuntimeException('Aggregation results shall not be modified');
+        throw new \RuntimeException('Aggregation results shall not be modified');
     }
 
     public function dd(): never

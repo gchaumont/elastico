@@ -23,7 +23,7 @@ trait HandlesPayload
 
     public function buildPayload(): array
     {
-        $this->payload['index'] = $this->index;
+        $this->payload['index'] = $this->from;
 
         if (!is_null($this->query)) {
             $this->payload['body']['query'] = $this->query->compile();

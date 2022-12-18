@@ -13,7 +13,7 @@ class InstallEnterpriseSearch extends Command
      *
      * @var string
      */
-    protected $signature = 'elastico:ent-search:install {hostname}';
+    protected $signature = 'elastic:ent-search:install {hostname}';
 
     /**
      * The console command description.
@@ -102,7 +102,7 @@ class InstallEnterpriseSearch extends Command
 
         $contents = file_get_contents(storage_path('elastic/config/enterprise-search.yml'));
 
-        //$contents = str_replace('{{NODE_LOCAL_IP}}', $nodeIp, $contents);
+        // $contents = str_replace('{{NODE_LOCAL_IP}}', $nodeIp, $contents);
 
         fwrite($tmpfile, $contents);
 

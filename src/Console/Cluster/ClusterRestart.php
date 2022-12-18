@@ -14,7 +14,7 @@ class ClusterRestart extends Command
      *
      * @var string
      */
-    protected $signature = 'elastico:cluster:restart';
+    protected $signature = 'elastic:cluster:restart';
 
     /**
      * The console command description.

@@ -2,7 +2,6 @@
 
 namespace Elastico\Console\Setup;
 
-use Closure;
 use Elastico\ConnectionResolverInterface;
 use Illuminate\Console\Command;
 use Spatie\Ssh\Ssh;
@@ -14,7 +13,7 @@ class SetupS3Repository extends Command
      *
      * @var string
      */
-    protected $signature = 'elastico:s3:setup 
+    protected $signature = 'elastic:s3:setup 
                                 {ip : The SSH IP Adress} 
                                 {--user=root : The SSH User} 
                                 {--root-password= : The password for the RootUser} 
@@ -122,7 +121,7 @@ class SetupS3Repository extends Command
         )
             ->disableStrictHostKeyChecking()
             ->onOutput($this->handleOutput())
-            ;
+        ;
 
         if ($privateKey) {
             $this->ssh->usePrivateKey($privateKey);
@@ -133,7 +132,7 @@ class SetupS3Repository extends Command
         }
     }
 
-    public function handleOutput(): Closure
+    public function handleOutput(): \Closure
     {
         return function ($type, $line) {
             match ($type) {
@@ -169,7 +168,7 @@ class SetupS3Repository extends Command
 
         // $contents = "s3.client.spaces.endpoint: amazooonasdas.asdas\n".$contents;
 
-        $input = "{$key}: {$value}"."\n";
+        $input = "{$key}: {$value}\n";
         if (str_contains($contents, $key)) {
             $contents = preg_replace('/'.preg_quote($key).".*\n/", $input, $contents);
         } else {

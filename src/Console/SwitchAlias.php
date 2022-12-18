@@ -13,7 +13,7 @@ class SwitchAlias extends Command
      *
      * @var string
      */
-    protected $signature = 'elastico:alias:switch';
+    protected $signature = 'elastic:alias:switch';
 
     /**
      * The console command description.

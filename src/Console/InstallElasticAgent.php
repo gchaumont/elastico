@@ -13,7 +13,7 @@ class InstallElasticAgent extends Command
      *
      * @var string
      */
-    protected $signature = 'elastico:agent:install {hostname}';
+    protected $signature = 'elastic:agent:install {hostname}';
 
     /**
      * The console command description.
@@ -35,10 +35,10 @@ class InstallElasticAgent extends Command
 
         $nodes = array_filter($nodes, fn ($node) => $node['name'] == $this->argument('hostname'));
 
-        //curl -f http://159.89.17.204:8820/api/status
+        // curl -f http://159.89.17.204:8820/api/status
 
         foreach ($nodes as $node) {
-            $this->password = ''; //$password;
+            $this->password = ''; // $password;
             $sshClient = Ssh::create('root', $node['public_ip'])
                 ->disableStrictHostKeyChecking()
                 ->usePrivateKey('/Users/gchaumont/.ssh/id_ed25519')
@@ -47,7 +47,7 @@ class InstallElasticAgent extends Command
 
             $process = $sshClient
                 ->execute([
-                    //$this->changeToRoot(),
+                    // $this->changeToRoot(),
                     $this->prepareFleet(),
                 ])
             ;
@@ -62,7 +62,7 @@ class InstallElasticAgent extends Command
         if ($this->password) {
             return implode("\n", [
                 "printf \"{$this->password}\n\" | sudo -S su -",
-                //"printf \"{$this->password}\n\" | sudo -S ls /etc/filebeat",
+                // "printf \"{$this->password}\n\" | sudo -S ls /etc/filebeat",
             ]);
         }
 

@@ -14,7 +14,7 @@ class UpdateCertificateAuthority extends Command
      *
      * @var string
      */
-    protected $signature = 'elastico:ca:update {hostname}';
+    protected $signature = 'elastic:ca:update {hostname}';
 
     /**
      * The console command description.
@@ -39,7 +39,7 @@ class UpdateCertificateAuthority extends Command
         $this->kibanaConfigLocation = '/etc/kibana/kibana.yml';
         $this->apmConfigLocation = '/etc/apm-server/apm-server.yml';
 
-        //$this->trustedCertificatesLocation = '/usr/local/share/ca-certificates/elasticsearch';
+        // $this->trustedCertificatesLocation = '/usr/local/share/ca-certificates/elasticsearch';
         $this->trustedCertificatesLocation = '/usr/local/share/ca-certificates';
 
         // $nodes = Digitalocean::getDroplets(tag: 'elasticsearch');
@@ -69,7 +69,7 @@ class UpdateCertificateAuthority extends Command
                 "/tmp/{$this->certAuthCert}",
             );
 
-            //$sshClient->upload(storage_path('elastic/certificates/elasticsearch-ssl-http/kibana/elasticsearch-ca.pem'), '/etc/kibana/elasticsearch-ca.pem');
+            // $sshClient->upload(storage_path('elastic/certificates/elasticsearch-ssl-http/kibana/elasticsearch-ca.pem'), '/etc/kibana/elasticsearch-ca.pem');
 
             $sshClient->execute([
                 'root' == $client['user'] ? '' : "printf \"{$client['password']}\n\" | sudo -S su -",

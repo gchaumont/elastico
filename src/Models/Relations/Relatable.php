@@ -43,8 +43,8 @@ trait Relatable
 
     public function getRelation(string $relation): Relation
     {
-        return (clone $this->getRelations()->get($relation))
-            ?? throw new Exception('Relation ['.$relation.'] not found on Model '.static::class);
+        return clone ($this->getRelations()->get($relation)
+                    ?? throw new Exception('Relation ['.$relation.'] not found on Model '.static::class));
     }
 
     public function getForeignKey(): string

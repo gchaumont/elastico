@@ -13,7 +13,7 @@ class CopyCertificate extends Command
      *
      * @var string
      */
-    protected $signature = 'elastico:certificate:copy {path}';
+    protected $signature = 'elastic:certificate:copy {path}';
 
     /**
      * The console command description.
@@ -82,7 +82,7 @@ class CopyCertificate extends Command
                 "/tmp/{$this->certAuthCert}",
             );
 
-            //$sshClient->upload(storage_path('elastic/certificates/elasticsearch-ssl-http/kibana/elasticsearch-ca.pem'), '/etc/kibana/elasticsearch-ca.pem');
+            // $sshClient->upload(storage_path('elastic/certificates/elasticsearch-ssl-http/kibana/elasticsearch-ca.pem'), '/etc/kibana/elasticsearch-ca.pem');
 
             $sshClient->execute([
                 'root' == $client['user'] ? '' : "printf \"{$client['password']}\n\" | sudo -S su -",
@@ -102,7 +102,7 @@ class CopyCertificate extends Command
             ->disableStrictHostKeyChecking()
             ->usePrivateKey('/Users/gchaumont/.ssh/id_ed25519')
             ->onOutput(fn ($type, $line) => $this->info($type.' '.$line))
-            ;
+        ;
 
         $sshClient->upload(
             storage_path('elastic/certificates/http/'.$this->certAuthName),
@@ -122,13 +122,13 @@ class CopyCertificate extends Command
 
         $tmpfile = tmpfile();
 
-        //$contents = file_get_contents(storage_path('elastic/config/elasticsearch.yml'));
+        // $contents = file_get_contents(storage_path('elastic/config/elasticsearch.yml'));
 
-        //$contents = str_replace('{{NODE_LOCAL_IP}}', $nodeIp, $contents);
+        // $contents = str_replace('{{NODE_LOCAL_IP}}', $nodeIp, $contents);
 
         fwrite($tmpfile, $yaml);
 
-        //$sshClient->upload(stream_get_meta_data($tmpfile)['uri'], '/etc/elasticsearch/instances.yml');
+        // $sshClient->upload(stream_get_meta_data($tmpfile)['uri'], '/etc/elasticsearch/instances.yml');
         $sshClient->upload(stream_get_meta_data($tmpfile)['uri'], '/tmp/instances.yml');
 
         fclose($tmpfile);
@@ -176,8 +176,8 @@ class CopyCertificate extends Command
                             "sed -i '/xpack.security.http.ssl.client_authentication: required/c\\xpack.security.http.ssl.client_authentication: optional' {$this->elasticConfigLocation}",
                         ],
                         array_map(
-                        // APPEND IF NOT EXISTS
-                        fn ($setting) => "grep -qxF '{$setting}' {$this->elasticConfigLocation} || echo '{$setting}' >> {$this->elasticConfigLocation}",
+                            // APPEND IF NOT EXISTS
+                            fn ($setting) => "grep -qxF '{$setting}' {$this->elasticConfigLocation} || echo '{$setting}' >> {$this->elasticConfigLocation}",
                             [
                                 'xpack.security.http.ssl.enabled: true',
                                 'xpack.security.http.ssl.verification_mode: certificate',
@@ -187,7 +187,7 @@ class CopyCertificate extends Command
                         ),
                         [
                             "echo \"{$this->certificatePassword}\" | /usr/share/elasticsearch/bin/elasticsearch-keystore add -f --stdin xpack.security.http.ssl.keystore.secure_password",
-                            //"echo \"{$this->certificatePassword}\" | /usr/share/elasticsearch/bin/elasticsearch-keystore add -f --stdin xpack.security.http.ssl.truststore.secure_password",
+                            // "echo \"{$this->certificatePassword}\" | /usr/share/elasticsearch/bin/elasticsearch-keystore add -f --stdin xpack.security.http.ssl.truststore.secure_password",
                             'systemctl restart elasticsearch',
                         ]
                     ),
@@ -210,7 +210,7 @@ class CopyCertificate extends Command
             ->disableStrictHostKeyChecking()
             ->usePrivateKey('/Users/gchaumont/.ssh/id_ed25519')
             ->onOutput(fn ($type, $line) => $this->info($type.' '.$line))
-            ;
+        ;
 
         $days = 365 * 5;
 

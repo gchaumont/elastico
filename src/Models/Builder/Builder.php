@@ -5,19 +5,19 @@ namespace Elastico\Models\Builder;
 use Closure;
 use Elastico\Models\Model;
 use Elastico\Models\Relations\Relation;
-use Elastico\Query\Builder as BaseBuilder;
+use Elastico\Query\ElasticBuilder;
 
-class Builder extends BaseBuilder
+class Builder extends ElasticBuilder
 {
     protected array $with = [];
 
     public function __construct(
-        null|string $connection = null,
-        public readonly string $model,
+        // null|string $connection = null,
+        // public readonly string $model,
     ) {
-        parent::__construct($connection);
+        // parent::__construct($connection);
 
-        $this->index($this->model::searchableIndexName());
+        // $this->index($this->model::searchableIndexName());
     }
 
     public function getModel(): Model
@@ -35,7 +35,7 @@ class Builder extends BaseBuilder
         return $this->with;
     }
 
-    public function with(string|array $relations /*, Closure $callback = null*/): self
+    public function with(string|array $relations /* , Closure $callback = null */): self
     {
         $this->with = is_string($relations) ? func_get_args() : $relations;
 
@@ -44,17 +44,20 @@ class Builder extends BaseBuilder
 
     public function eagerLoadRelations(iterable $models): iterable
     {
-        foreach ($this->with as $relation) {
-            if (!str_contains($relation, '.')) {
-                $models = $this->eagerLoadRelation(
-                    models: collect($models)->all(),
-                    name: $relation,
-                    // constraints: $constraints
-                );
+        $models = collect($models);
+        if ($models->isNotEmpty()) {
+            foreach ($this->with as $relation) {
+                if (!str_contains($relation, '.')) {
+                    $models = $this->eagerLoadRelation(
+                        models: $models->all(),
+                        name: $relation,
+                        // constraints: $constraints
+                    );
+                }
             }
         }
 
-        return $models;
+        return $models->all();
     }
 
     public function getRelation(string $relation): Relation
@@ -62,7 +65,7 @@ class Builder extends BaseBuilder
         return $this->getModel()->getRelation(relation: $relation);
     }
 
-    public function eagerLoadRelation(array $models, string $name /*, Closure $constraints*/)
+    public function eagerLoadRelation(array $models, string $name /* , Closure $constraints */)
     {
         $relation = $this->getRelation(relation: $name);
 

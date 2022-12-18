@@ -13,7 +13,7 @@ class ConfigureTransportTLS extends Command
      *
      * @var string
      */
-    protected $signature = 'elastico:tls:transport {hostname}';
+    protected $signature = 'elastic:tls:transport {hostname}';
 
     /**
      * The console command description.
@@ -92,7 +92,7 @@ class ConfigureTransportTLS extends Command
             ->disableStrictHostKeyChecking()
             ->usePrivateKey('/Users/gchaumont/.ssh/id_ed25519')
             ->onOutput(fn ($type, $line) => $this->info($type.' '.$line))
-            ;
+        ;
 
         $sshClient->upload(
             storage_path("elastic/certificates/transport/{$this->certAuthName}"),
@@ -123,7 +123,7 @@ class ConfigureTransportTLS extends Command
             ->disableStrictHostKeyChecking()
             ->usePrivateKey('/Users/gchaumont/.ssh/id_ed25519')
             ->onOutput(fn ($type, $line) => $this->info($type.' '.$line))
-            ;
+        ;
 
         $days = 365 * 5;
 

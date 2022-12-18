@@ -2,17 +2,17 @@
 
 namespace Elastico\Aggregations;
 
-use Elastico\Helpers\When;
 use Elastico\Query\Builder\HasAggregations;
 use Elastico\Query\Response\Aggregation\AggregationResponse;
 use Elastico\Query\Response\Response;
+use Illuminate\Support\Traits\Conditionable;
 
 /**
  * Abstract Aggregation.
  */
 abstract class Aggregation
 {
-    use When;
+    use Conditionable;
     use HasAggregations;
 
     const RESPONSE_CLASS = AggregationResponse::class;

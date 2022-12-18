@@ -11,7 +11,7 @@ class SetupCluster extends Command
      *
      * @var string
      */
-    protected $signature = 'elastico:cluster:setup';
+    protected $signature = 'elastic:cluster:setup';
 
     /**
      * The console command description.

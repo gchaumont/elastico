@@ -13,7 +13,7 @@ class UpdateIndex extends Command
      *
      * @var string
      */
-    protected $signature = 'elastico:index:update {index}';
+    protected $signature = 'elastic:index:update {index} {--connection= : Elasticsearch connection}';
 
     protected ElasticsearchClient $client;
 
@@ -24,7 +24,7 @@ class UpdateIndex extends Command
      *
      * @var string
      */
-    protected $description = 'Create an elasticsearch index';
+    protected $description = 'Update an Elasticsearch index';
 
     /**
      * Execute the console command.
@@ -37,7 +37,13 @@ class UpdateIndex extends Command
 
         $config = $class::getIndexConfiguration();
 
-        $class::getConnection()->getClient()->indices()->putMapping([
+        $model = new $class();
+
+        if ($this->option('connection')) {
+            $model->setConnection($this->option('connection'));
+        }
+        // dd($config['body']['mappings']);
+        $model->getConnection()->getClient()->indices()->putMapping([
             'index' => $config['index'],
             'body' => $config['body']['mappings'],
         ]);

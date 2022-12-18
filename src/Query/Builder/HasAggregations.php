@@ -32,4 +32,13 @@ trait HasAggregations
 
         return $this;
     }
+
+    public function setAggregations(iterable $aggregations): self
+    {
+        $this->aggregations = collect();
+
+        $this->addAggregations($aggregations);
+
+        return $this;
+    }
 }

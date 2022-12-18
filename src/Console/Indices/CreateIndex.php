@@ -11,7 +11,7 @@ class CreateIndex extends Command
      *
      * @var string
      */
-    protected $signature = 'elastico:index:create {index}';
+    protected $signature = 'elastic:index:create {index}  {--connection= : Elasticsearch connection}';
 
     /**
      * The console command description.
@@ -29,7 +29,15 @@ class CreateIndex extends Command
     {
         $class = $this->argument('index');
 
-        $class::getConnection()->getSyncClient()->indices()->create($class::getIndexConfiguration());
+        $model = new $class();
+
+        if ($this->option('connection')) {
+            $model->setConnection($this->option('connection'));
+        }
+
+        $config = $class::getIndexConfiguration();
+
+        $model->getConnection()->getClient()->indices()->create($config);
 
         return $this->info("{$class} Index Created");
     }

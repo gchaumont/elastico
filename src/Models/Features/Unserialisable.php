@@ -31,7 +31,9 @@ trait Unserialisable
         $object = (new static(...static::prepareConstructorProperties($data)));
 
         if (isset($data['id'])) {
-            $object->setKey(key: $data['id']);
+            if (!is_array($data['id'])) {
+                $object->setKey(key: $data['id']);
+            }
         }
 
         return $object->addSerialisedData($data);

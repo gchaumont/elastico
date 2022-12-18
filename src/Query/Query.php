@@ -2,14 +2,14 @@
 
 namespace Elastico\Query;
 
-use Elastico\Helpers\When;
+use Illuminate\Support\Traits\Conditionable;
 
 /**
  * Elastic Base Query.
  */
 abstract class Query
 {
-    use When;
+    use Conditionable;
 
     abstract public function getPayload(): array;
 

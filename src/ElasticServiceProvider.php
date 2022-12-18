@@ -2,8 +2,7 @@
 
 namespace Elastico;
 
-use Elastico\Controllers\ElasticoController;
-use Elastico\Models\Model;
+use Elastico\Eloquent\Model;
 use Illuminate\Support\ServiceProvider;
 
 /**
@@ -13,49 +12,23 @@ class ElasticServiceProvider extends ServiceProvider
 {
     public function boot()
     {
-        $this->publishes([
-            __DIR__.'/../config/elastico.php' => config_path('elastico.php'),
-        ]);
+        Model::setConnectionResolver($this->app['db']);
 
-        Model::setConnectionResolver(resolve(ConnectionResolverInterface::class));
+        Model::setEventDispatcher($this->app['events']);
 
         $this->registerCommands();
-
-        // Model::setEventDispatcher($this->app['events']);
-
-        // $this->registerForwardingRoutes(
-        //     $this->app['config']['elastico']['forwarding']
-        // );
     }
 
     public function register()
     {
-        $this->mergeConfigFrom(
-            path: __DIR__.'/../config/elastico.php',
-            key: 'elastico'
-        );
+        // Add Eloquent Database driver.
+        $this->app->resolving('db', function ($db) {
+            $db->extend('elastic', function ($config, $name) {
+                $config['name'] = $name;
 
-        $this->app->singleton(ConnectionResolverInterface::class, function () {
-            return (new ConnectionResolver(
-                connections: $this->app['config']['elastico']['connections'],
-            ))
-                ->setDefaultConnection($this->app['config']['elastico']['default'])
-            ;
+                return new Connection($config);
+            });
         });
-    }
-
-    public function registerForwardingRoutes(array $forwarding): void
-    {
-        $router = $this->app->make(\Illuminate\Routing\Router::class);
-
-        foreach ($forwarding as $connection => $config) {
-            $router->withoutMiddleware(\App\Http\Middleware\VerifyCsrfToken::class)
-                ->domain($config['domain'])
-                ->any('/{endpoint}', [ElasticoController::class, 'emulateElastic'])
-                ->where('endpoint', '.*')
-                ->name('elastico.forwarding:'.$connection)
-    ;
-        }
     }
 
     public function registerCommands(): void
@@ -86,6 +59,8 @@ class ElasticServiceProvider extends ServiceProvider
                 Console\Cluster\SetupCluster::class,
 
                 Console\DataStreams\CreateDataStream::class,
+
+                Console\Documents\Reindex::class,
 
                 Console\Indices\UpdateIndex::class,
                 Console\Indices\CreateIndexTemplate::class,

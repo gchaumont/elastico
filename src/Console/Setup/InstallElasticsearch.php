@@ -2,7 +2,6 @@
 
 namespace Elastico\Console\Setup;
 
-use Closure;
 use Elastic\Elasticsearch\ClientBuilder;
 use GuzzleHttp\Client as GuzzleClient;
 use Illuminate\Console\Command;
@@ -15,7 +14,7 @@ class InstallElasticsearch extends Command
      *
      * @var string
      */
-    protected $signature = 'elastico:elasticsearch:install 
+    protected $signature = 'elastic:elasticsearch:install 
                                 {ip : The SSH IP Adress} 
                                 {--user=root : The SSH User} 
                                 {--root-password= : The password for the RootUser} 
@@ -109,7 +108,7 @@ class InstallElasticsearch extends Command
         )
             ->disableStrictHostKeyChecking()
             ->onOutput($this->handleOutput())
-            ;
+        ;
 
         if ($privateKey) {
             $this->ssh->usePrivateKey($privateKey);
@@ -120,7 +119,7 @@ class InstallElasticsearch extends Command
         }
     }
 
-    public function handleOutput(): Closure
+    public function handleOutput(): \Closure
     {
         return function ($type, $line) {
             $match = preg_match('#The generated password for the elastic built-in superuser is : (\S*)#', $line, $matches);

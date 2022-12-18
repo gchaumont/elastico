@@ -12,7 +12,7 @@ class CreateDataStream extends Command
      *
      * @var string
      */
-    protected $signature = 'elastico:datastream:create {index}';
+    protected $signature = 'elastic:datastream:create {index}';
 
     /**
      * The console command description.

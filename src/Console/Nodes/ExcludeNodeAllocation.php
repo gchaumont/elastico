@@ -12,7 +12,7 @@ class ExcludeNodeAllocation extends Command
      *
      * @var string
      */
-    protected $signature = 'elastico:allocation:exclude {nodename}';
+    protected $signature = 'elastic:allocation:exclude {nodename}';
 
     /**
      * The console command description.

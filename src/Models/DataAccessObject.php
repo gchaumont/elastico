@@ -2,18 +2,55 @@
 
 namespace Elastico\Models;
 
+use Elastico\Eloquent\Model;
 use Elastico\Models\Features\Mappable;
 use Elastico\Models\Features\Serialisable;
 use Elastico\Models\Features\Unserialisable;
+use Illuminate\Contracts\Database\Eloquent\Castable as CastableContract;
+use Illuminate\Contracts\Database\Eloquent\CastsAttributes;
+use Illuminate\Database\Eloquent\Concerns\HasAttributes;
 
 /**
  * Serialises Data Objects from and to the Database.
  */
-abstract class DataAccessObject
+abstract class DataAccessObject implements CastableContract
 {
     use Mappable;
-    use Serialisable;
-    use Unserialisable;
+    use HasAttributes;
+    // use Serialisable;
+    // use Unserialisable;
+
+    /**
+     * Get the name of the caster class to use when casting from / to this cast target.
+     *
+     * @return string
+     */
+    public static function castUsing(array $arguments)
+    {
+        $class = static::class;
+
+        return new class($class) implements CastsAttributes {
+            public function __construct(protected string $class)
+            {
+            }
+
+            public function get($model, $key, $value, $attributes)
+            {
+                $class = $this->class;
+
+                if (is_subclass_of($class, Model::class)) {
+                    return (new $class())->forceFill($value);
+                }
+
+                return new $class($value);
+            }
+
+            public function set($model, $key, $value, $attributes)
+            {
+                return [$key => $value->getAttributes()];
+            }
+        };
+    }
 
     public function getAttribute(string $attribute): mixed
     {

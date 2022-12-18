@@ -12,7 +12,7 @@ class InstallPacketbeat extends Command
      *
      * @var string
      */
-    protected $signature = 'elastico:packetbeat:install';
+    protected $signature = 'elastic:packetbeat:install';
 
     /**
      * The console command description.
@@ -41,12 +41,12 @@ class InstallPacketbeat extends Command
             '167.71.34.61' => 's3yUqhovFxiTVCzhvlGe', // web 3
 
             // '159.89.108.24' => 'CbNMGP1fLgqlcK8eb7Q5', // worker 1
-            //'206.81.24.217' => '0oD8LUTTKwyDz1Buxy3d', // worker 2
+            // '206.81.24.217' => '0oD8LUTTKwyDz1Buxy3d', // worker 2
             // '64.227.125.125' => '96TE4b348atywtSJfhnn', // crawler 1
             // '138.197.183.168' => '1AFpLsbwTqqbcqqyE2uu', // crawler 2
 
             // '167.172.99.165' => 'uMC37YyEjtZr5OUioupj', // websockets
-            //'68.183.215.173' => '', // elasticsearch-01,
+            // '68.183.215.173' => '', // elasticsearch-01,
         ];
 
         foreach ($nodes as $nodeIp => $password) {
@@ -65,8 +65,8 @@ class InstallPacketbeat extends Command
                     $this->copyPacketbeatConfig(),
                     $this->setPacketbeatConfigOwner(),
                     $this->addKeystorePassword(),
-                    //$this->enableModules(['elasticsearch-xpack']),
-                    //$this->createGeoipPipeline(),
+                    // $this->enableModules(['elasticsearch-xpack']),
+                    // $this->createGeoipPipeline(),
                     $this->setupPacketbeatAssets(),
                     $this->startPacketbeat(),
                 ])
@@ -82,7 +82,7 @@ class InstallPacketbeat extends Command
         if ($this->password) {
             return implode("\n", [
                 "printf \"{$this->password}\n\" | sudo -S su -",
-                //"printf \"{$this->password}\n\" | sudo -S ls /etc/packetbeat",
+                // "printf \"{$this->password}\n\" | sudo -S ls /etc/packetbeat",
             ]);
         }
 

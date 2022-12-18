@@ -17,8 +17,8 @@ trait HandlesScopedQueries
     {
         try {
             return (new PromiseResponse(
+                source: fn ($r): array => [$r],
                 total: fn ($r): int => 1,
-                hits: fn ($r): array => [$r],
                 aggregations: fn ($r): array => [],
                 response: $this->getConnection()->performQuery('get', array_filter([
                     'index' => $this->index,
@@ -66,11 +66,11 @@ trait HandlesScopedQueries
 
         return LazyCollection::make(function () use ($response) {
             yield from (new PromiseResponse(
-                total: fn ($r): int => count($r['docs']),
-                hits: fn ($r): array => collect($r['docs'])
+                source: fn ($r): array => collect($r['docs'])
                     ->filter(fn ($d) => !empty($d['found']) && true === $d['found'])
                     ->keyBy(fn ($hit) => $hit['_id'])
                     ->all(),
+                total: fn ($r): int => count($r['docs']),
                 aggregations: fn ($r): array => [],
                 response: $response,
                 query: $this,
@@ -86,8 +86,8 @@ trait HandlesScopedQueries
     public function get(): Response
     {
         return new PromiseResponse(
+            source: fn ($r): array => $r['hits']['hits'] ?? [],
             total: fn ($r): int => $r['hits']['total']['value'] ?? 0,
-            hits: fn ($r): array => $r['hits']['hits'] ?? [],
             aggregations: fn ($r): array => $r['aggregations'] ?? [],
             response: $this->getConnection()->performQuery('search', $this->buildPayload()),
             query: $this
@@ -127,8 +127,8 @@ trait HandlesScopedQueries
                 ->combine(
                     $queries->values()
                         ->map(fn ($query, $i) => new PromiseResponse(
+                            source: fn ($r): array => $r['hits']['hits'] ?? [],
                             total: fn ($r): int => $r['hits']['total']['value'] ?? 0,
-                            hits: fn ($r): array => $r['hits']['hits'] ?? [],
                             aggregations: fn ($r): array => $r['aggregations'] ?? [],
                             response: $response['responses'][$i],
                             query: $query

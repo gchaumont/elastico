@@ -12,7 +12,7 @@ class Backup extends Command
      *
      * @var string
      */
-    protected $signature = 'elastico:backup:make';
+    protected $signature = 'elastic:backup:make';
 
     /**
      * The console command description.

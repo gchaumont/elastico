@@ -36,6 +36,7 @@ trait HandlesFilters
                 true => $this->getPostFilter()->filter((new Terms())->field($field)->values($value)),
                 false => $this->getPostFilter()->filter((new Term())->field($field)->value($value)),
             },
+            default => throw new \InvalidArgumentException('Invalid where opterator')
         };
 
         return $this;

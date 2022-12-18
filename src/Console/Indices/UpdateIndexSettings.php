@@ -14,7 +14,7 @@ class UpdateIndexSettings extends Command
      *
      * @var string
      */
-    protected $signature = 'elastico:index:updatesettings {index}';
+    protected $signature = 'elastic:index:updatesettings {index}';
 
     protected ElasticsearchClient $client;
 
