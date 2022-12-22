@@ -3,7 +3,6 @@
 namespace Elastico\Query\Term;
 
 use Elastico\Query\Query;
-use RuntimeException;
 
 /**
  * Elastic Term Query.
@@ -39,10 +38,13 @@ class Term extends Query
         return $this;
     }
 
-    public function value(string|int|float|bool $value): self
+    public function value(string|int|float|bool|\BackedEnum $value): self
     {
         if (is_null($value)) {
-            throw new RuntimeException('Empty Value passed to Term Query');
+            throw new \RuntimeException('Empty Value passed to Term Query');
+        }
+        if ($value instanceof \BackedEnum) {
+            $value = $value->value;
         }
         $this->value = $value;
 

@@ -8,6 +8,8 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo as EloquentBelongsTo;
 
 class BelongsTo extends EloquentBelongsTo
 {
+    protected $findKeys;
+
     /**
      * Get the key for comparing against the parent key in "has" query.
      *
@@ -31,6 +33,15 @@ class BelongsTo extends EloquentBelongsTo
         }
     }
 
+    public function get($columns = ['*'])
+    {
+        if ($this->findKeys) {
+            return $this->query->findMany($this->findKeys);
+        }
+
+        return $this->query->get();
+    }
+
     /**
      * {@inheritdoc}
      */
@@ -40,6 +51,11 @@ class BelongsTo extends EloquentBelongsTo
         // a non-standard name and not "id". We will then construct the constraint for
         // our eagerly loading query so it returns the proper models from execution.
         $key = $this->getOwnerKey();
+
+        if ($key == $this->getModel()->getKeyName()) {
+            // Resolve the relation with [elastic/find]
+            $this->findKeys = $this->getEagerModelKeys($models);
+        }
 
         $this->query->whereIn($key, $this->getEagerModelKeys($models));
     }

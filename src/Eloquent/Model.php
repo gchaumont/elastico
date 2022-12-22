@@ -64,6 +64,9 @@ class Model extends BaseModel implements Castable
         if (!empty($hit['_id'])) {
             $attributes[$this->getKeyName()] = $hit['_id'];
         }
+        if (!empty($hit['_index'])) {
+            $attributes['_index'] = $hit['_index'];
+        }
 
         return parent::newFromBuilder($attributes, $connection);
     }
@@ -176,6 +179,21 @@ class Model extends BaseModel implements Castable
         return collect([static::find($value)]);
 
         return $query->where($field ?? $this->getRouteKeyName(), $value);
+    }
+
+    /**
+     * Get an enum case instance from a given class and value.
+     *
+     * @param string     $enumClass
+     * @param int|string $value
+     *
+     * @return \BackedEnum|\UnitEnum
+     */
+    protected function getEnumCaseFromValue($enumClass, $value)
+    {
+        return is_subclass_of($enumClass, \BackedEnum::class)
+                ? $enumClass::tryFrom($value)
+                : constant($enumClass.'::'.$value);
     }
 
     /**

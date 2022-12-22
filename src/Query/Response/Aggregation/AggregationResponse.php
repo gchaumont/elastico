@@ -4,7 +4,7 @@ namespace Elastico\Query\Response\Aggregation;
 
 use Elastico\Aggregations\Aggregation;
 use Elastico\Query\Response\Response;
-use Illuminate\Database\Eloquent\Collection;
+use Illuminate\Support\Collection;
 
 /**
  *  Aggregation Response.

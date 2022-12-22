@@ -8,6 +8,7 @@ use Elastico\Aggregations\Metric\Min;
 use Elastico\Aggregations\Metric\Sum;
 use Elastico\Connection;
 use Elastico\Query\Builder\HasAggregations;
+use Elastico\Query\Builder\HasPostFilter;
 use Elastico\Query\Compound\Boolean;
 use Illuminate\Database\Query\Builder as BaseBuilder;
 use Illuminate\Support\Arr;
@@ -19,6 +20,8 @@ use Illuminate\Support\Arr;
 class Builder extends BaseBuilder
 {
     use HasAggregations;
+    use HasPostFilter;
+
     // TODO: Update all functions referring to "Grammar"
 
     /**
@@ -33,6 +36,7 @@ class Builder extends BaseBuilder
         'rlike', 'not rlike', 'regexp', 'not regexp',
         '~', '~*', '!~', '!~*', 'similar to',
         'not similar to', 'not ilike', '~~*', '!~~*',
+        'rank',
     ];
 
     /**
@@ -305,6 +309,11 @@ class Builder extends BaseBuilder
 
         return $this;
     }
+
+       public function rank(string $field, int|float $boost = null): self
+       {
+           return $this->where($field, 'rank', $boost);
+       }
 
     /**
      * Create a raw database expression.

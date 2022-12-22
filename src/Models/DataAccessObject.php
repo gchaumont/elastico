@@ -20,6 +20,24 @@ abstract class DataAccessObject implements CastableContract
     // use Serialisable;
     // use Unserialisable;
 
+    protected $exists = false;
+
+    public function __get($key)
+    {
+        return $this->getAttribute($key);
+    }
+
+    /**
+     * Dynamically set attributes on the model.
+     *
+     * @param string $key
+     * @param mixed  $value
+     */
+    public function __set($key, $value)
+    {
+        $this->setAttribute($key, $value);
+    }
+
     /**
      * Get the name of the caster class to use when casting from / to this cast target.
      *
@@ -42,6 +60,10 @@ abstract class DataAccessObject implements CastableContract
                     return (new $class())->forceFill($value);
                 }
 
+                if (is_subclass_of($class, DataAccessObject::class) && !empty($value)) {
+                    return (new $class())->setRawAttributes($value);
+                }
+
                 return new $class($value);
             }
 
@@ -52,68 +74,103 @@ abstract class DataAccessObject implements CastableContract
         };
     }
 
-    public function getAttribute(string $attribute): mixed
+    public function getIncrementing()
     {
-        if (false !== ($pos = strpos($attribute, '.'))) {
-            $attr = substr($attribute, 0, $pos);
-
-            if (!isset($this->{$attr})) {
-                return null;
-            }
-
-            return $this->{$attr}?->getAttribute(substr($attribute, 1 + $pos));
-        }
-
-        if (!isset($this->{$attribute})) {
-            return null;
-        }
-
-        return $this->{$attribute} ?? null;
-        // $path = explode('.', $attribute);
-
-        // $f = array_shift($path);
-
-        // if (empty($this->{$f})) {
-        //     return null;
-        // }
-
-        // if (count($path)) {
-        //     return $this->{$f}->getAttribute(implode('.', $path));
-        // }
-
-        // return $this->{$f} ?? null;
+        return false;
     }
 
-    public function setAttribute(string $attribute, mixed $value): static
+    public function relationResolver()
     {
-        if (false !== ($pos = strpos($attribute, '.'))) {
-            $this->{substr($attribute, 0, $pos)}->setAttribute(substr($attribute, 1 + $pos), $value);
-        } else {
-            $this->{$attribute} = $value;
-        }
-
-        // return $this->{$attribute} ?? null;
-        // $path = explode('.', $attribute);
-
-        // $f = array_shift($path);
-
-        // if (count($path)) {
-        //     if (empty($this->{$f})) {
-        //         $class = static::getElasticFields()[$f]->propertyType();
-        //         $this->{$f} = new $class();
-        //     }
-
-        //     $this->{$f}->setAttribute(implode('.', $path), $value);
-
-        //     return $this;
-        // }
-        // $this->{$f} = $value;
-
-        return $this;
+        return null;
     }
+
+    public function relationLoaded()
+    {
+        return false;
+    }
+
+    public function usesTimestamps()
+    {
+        return false;
+    }
+
+    // public function getAttribute(string $attribute): mixed
+    // {
+    //     if (false !== ($pos = strpos($attribute, '.'))) {
+    //         $attr = substr($attribute, 0, $pos);
+
+    //         if (!isset($this->{$attr})) {
+    //             return null;
+    //         }
+
+    //         return $this->{$attr}?->getAttribute(substr($attribute, 1 + $pos));
+    //     }
+
+    //     if (!isset($this->{$attribute})) {
+    //         return null;
+    //     }
+
+    //     return $this->{$attribute} ?? null;
+    //     // $path = explode('.', $attribute);
+
+    //     // $f = array_shift($path);
+
+    //     // if (empty($this->{$f})) {
+    //     //     return null;
+    //     // }
+
+    //     // if (count($path)) {
+    //     //     return $this->{$f}->getAttribute(implode('.', $path));
+    //     // }
+
+    //     // return $this->{$f} ?? null;
+    // }
+
+    // public function setAttribute(string $attribute, mixed $value): static
+    // {
+    //     if (false !== ($pos = strpos($attribute, '.'))) {
+    //         $this->{substr($attribute, 0, $pos)}->setAttribute(substr($attribute, 1 + $pos), $value);
+    //     } else {
+    //         $this->{$attribute} = $value;
+    //     }
+
+    //     // return $this->{$attribute} ?? null;
+    //     // $path = explode('.', $attribute);
+
+    //     // $f = array_shift($path);
+
+    //     // if (count($path)) {
+    //     //     if (empty($this->{$f})) {
+    //     //         $class = static::getElasticFields()[$f]->propertyType();
+    //     //         $this->{$f} = new $class();
+    //     //     }
+
+    //     //     $this->{$f}->setAttribute(implode('.', $path), $value);
+
+    //     //     return $this;
+    //     // }
+    //     // $this->{$f} = $value;
+
+    //     return $this;
+    // }
 
     public function attributeIsSet(string $attribute): bool
     {
         return isset($this->{$attribute});
+    }
+
+    /**
+     * Get an enum case instance from a given class and value.
+     *
+     * @param string     $enumClass
+     * @param int|string $value
+     *
+     * @return \BackedEnum|\UnitEnum
+     */
+    protected function getEnumCaseFromValue($enumClass, $value)
+    {
+        return is_subclass_of($enumClass, \BackedEnum::class)
+                ? $enumClass::tryFrom($value)
+                : constant($enumClass.'::'.$value);
     }
 }

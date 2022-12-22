@@ -100,16 +100,6 @@ class ElasticBuilder
         return $this;
     }
 
-    public function rank(string $field, int|float $boost = 1): self
-    {
-        $this->ranks[] = [
-            'field' => $field,
-            'boost' => $boost,
-        ];
-
-        return $this;
-    }
-
     public function collapse(string $field): self
     {
         $this->collapse = $field;

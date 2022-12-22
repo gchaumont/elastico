@@ -4,6 +4,7 @@ namespace Elastico\Query;
 
 use Elastico\Query\Compound\Boolean;
 use Elastico\Query\Compound\FunctionScore;
+use Elastico\Query\Specialized\RankFeature;
 use Elastico\Query\Term\Exists;
 use Elastico\Query\Term\Prefix;
 use Elastico\Query\Term\Range;
@@ -35,6 +36,8 @@ class Grammar extends BaseGrammar
           $payload['body']['query'] = $this->compileWhereComponents($query)->compile();
 
           $payload['body']['sort'] = $this->compileOrderComponents($query);
+
+          $payload['body']['post_filter'] = $query->post_filter?->compile();
 
           if (!empty($query->columns)) {
               $payload['body']['_source']['includes'] = $query->columns;
@@ -235,7 +238,7 @@ class Grammar extends BaseGrammar
             foreach ($whereGroup as $where) {
                 if ('raw' == $where['type']) {
                     if ($where['sql'] instanceof Query) {
-                        $bool->must($where['sql']);
+                        $groupBool->must($where['sql']);
                     } elseif (is_array($where['sql'])) {
                         throw new Exception('TODO: allow raw arrays');
                     }
@@ -310,6 +313,7 @@ class Grammar extends BaseGrammar
                     // 'like' => $groupBool->must((new Term())->field($field)->value(trim(strtolower($value), '%'))),
                     // 'like' => $groupBool->must((new Wildcard())->field($field)->value(trim(strtolower($value), '%'))),
                     'like' => $groupBool->must((new Prefix())->field($field)->value(trim($value, '%'))),
+                    'rank' => $groupBool->should((new RankFeature())->field($field)->boost($value)),
                 };
             }
         }
