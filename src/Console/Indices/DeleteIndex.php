@@ -33,7 +33,7 @@ class DeleteIndex extends Command
     {
         if (!$this->option('raw')) {
             $class = $this->argument('index');
-            $indexName = (new $class())->writableIndexName();
+            $indexName = (new $class())->getTable();
         } else {
             $indexName = $this->argument('index');
         }
@@ -42,7 +42,7 @@ class DeleteIndex extends Command
         }
 
         try {
-            $r = $class::getConnection()->getSyncClient()->indices()->delete(['index' => $indexName]);
+            $r = (new $class())->getConnection()->getClient()->indices()->delete(['index' => $indexName]);
         } catch (IndexNotFoundException) {
             dump('Index not found');
         }

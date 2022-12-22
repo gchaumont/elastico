@@ -17,10 +17,20 @@ abstract class DataAccessObject implements CastableContract
 {
     use Mappable;
     use HasAttributes;
+
+    // protected $dateFormat = \DateTime::ATOM;
     // use Serialisable;
     // use Unserialisable;
 
     protected $exists = false;
+
+    public function __construct($attributes = [])
+    {
+        if ($attributes) {
+            $this->attributes = $attributes;
+        }
+        $this->dateFormat = \DateTime::ATOM;
+    }
 
     public function __get($key)
     {

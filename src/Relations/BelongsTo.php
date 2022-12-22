@@ -3,12 +3,14 @@
 namespace Elastico\Relations;
 
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Model as EloquentModel;
 use Illuminate\Database\Eloquent\Relations\BelongsTo as EloquentBelongsTo;
 
 class BelongsTo extends EloquentBelongsTo
 {
     protected $findKeys;
+    protected $noRelatedKeys;
 
     /**
      * Get the key for comparing against the parent key in "has" query.
@@ -38,6 +40,9 @@ class BelongsTo extends EloquentBelongsTo
         if ($this->findKeys) {
             return $this->query->findMany($this->findKeys);
         }
+        if ($this->noRelatedKeys) {
+            return new Collection();
+        }
 
         return $this->query->get();
     }
@@ -56,8 +61,12 @@ class BelongsTo extends EloquentBelongsTo
             // Resolve the relation with [elastic/find]
             $this->findKeys = $this->getEagerModelKeys($models);
         }
+        $keys = array_filter($this->getEagerModelKeys($models));
+        if (empty($keys)) {
+            $this->noRelatedKeys = true;
+        }
 
-        $this->query->whereIn($key, $this->getEagerModelKeys($models));
+        $this->query->whereIn($key, $keys);
     }
 
     /**
