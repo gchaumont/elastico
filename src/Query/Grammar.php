@@ -94,7 +94,7 @@ class Grammar extends BaseGrammar
         return array_filter([
             'index' => $from,
             'id' => $id,
-            '_source_includes' => is_array($columns) ? implode(',', $columns) : $columns,
+            '_source_includes' => $columns,
         ]);
     }
 
@@ -106,7 +106,7 @@ class Grammar extends BaseGrammar
                     ->map(fn (string|int $id) => array_filter([
                         '_index' => $from,
                         '_id' => $id,
-                        '_source' => is_array($columns) ? implode(',', $columns) : $columns,
+                        '_source' => $columns,
                     ]))
                     ->values()
                     ->all(),
