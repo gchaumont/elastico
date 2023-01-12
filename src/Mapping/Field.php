@@ -11,6 +11,8 @@ class Field
 {
     public readonly \ReflectionProperty $property;
 
+    public bool $index;
+
     public function __construct(
         protected FieldType $type,
         protected string $name,
@@ -27,6 +29,13 @@ class Field
         return new static(type: $type, name: $name);
     }
 
+    public function index(bool $index = true): static
+    {
+        $this->index = $index;
+
+        return $this;
+    }
+
     public function getName(): string
     {
         return $this->name;
@@ -35,6 +44,9 @@ class Field
     public function toArray(): array
     {
         $config['type'] = $this->type->name;
+        if (isset($this->index)) {
+            $config['index'] = $this->index;
+        }
 
         return $config;
     }

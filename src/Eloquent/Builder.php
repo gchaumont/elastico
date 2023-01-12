@@ -42,6 +42,8 @@ class Builder extends EloquentBuilder
         'sum',
         'toSql',
         'getAggregations',
+        'getMany',
+        'enumerateTerms',
     ];
 
     public function __construct(BaseBuilder $query)
@@ -122,6 +124,41 @@ class Builder extends EloquentBuilder
         return $this->model->hydrate(
             $this->query->get($columns)->all()
         )->all();
+    }
+
+    /**
+     * Insert new records or update the existing ones.
+     *
+     * @param array|string $uniqueBy
+     * @param null|array   $update
+     *
+     * @return int
+     */
+    public function upsert(array $values, $uniqueBy = '_id', $update = null)
+    {
+        if (empty($values)) {
+            return 0;
+        }
+
+        $values = collect($values)
+            ->map(fn ($value) => $value instanceof Model ? ['_id' => $value->getKey(), '_index' => $value->getTable(), ...$value->getAttributes()] : $value)
+            ->all()
+        ;
+
+        // if (!is_array(reset($values))) {
+        //     $values = collect($values)
+        //     ;
+        // }
+
+        if (is_null($update)) {
+            $update = array_keys(reset($values));
+        }
+
+        return $this->toBase()->upsert(
+            $this->addTimestampsToUpsertValues($values),
+            $uniqueBy,
+            $this->addUpdatedAtToUpsertColumns($update)
+        );
     }
 
     /**

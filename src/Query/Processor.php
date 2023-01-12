@@ -43,6 +43,19 @@ class Processor extends BaseProcessor
         );
     }
 
+    public function processSelectMany(array $queries, $results)
+    {
+        return collect($queries)
+            ->keys()
+            ->combine(
+                collect($queries)
+                    ->values()
+                    ->map(fn ($query, $i) => $this->processSelect($query, $results['responses'][$i]))
+            )
+            ->all()
+        ;
+    }
+
     public function processFind(BaseBuilder $query, $results)
     {
         return (new Response(

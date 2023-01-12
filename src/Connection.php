@@ -141,6 +141,35 @@ class Connection extends BaseConnection implements ConnectionInterface
         });
     }
 
+    public function bulk($query)
+    {
+        $query = [
+            'method' => 'bulk',
+            'payload' => $query,
+        ];
+
+        return $this->run($query, [], function ($query, $bindings) {
+            return $this->performQuery($query['method'], $query['payload']);
+        });
+    }
+
+    public function termsEnum(string|array $index, string $field)
+    {
+        $query = [
+            'method' => 'termsEnum',
+            'payload' => [
+                'index' => $index,
+                'body' => [
+                    'field' => $field,
+                ],
+            ],
+        ];
+
+        return $this->run($query, [], function ($query, $bindings) {
+            return $this->performQuery($query['method'], $query['payload']);
+        });
+    }
+
     /**
      * Run a select statement against the database.
      *
@@ -152,8 +181,6 @@ class Connection extends BaseConnection implements ConnectionInterface
      */
     public function select($query, $bindings = [], $useReadPdo = true)
     {
-        // throw new Exception('Error Processing Request', 1);
-
         $query = [
             'method' => 'search',
             'payload' => $query,
@@ -175,6 +202,22 @@ class Connection extends BaseConnection implements ConnectionInterface
             $statement->execute();
 
             return $statement->fetchAll();
+        });
+    }
+
+    public function selectMany($queries)
+    {
+        $query = [
+            'method' => 'msearch',
+            'payload' => $queries,
+        ];
+
+        return $this->run($query, [], function ($query, $bindings) {
+            if ($this->pretending()) {
+                return [];
+            }
+
+            return $this->performQuery($query['method'], $query['payload']);
         });
     }
 

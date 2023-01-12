@@ -209,6 +209,14 @@ class Model extends BaseModel implements Castable
         return parent::getAttributeFromArray($key);
     }
 
+    protected function setKeysForSaveQuery($query)
+    {
+        $query->getQuery()->model_id = $this->getKeyForSaveQuery();
+        // $query->where($this->getKeyName(), '=', $this->getKeyForSaveQuery());
+
+        return $query;
+    }
+
     /**
      * Perform a model update operation.
      *
@@ -238,8 +246,8 @@ class Model extends BaseModel implements Castable
         if (count($dirty) > 0) {
             $dirty = array_merge(
                 [
-                    '__id' => $this->getKey(),
-                    '__index' => $this->getTable(),
+                    '_id' => $this->getKey(),
+                    '_index' => $this->getTable(),
                 ],
                 $dirty,
             );

@@ -5,7 +5,7 @@ namespace Elastico\Models\Relations;
 use Attribute;
 use Elastico\Models\Model;
 
-#[Attribute(Attribute::TARGET_PROPERTY)]
+#[\Attribute(\Attribute::TARGET_PROPERTY)]
 class BelongsTo extends Relation
 {
     public array $ids = [];

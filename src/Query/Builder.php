@@ -12,6 +12,7 @@ use Elastico\Query\Builder\HasPostFilter;
 use Elastico\Query\Compound\Boolean;
 use Illuminate\Database\Query\Builder as BaseBuilder;
 use Illuminate\Support\Arr;
+use Illuminate\Support\LazyCollection;
 
 /**
  *  Elasticsearch Query Builder
@@ -48,6 +49,8 @@ class Builder extends BaseBuilder
         // '&', '|', '^', '<<', '>>', '&~',
     ];
 
+    public $model_id;
+
     /**
      * Explains the query.
      *
@@ -70,6 +73,16 @@ class Builder extends BaseBuilder
         return $this->onceWithColumns(Arr::wrap($columns), function () {
             return $this->processor->processSelect($this, $this->runSelect());
         });
+    }
+
+    public function getMany(iterable $queries)
+    {
+        return $this->processor->processSelectMany(
+            collect($queries)->map(fn ($q) => $q->toBase())->all(),
+            $this->connection->selectMany(
+                $this->grammar->compileSelectMany($queries),
+            )
+        );
     }
 
     /**
@@ -570,7 +583,7 @@ class Builder extends BaseBuilder
             })->all()
         ));
 
-        return $this->connection->affectingStatement(
+        return $this->connection->bulk(
             $this->grammar->compileUpsert($this, $values, (array) $uniqueBy, $update),
             $bindings
         );
@@ -586,7 +599,7 @@ class Builder extends BaseBuilder
     public function count($columns = '*')
     {
         return $this->processor->resolvePromise(
-            $this->connection->count($this->grammar->compileSelect($this))
+            $this->connection->count($this->grammar->compileCount($this))
         )['count'];
     }
 
@@ -645,6 +658,11 @@ class Builder extends BaseBuilder
         );
 
         return $results->total() > 0;
+    }
+
+    public function enumerateTerms(string $column): array
+    {
+        return $this->connection->termsEnum($this->from, $column)['terms'];
     }
 
     /**

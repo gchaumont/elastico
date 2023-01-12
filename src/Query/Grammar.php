@@ -13,6 +13,7 @@ use Elastico\Query\Term\Terms;
 use Elastico\Query\Term\Wildcard;
 use Illuminate\Database\Query\Builder as BaseBuilder;
 use Illuminate\Database\Query\Grammars\Grammar as BaseGrammar;
+use Illuminate\Support\Arr;
 
 /*
  *  Elasticsearch Query Builder
@@ -23,6 +24,14 @@ class Grammar extends BaseGrammar
     public function compileSelect(BaseBuilder $query)
     {
         return $this->buildPayload($query);
+    }
+
+    public function compileCount(BaseBuilder $query)
+    {
+        $compiled = $this->compileSelect($query);
+        unset($compiled['body']['sort']);
+
+        return $compiled;
     }
 
       public function buildPayload(BaseBuilder $query): array
@@ -114,6 +123,19 @@ class Grammar extends BaseGrammar
         ];
     }
 
+    public function compileSelectMany($queries)
+    {
+        return [
+            'body' => collect($queries)
+                ->flatMap(fn ($query) => [
+                    ['index' => $query->from],
+                    $query->toSql()['body'],
+                ])
+                ->all(),
+        ]
+        ;
+    }
+
     /**
      * Compile an update statement into SQL.
      *
@@ -121,9 +143,10 @@ class Grammar extends BaseGrammar
      */
     public function compileUpdate(BaseBuilder $query, array $values)
     {
-        $index = $values['__index'] ?? $query->from;
-        $id = $values['__id'];
-        unset($values['__index'], $values['__id']);
+        $index = $values['_index'] ?? $query->from;
+
+        $id = $values['_id'] ?? $query->model_id ?? throw new \Exception('No ID found for update statement');
+        unset($values['_index'], $values['_id']);
 
         return [
             'index' => $index,
@@ -188,7 +211,7 @@ class Grammar extends BaseGrammar
         if (!empty($query->orders)) {
             foreach ($query->orders as $order) {
                 if (!empty($order['type']) && 'Raw' == $order['type']) {
-                    throw new Exception('TODO: allow raw arrays');
+                    // throw new \Exception('TODO: allow raw arrays');
                     if (is_array($order['sql'])) {
                         $sorts[] = $order['sql'];
                     } elseif ($order['sql'] instanceof Query) {
@@ -240,7 +263,7 @@ class Grammar extends BaseGrammar
                     if ($where['sql'] instanceof Query) {
                         $groupBool->must($where['sql']);
                     } elseif (is_array($where['sql'])) {
-                        throw new Exception('TODO: allow raw arrays');
+                        throw new \Exception('TODO: allow raw arrays');
                     }
 
                     continue;
@@ -322,4 +345,27 @@ class Grammar extends BaseGrammar
 
         return $bool;
     }
+
+     public function compileUpsert(BaseBuilder $query, array $values, array $uniqueBy, array $update)
+     {
+         return [
+             'body' => collect($values)
+                 ->flatMap(fn ($val) => [
+                     [
+                         'update' => [
+                             '_id' => Arr::pull($val, '_id'),
+                             '_index' => Arr::pull($val, '_index'),
+                         ],
+                     ],
+                     [
+                         // 'update' => [
+                         'doc' => $val,
+                         'doc_as_upsert' => true,
+                         // ],
+                     ],
+                 ])
+                 ->all(),
+         ]
+         ;
+     }
 }
