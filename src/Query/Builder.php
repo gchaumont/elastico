@@ -518,16 +518,14 @@ class Builder extends BaseBuilder
         // ID to let developers to simply and quickly remove a single row from this
         // database without manually specifying the "where" clauses on the query.
         if (!is_null($id)) {
-            $this->where($this->from.'.id', '=', $id);
+            $this->connection->deleteDocument($id, $this->from);
+            // $this->where($this->from.'.id', '=', $id);
         }
 
         $this->applyBeforeQueryCallbacks();
 
         return $this->connection->delete(
             $this->grammar->compileDelete($this),
-            $this->cleanBindings(
-                $this->grammar->prepareBindingsForDelete($this->bindings)
-            )
         );
     }
 

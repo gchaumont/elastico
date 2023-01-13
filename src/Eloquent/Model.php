@@ -261,4 +261,15 @@ class Model extends BaseModel implements Castable
 
         return true;
     }
+
+    /**
+     * Perform the actual delete query on this model instance.
+     */
+    protected function performDeleteOnModel()
+    {
+        $this->newModelQuery()->delete($this->getKey());
+        // $this->setKeysForSaveQuery($this->newModelQuery())->delete();
+
+        $this->exists = false;
+    }
 }

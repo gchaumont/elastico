@@ -2,6 +2,7 @@
 
 namespace Elastico\Eloquent\Concerns;
 
+// use Elastico\Eloquent\Builder as EloquentBuilder;
 use Elastico\Eloquent\Model;
 use Elastico\Relations\BelongsTo;
 use Elastico\Relations\BelongsToMany;
@@ -9,9 +10,9 @@ use Elastico\Relations\HasMany;
 use Elastico\Relations\HasOne;
 use Elastico\Relations\MorphMany;
 use Elastico\Relations\MorphTo;
+use Illuminate\Database\Eloquent\Builder  as EloquentBuilder;
 use Illuminate\Database\Eloquent\Relations\MorphOne;
 use Illuminate\Support\Str;
-use Jenssegers\Mongodb\Helpers\EloquentBuilder;
 
 trait HybridRelations
 {

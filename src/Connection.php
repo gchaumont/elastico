@@ -318,7 +318,29 @@ class Connection extends BaseConnection implements ConnectionInterface
      */
     public function delete($query, $bindings = [])
     {
-        return $this->affectingStatement($query, $bindings);
+        $query = [
+            'method' => 'deleteByQuery',
+            'payload' => $query,
+        ];
+
+        return $this->run($query, [], function ($query, $bindings) {
+            return $this->performQuery($query['method'], $query['payload']);
+        });
+    }
+
+    public function deleteDocument(string $id, string $index)
+    {
+        $query = [
+            'method' => 'delete',
+            'payload' => [
+                'index' => $index,
+                'id' => $id,
+            ],
+        ];
+
+        return $this->run($query, [], function ($query, $bindings) {
+            return $this->performQuery($query['method'], $query['payload']);
+        });
     }
 
     /**

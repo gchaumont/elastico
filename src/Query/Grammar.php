@@ -34,6 +34,11 @@ class Grammar extends BaseGrammar
         return $compiled;
     }
 
+    public function compileDelete(BaseBuilder $query)
+    {
+        return $this->compileSelect($query);
+    }
+
       public function buildPayload(BaseBuilder $query): array
       {
           $payload['index'] = $query->from;
@@ -310,7 +315,9 @@ class Grammar extends BaseGrammar
                     continue;
                 }
                 if ('In' == $where['type']) {
-                    $groupBool->filter((new Terms())->field($where['column'])->values($where['values']));
+                    if (!empty($where['values'])) {
+                        $groupBool->filter((new Terms())->field($where['column'])->values($where['values']));
+                    }
 
                     continue;
                 }

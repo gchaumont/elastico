@@ -149,7 +149,6 @@ class Builder extends EloquentBuilder
         //     $values = collect($values)
         //     ;
         // }
-
         if (is_null($update)) {
             $update = array_keys(reset($values));
         }
