@@ -51,6 +51,8 @@ class Builder extends BaseBuilder
 
     public $model_id;
 
+    public $collapse;
+
     /**
      * Explains the query.
      *
@@ -323,10 +325,21 @@ class Builder extends BaseBuilder
         return $this;
     }
 
-       public function rank(string $field, int|float $boost = null): self
-       {
-           return $this->where($field, 'rank', $boost);
-       }
+    public function rank(string $field, int|float $boost = null): self
+    {
+        return $this->where($field, 'rank', $boost);
+    }
+
+    public function collapse(string|array $collapse): self
+    {
+        if (is_string($collapse)) {
+            $this->collapse = ['field' => $collapse];
+        } else {
+            $this->collapse = $collapse;
+        }
+
+        return $this;
+    }
 
     /**
      * Create a raw database expression.

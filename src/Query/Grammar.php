@@ -61,6 +61,10 @@ class Grammar extends BaseGrammar
 
           $payload['body']['post_filter'] = $query->post_filter?->compile();
 
+          if ($query->collapse) {
+              $payload['body']['collapse'] = $query->collapse;
+          }
+
           if (!empty($query->columns)) {
               $payload['body']['_source']['includes'] = $query->columns;
           }
