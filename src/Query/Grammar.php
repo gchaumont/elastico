@@ -36,6 +36,7 @@ class Grammar extends BaseGrammar
             $compiled['body']['select'],
             $compiled['body']['size'],
             $compiled['body']['from'],
+            $compiled['body']['post_filter'],
         );
 
         return $compiled;
