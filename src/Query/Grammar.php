@@ -29,7 +29,14 @@ class Grammar extends BaseGrammar
     public function compileCount(BaseBuilder $query)
     {
         $compiled = $this->compileSelect($query);
-        unset($compiled['body']['sort']);
+        unset(
+            $compiled['body']['sort'],
+            $compiled['body']['aggregations'],
+            $compiled['body']['aggs'],
+            $compiled['body']['select'],
+            $compiled['body']['size'],
+            $compiled['body']['from'],
+        );
 
         return $compiled;
     }
