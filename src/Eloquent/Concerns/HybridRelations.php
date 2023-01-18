@@ -3,6 +3,7 @@
 namespace Elastico\Eloquent\Concerns;
 
 // use Elastico\Eloquent\Builder as EloquentBuilder;
+use Elastico\Eloquent\Builder;
 use Elastico\Eloquent\Model;
 use Elastico\Relations\BelongsTo;
 use Elastico\Relations\BelongsToMany;
