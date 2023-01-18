@@ -73,6 +73,11 @@ class Response extends EloquentCollection
         return $this->response;
     }
 
+    public function getQuery(): null|Builder|EloquentBuilder
+    {
+        return $this->query;
+    }
+
     public function dd(...$args)
     {
         if (request()->wantsJson()) {

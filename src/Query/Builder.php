@@ -80,7 +80,7 @@ class Builder extends BaseBuilder
     public function getMany(iterable $queries)
     {
         return $this->processor->processSelectMany(
-            collect($queries)->map(fn ($q) => $q->toBase())->all(),
+            collect($queries)->all(),
             $this->connection->selectMany(
                 $this->grammar->compileSelectMany($queries),
             )

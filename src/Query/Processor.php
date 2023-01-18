@@ -4,6 +4,7 @@ namespace Elastico\Query;
 
 use Elastic\Elasticsearch\Exception\ClientResponseException;
 use Elastic\Elasticsearch\Response\Elasticsearch;
+use Elastico\Eloquent\Builder as EloquentBuilder;
 use Elastico\Query\Response\PromiseResponse;
 use Elastico\Query\Response\Response;
 use GuzzleHttp\Promise\Promise;
@@ -45,13 +46,22 @@ class Processor extends BaseProcessor
 
     public function processSelectMany(array $queries, $results)
     {
-        return collect($queries)
+        $queries = collect($queries);
+
+        return $queries
             ->keys()
             ->combine(
-                collect($queries)
+                $queries
                     ->values()
-                    ->map(fn ($query, $i) => $this->processSelect($query, $results['responses'][$i]))
+                    ->map(fn ($query, $i) => $this->processSelect($query->toBase(), $results['responses'][$i]))
             )
+            ->map(function ($response, $i) use ($queries) {
+                if ($queries->get($i) instanceof EloquentBuilder) {
+                    $response->resetItems($queries->get($i)->getModel()->hydrate($response->all())->all());
+                }
+
+                return $response;
+            })
             ->all()
         ;
     }
