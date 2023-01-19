@@ -65,6 +65,7 @@ class ElasticServiceProvider extends ServiceProvider
                 Console\Indices\UpdateIndex::class,
                 Console\Indices\CreateIndexTemplate::class,
                 Console\Indices\CreateIndex::class,
+                Console\Indices\CountFields::class,
                 Console\Indices\DeleteIndex::class,
                 Console\Indices\UpdateIndexSettings::class,
 

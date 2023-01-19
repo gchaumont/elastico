@@ -31,7 +31,7 @@ class Builder extends EloquentBuilder
         'getConnection',
         'getGrammar',
         'implode',
-        'insert',
+        // 'insert',
         'insertGetId',
         'insertOrIgnore',
         'insertUsing',
@@ -44,6 +44,7 @@ class Builder extends EloquentBuilder
         'getAggregations',
         'getMany',
         'enumerateTerms',
+        'enumerate',
     ];
 
     public function __construct(BaseBuilder $query)
@@ -157,6 +158,22 @@ class Builder extends EloquentBuilder
             $this->addTimestampsToUpsertValues($values),
             $uniqueBy,
             $this->addUpdatedAtToUpsertColumns($update)
+        );
+    }
+
+    public function insert(array $values)
+    {
+        if (empty($values)) {
+            return 0;
+        }
+
+        $values = collect($values)
+            ->map(fn ($value) => $value instanceof Model ? ['_id' => $value->getKey(), '_index' => $value->getTable(), ...$value->getAttributes()] : $value)
+            ->all()
+        ;
+
+        return $this->toBase()->insert(
+            $values
         );
     }
 

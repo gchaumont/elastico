@@ -187,26 +187,20 @@ class Grammar extends BaseGrammar
         // Essentially we will force every insert to be treated as a batch insert which
         // simply makes creating the SQL easier for us since we can utilize the same
         // basic routine regardless of an amount of records given to us to insert.
-        $table = $this->wrapTable($query->from);
-
-        if (empty($values)) {
-            return "insert into {$table} default values";
-        }
-
-        if (!is_array(reset($values))) {
-            $values = [$values];
-        }
-
-        $columns = $this->columnize(array_keys(reset($values)));
-
-        // We need to build a list of parameter place-holders of values that are bound
-        // to the query. Each insert should have the exact same number of parameter
-        // bindings so we will loop through the record and parameterize them all.
-        $parameters = collect($values)->map(function ($record) {
-            return '('.$this->parameterize($record).')';
-        })->implode(', ');
-
-        return "insert into {$table} ({$columns}) values {$parameters}";
+        return [
+            'body' => collect($values)
+                ->flatMap(fn ($val) => [
+                    [
+                        'index' => [
+                            '_id' => Arr::pull($val, '_id'),
+                            '_index' => Arr::pull($val, '_index'),
+                        ],
+                    ],
+                    $val,
+                ])
+                ->all(),
+        ]
+        ;
     }
 
     /**
@@ -236,12 +230,12 @@ class Grammar extends BaseGrammar
                     }
                 } else {
                     $sorts[] = [
-                        (string) $order['column'] => [
+                        (string) $order['column'] => array_filter([
                             'order' => $order['direction'],
-                            // 'missing' => null,
-                            // 'mode' => null,
-                            // 'nested' => null,
-                        ],
+                            'missing' => $order['missing'] ?? null,
+                            'mode' => $order['mode'] ?? null,
+                            'nested' => $order['nested'] ?? null,
+                        ]),
                     ];
                 }
             }

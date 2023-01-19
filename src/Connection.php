@@ -4,7 +4,10 @@ namespace Elastico;
 
 use Elastic\Elasticsearch\Client;
 use Elastic\Elasticsearch\ClientBuilder;
+use Elastic\Elasticsearch\Response\Elasticsearch;
+use Elastico\Eloquent\Model;
 use Elastico\Query\Builder;
+use Elastico\Query\Response\PromiseResponse;
 use Exception;
 use GuzzleHttp\Promise\Promise;
 use Http\Adapter\Guzzle7\Client as GuzzleAdapter;
@@ -153,15 +156,19 @@ class Connection extends BaseConnection implements ConnectionInterface
         });
     }
 
-    public function termsEnum(string|array $index, string $field)
+    public function termsEnum(string|array $index, string $field, int $size = null, string $string = null, string $after = null, bool $insensitive = null)
     {
         $query = [
             'method' => 'termsEnum',
             'payload' => [
                 'index' => $index,
-                'body' => [
+                'body' => array_filter([
                     'field' => $field,
-                ],
+                    'size' => $size,
+                    'string' => $string,
+                    'search_after' => $after,
+                    'case_insensitive' => $insensitive,
+                ]),
             ],
         ];
 
@@ -227,37 +234,82 @@ class Connection extends BaseConnection implements ConnectionInterface
      * @param string $query
      * @param array  $bindings
      * @param bool   $useReadPdo
-     *
-     * @return \Generator
      */
-    public function cursor($query, $bindings = [], $useReadPdo = true)
+    public function cursor($query, $bindings = [], $useReadPdo = true): \Generator
     {
-        $statement = $this->run($query, $bindings, function ($query, $bindings) use ($useReadPdo) {
+        $total = null;
+        $keepAlive = '1m';
+
+        $response = $this->run($query, $bindings, function ($query, $bindings) use (&$total, $keepAlive) {
             if ($this->pretending()) {
                 return [];
             }
 
-            // First we will create a statement for the query. Then, we will set the fetch
-            // mode and prepare the bindings for the query. Once that's done we will be
-            // ready to execute the query against the database and return the cursor.
-            $statement = $this->prepared($this->getPdoForSelect($useReadPdo)
-                ->prepare($query));
+            $payload = $query;
+            // $payload['scroll'] = $seconds.'s';
+            $payload['body']['size'] = 1000;
+            $payload['body']['sort'] = '_shard_doc';
 
-            $this->bindValues(
-                $statement,
-                $this->prepareBindings($bindings)
-            );
+            $pit = $this->performQuery('openPointInTime', [
+                'index' => $payload['index'],
+                'keep_alive' => $keepAlive,
+            ]);
 
-            // Next, we'll execute the query against the database and return the statement
-            // so we can return the cursor. The cursor will use a PHP generator to give
-            // back one row at a time without using a bunch of memory to render them.
-            $statement->execute();
+            if ($pit instanceof Promise) {
+                $pit = $pit->wait()->asArray();
+            }if ($pit instanceof Elasticsearch) {
+                $pit = $pit->asArray();
+            }
 
-            return $statement;
+            $pit['keep_alive'] = $keepAlive;
+
+            $payload['body']['pit'] = $pit;
+            unset($payload['index']);
+
+            return $this->performQuery('search', $payload);
         });
 
-        while ($record = $statement->fetch()) {
-            yield $record;
+        yield from $response['hits']['hits'];
+
+        $total = $response['hits']['total'];
+
+        while ($total) {
+            $payload['body']['pit']['id'] = $response['pit_id'];
+            $payload['body']['search_after'] = $response['hits']['hits'][count($response['hits']['hits']) - 1]['sort'];
+            $payload['body']['size'] = 1000;
+            $payload['body']['sort'] = '_shard_doc';
+
+            $response = $this->performQuery('search', $payload);
+
+            if ($response instanceof Promise) {
+                $response = $response->wait()->asArray();
+            }
+            if ($response instanceof Elasticsearch) {
+                $response = $response->asArray();
+            }
+
+            yield from (new PromiseResponse(
+                source: fn ($r): array => $r['hits']['hits'],
+                total: fn ($r): int => count($r['hits']['total']),
+                aggregations: fn ($r): array => [],
+                response: $response,
+                // query: $query
+            ))
+                ->hits()
+                ->tap(function ($hits) use (&$total) {
+                    $total = $hits->count();
+                })
+                ->keyBy(fn ($hit) => $hit instanceof Model ? $hit->getKey() : $hit['_id'])
+                ->all()
+            ;
+        }
+
+        if (isset($response['pit_id'])) {
+            // $this->getConnection()->performQuery('clearScroll', ['scroll_id' => $response['_scroll_id']]);
+
+            $this->performQuery('closePointInTime', [
+                'body' => ['id' => $response['pit_id']],
+            ]);
         }
     }
 

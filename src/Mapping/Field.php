@@ -13,6 +13,16 @@ class Field
 
     public bool $index;
 
+    public bool $enabled;
+
+    public string $object;
+
+    public string $analyzer;
+
+    public \Closure $propertyCallback;
+
+    public string|array $copy_to;
+
     public function __construct(
         protected FieldType $type,
         protected string $name,
@@ -36,9 +46,44 @@ class Field
         return $this;
     }
 
+    public function enabled(bool $enabled = true): static
+    {
+        $this->enabled = $enabled;
+
+        return $this;
+    }
+
+    public function object(string $class): static
+    {
+        $this->object = $class;
+
+        return $this;
+    }
+
+    public function copyTo(string|array $destination): static
+    {
+        $this->copy_to = $destination;
+
+        return $this;
+    }
+
+    public function analyzer(string $analyzer): static
+    {
+        $this->analyzer = $analyzer;
+
+        return $this;
+    }
+
     public function getName(): string
     {
         return $this->name;
+    }
+
+    public function eachProperty(\Closure $callback): static
+    {
+        $this->propertyCallback = $callback;
+
+        return $this;
     }
 
     public function toArray(): array
@@ -46,6 +91,23 @@ class Field
         $config['type'] = $this->type->name;
         if (isset($this->index)) {
             $config['index'] = $this->index;
+        }
+        if (isset($this->enabled)) {
+            $config['enabled'] = $this->enabled;
+        }
+        if (isset($this->analyzer)) {
+            $config['analyzer'] = $this->analyzer;
+        }
+        if (isset($this->object)) {
+            $config['properties'] = collect($this->object::indexProperties())
+                ->keyBy(fn ($prop) => $prop->getName())
+                ->map(fn ($prop) => isset($this->propertyCallback) ? call_user_func($this->propertyCallback, $prop) : $prop)
+                ->map(fn ($prop) => $prop->toArray())
+                ->all()
+            ;
+        }
+        if (isset($this->copy_to)) {
+            $config['copy_to'] = $this->copy_to;
         }
 
         return $config;
@@ -159,6 +221,18 @@ class Field
         }
 
         return false;
+    }
+
+    public function propCount(): int
+    {
+        if (isset($this->object)) {
+            return collect($this->object::indexProperties())
+                ->map(fn ($prop) => $prop->propCount())
+                ->sum()
+            ;
+        }
+
+        return 1;
     }
 
     public function configuration(): array

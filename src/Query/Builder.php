@@ -2,6 +2,7 @@
 
 namespace Elastico\Query;
 
+use Elastic\Elasticsearch\Response\Elasticsearch;
 use Elastico\Aggregations\Metric\Avg;
 use Elastico\Aggregations\Metric\Max;
 use Elastico\Aggregations\Metric\Min;
@@ -174,9 +175,7 @@ class Builder extends BaseBuilder
 
         return new LazyCollection(function () {
             yield from $this->connection->cursor(
-                $this->toSql(),
-                $this->getBindings(),
-                !$this->useWritePdo
+                $this->grammar->compileSelect($this),
             );
         });
     }
@@ -387,7 +386,7 @@ class Builder extends BaseBuilder
         // Finally, we will run this query against the database connection and return
         // the results. We will need to also flatten these bindings before running
         // the query so they are all in one huge, flattened array for execution.
-        return $this->connection->insert(
+        return $this->connection->bulk(
             $this->grammar->compileInsert($this, $values),
             $this->cleanBindings(Arr::flatten($values, 1))
         );
@@ -594,10 +593,16 @@ class Builder extends BaseBuilder
             })->all()
         ));
 
-        return $this->connection->bulk(
+        $response = $this->connection->bulk(
             $this->grammar->compileUpsert($this, $values, (array) $uniqueBy, $update),
             $bindings
         );
+
+        if ($response['errors']) {
+            throw new \RuntimeException('Error inserting documents');
+        }
+
+        return $response;
     }
 
     /**
@@ -675,6 +680,65 @@ class Builder extends BaseBuilder
     {
         return $this->connection->termsEnum($this->from, $column)['terms'];
     }
+
+    public function enumerate(
+        string $field,
+        string $string = null,
+        string $after = null,
+        int $size = 10,
+        bool $insensitive = true
+    ): LazyCollection {
+        return LazyCollection::make(function () use ($field, $string, $after, $size, $insensitive): \Generator {
+            do {
+                $response = $this->connection->termsEnum(
+                    index: $this->from,
+                    field: $field,
+                    size: $size,
+                    string: $string,
+                    after : $after,
+                    insensitive: $insensitive,
+                );
+
+                if ($response instanceof Promise) {
+                    $response = $response->wait()->asArray();
+                }
+                if ($response instanceof Elasticsearch) {
+                    $response = $response->asArray();
+                }
+                foreach ($response['terms'] as $term) {
+                    yield $term;
+                }
+
+                $after = end($response['terms']);
+            } while ($size == count($response['terms']));
+        });
+    }
+
+        public function orderBy(
+            $column,
+            $direction = 'asc',
+            string $missing = null,
+            string $mode = null,
+            array $nested = null
+        ) {
+            // if ($this->isQueryable($column)) {
+            //     [$query, $bindings] = $this->createSub($column);
+
+            //     $column = new Expression('('.$query.')');
+
+            //     $this->addBinding($bindings, $this->unions ? 'unionOrder' : 'order');
+            // }
+
+            $direction = strtolower($direction);
+
+            if (!in_array($direction, ['asc', 'desc'], true)) {
+                throw new \InvalidArgumentException('Order direction must be "asc" or "desc".');
+            }
+
+            $this->orders[] = compact('column', 'direction', 'missing', 'mode', 'nested');
+
+            return $this;
+        }
 
     /**
      * Strip off the table name or alias from a column identifier.

@@ -9,7 +9,7 @@ trait IndexConfiguration
         return [
             'index' => (new static())->getTable(),
             'body' => [
-                'settings' => static::getIndexSettings(),
+                'settings' => static::indexSettings(),
                 'mappings' => array_filter([
                     '_source' => static::getSourceSettings(),
                     'dynamic' => static::getDynamicMapping(),
@@ -23,7 +23,7 @@ trait IndexConfiguration
         ];
     }
 
-    public static function getIndexSettings()
+    public static function indexSettings()
     {
         return new \stdClass();
     }
