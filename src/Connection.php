@@ -370,6 +370,8 @@ class Connection extends BaseConnection implements ConnectionInterface
      */
     public function delete($query, $bindings = [])
     {
+        $query['slices'] = 'auto';
+
         $query = [
             'method' => 'deleteByQuery',
             'payload' => $query,
