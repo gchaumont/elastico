@@ -181,6 +181,15 @@ class Model extends BaseModel implements Castable
         return $query->where($field ?? $this->getRouteKeyName(), $value);
     }
 
+    protected function getAttributesForInsert()
+    {
+        return [
+            '_id' => $this->getKey(),
+            '_index' => $this->getTable(),
+            ...$this->getAttributes(),
+        ];
+    }
+
     /**
      * Get an enum case instance from a given class and value.
      *
