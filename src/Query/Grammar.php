@@ -145,7 +145,7 @@ class Grammar extends BaseGrammar
         return [
             'body' => collect($queries)
                 ->flatMap(fn ($query) => [
-                    ['index' => $query->from],
+                    ['index' => $query->from ?? $query->getQuery()->from],
                     $query->toSql()['body'],
                 ])
                 ->all(),

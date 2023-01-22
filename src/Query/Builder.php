@@ -599,6 +599,8 @@ class Builder extends BaseBuilder
         );
 
         if ($response['errors']) {
+            dump($response);
+
             throw new \RuntimeException('Error inserting documents');
         }
 
