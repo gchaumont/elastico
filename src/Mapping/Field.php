@@ -17,6 +17,8 @@ class Field
 
     public string $object;
 
+    public array $fields;
+
     public string $analyzer;
 
     public \Closure $propertyCallback;
@@ -67,6 +69,13 @@ class Field
         return $this;
     }
 
+    public function fields(array $fields): static
+    {
+        $this->fields = $fields;
+
+        return $this;
+    }
+
     public function analyzer(string $analyzer): static
     {
         $this->analyzer = $analyzer;
@@ -108,6 +117,9 @@ class Field
         }
         if (isset($this->copy_to)) {
             $config['copy_to'] = $this->copy_to;
+        }
+        if (isset($this->fields)) {
+            $config['fields'] = $this->fields;
         }
 
         return $config;
