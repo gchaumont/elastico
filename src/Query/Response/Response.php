@@ -53,7 +53,7 @@ class Response extends EloquentCollection
 
     public function total(): int
     {
-        return $this->total;
+        return $this->total ?? 0;
     }
 
     public function aggregations(): LazyCollection|BaseCollection
