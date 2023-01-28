@@ -5,6 +5,7 @@ namespace Elastico\Eloquent;
 use Elastico\Eloquent\Concerns\EmbedsRelations;
 use Elastico\Eloquent\Concerns\HybridRelations;
 use Elastico\Eloquent\Concerns\IndexConfiguration;
+use Elastico\Query\Response\Response;
 use Illuminate\Contracts\Database\Eloquent\Castable;
 use Illuminate\Contracts\Database\Eloquent\CastsAttributes;
 use Illuminate\Database\Eloquent\Builder as EloquentBuilder;
@@ -44,6 +45,16 @@ class Model extends BaseModel implements Castable
     public function newEloquentBuilder($query)
     {
         return new Builder($query);
+    }
+
+    /**
+     * Create a new Eloquent Collection instance.
+     *
+     * @return \Illuminate\Database\Eloquent\Collection
+     */
+    public function newCollection(array $models = [])
+    {
+        return new Response($models);
     }
 
     /**
