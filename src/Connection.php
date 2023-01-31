@@ -274,6 +274,9 @@ class Connection extends BaseConnection implements ConnectionInterface
         $total = $response['hits']['total'];
 
         while ($total) {
+            if (!empty($query['body']['query'])) {
+                $payload['body']['query'] = $query['body']['query'];
+            }
             $payload['body']['pit']['id'] = $response['pit_id'];
             $payload['body']['search_after'] = $response['hits']['hits'][count($response['hits']['hits']) - 1]['sort'];
             $payload['body']['size'] = 1000;
