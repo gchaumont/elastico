@@ -23,6 +23,11 @@ abstract class Aggregation
     {
     }
 
+    public static function make(...$args): static
+    {
+        return new static(...$args);
+    }
+
     public function getName(): string
     {
         return $this->name;
