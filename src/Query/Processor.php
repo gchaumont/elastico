@@ -142,7 +142,7 @@ class Processor extends BaseProcessor
         return $results;
     }
 
-    public function resolvePromise($response)
+    public function resolvePromise(Promise|Elasticsearch|array $response): array
     {
         if ($response instanceof Promise) {
             return $response->wait()->asArray();

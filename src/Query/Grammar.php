@@ -37,6 +37,7 @@ class Grammar extends BaseGrammar
             $compiled['body']['size'],
             $compiled['body']['from'],
             $compiled['body']['post_filter'],
+            $compiled['body']['suggest'],
         );
 
         return $compiled;
@@ -63,6 +64,10 @@ class Grammar extends BaseGrammar
 
           if ($query->collapse) {
               $payload['body']['collapse'] = $query->collapse;
+          }
+
+          if ($query->suggest) {
+              $payload['body']['suggest'] = $this->compileSuggestComponents($query);
           }
 
           if (!empty($query->columns)) {
@@ -214,6 +219,27 @@ class Grammar extends BaseGrammar
         $payload['terminate_after'] = 1;
 
         return $payload;
+    }
+
+    public function compileSuggestComponents(Builder $query): array
+    {
+        $suggest = [];
+        if (!empty($query->suggest)) {
+            foreach ($query->suggest as $suggestion) {
+                $suggest[$suggestion['name']] = [
+                    'text' => $suggestion['text'],
+                    $suggestion['type'] => array_filter([
+                        'field' => $suggestion['field'],
+                        'size' => $suggestion['size'],
+                        'sort' => $suggestion['sort'],
+                        'suggest_mode' => $suggestion['mode'],
+                        'min_doc_freq' => $suggestion['min_doc_freq'],
+                    ]),
+                ];
+            }
+        }
+
+        return $suggest;
     }
 
     public function compileOrderComponents(Builder $query): array

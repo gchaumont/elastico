@@ -6,6 +6,7 @@ use Elastico\Eloquent\Concerns\QueriesRelationships;
 use Elastico\Query\Builder as BaseBuilder;
 use Illuminate\Contracts\Support\Arrayable;
 use Illuminate\Database\Eloquent\Builder as EloquentBuilder;
+use Illuminate\Pagination\Paginator;
 
 /**
  *  Elasticsearch Query Builder
@@ -160,6 +161,27 @@ class Builder extends EloquentBuilder
             $this->addUpdatedAtToUpsertColumns($update)
         );
     }
+
+        public function paginate($perPage = null, $columns = ['*'], $pageName = 'page', $page = null)
+        {
+            $page = $page ?: Paginator::resolveCurrentPage($pageName);
+
+            $total = $this->toBase()->getCountForPagination();
+
+            $perPage = (
+                $perPage instanceof \Closure
+                ? $perPage($total)
+                : $perPage
+            ) ?: $this->model->getPerPage();
+
+            // Query anyway because aggregations
+            $results = $this->forPage($page, $perPage)->get($columns);
+
+            return $this->paginator($results, $total, $perPage, $page, [
+                'path' => Paginator::resolveCurrentPath(),
+                'pageName' => $pageName,
+            ]);
+        }
 
     public function insert(array $values)
     {

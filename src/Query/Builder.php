@@ -12,6 +12,7 @@ use Elastico\Query\Builder\HasAggregations;
 use Elastico\Query\Builder\HasPostFilter;
 use Elastico\Query\Compound\Boolean;
 use Illuminate\Database\Query\Builder as BaseBuilder;
+use Illuminate\Pagination\Paginator;
 use Illuminate\Support\Arr;
 use Illuminate\Support\LazyCollection;
 
@@ -53,6 +54,8 @@ class Builder extends BaseBuilder
     public $model_id;
 
     public $collapse;
+
+    public $suggest = [];
 
     /**
      * Explains the query.
@@ -741,6 +744,38 @@ class Builder extends BaseBuilder
 
             return $this;
         }
+
+    public function suggest(
+        string $name,
+        string $text,
+        string|array $field,
+        int $size = null,
+        string $type = 'term',
+        string $sort = null,
+        string $mode = null,
+        int $min_doc_freq = null
+    ): static {
+        $this->suggest[] = compact('name', 'text', 'field', 'size', 'type', 'sort', 'mode', 'min_doc_freq');
+
+        return $this;
+    }
+
+    public function paginate($perPage = 15, $columns = ['*'], $pageName = 'page', $page = null)
+    {
+        $page = $page ?: Paginator::resolveCurrentPage($pageName);
+
+        $total = $this->getCountForPagination();
+
+        $perPage = $perPage instanceof \Closure ? $perPage($total) : $perPage;
+
+        // Query anyway because aggregations
+        $results = $this->forPage($page, $perPage)->get($columns);
+
+        return $this->paginator($results, $total, $perPage, $page, [
+            'path' => Paginator::resolveCurrentPath(),
+            'pageName' => $pageName,
+        ]);
+    }
 
     /**
      * Strip off the table name or alias from a column identifier.
