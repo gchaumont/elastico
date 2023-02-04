@@ -4,6 +4,7 @@ namespace Elastico\Console\Shards;
 
 use App\Support\Elasticsearch\Elasticsearch;
 use Illuminate\Console\Command;
+use Illuminate\Support\Facades\DB;
 
 class ToggleShardAllocation extends Command
 {
@@ -36,14 +37,15 @@ class ToggleShardAllocation extends Command
             throw new \Exception('Enable or Disable option required');
         }
 
-        $elastic = app()->make(Elasticsearch::class);
+        // $elastic = app()->make(Elasticsearch::class);
+        $elastic = DB::connection('elastic')->getClient();
 
-        $r = $elastic->cluster()->putSettings([
+        $r = $elastic->cluster()->putSettings(['body' => [
             'persistent' => [
                 'cluster.routing.allocation.enable' => $enabled,
             ],
-        ]);
+        ]]);
 
-        dump($r);
+        dump($r->asArray());
     }
 }

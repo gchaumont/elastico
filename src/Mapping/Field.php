@@ -21,6 +21,8 @@ class Field
 
     public string $analyzer;
 
+    public string $element_type;
+
     public \Closure $propertyCallback;
 
     public string|array $copy_to;
@@ -83,6 +85,27 @@ class Field
         return $this;
     }
 
+    public function dims(int $dims): static
+    {
+        $this->dims = $dims;
+
+        return $this;
+    }
+
+    public function similarity(string $similarity): static
+    {
+        $this->similarity = $similarity;
+
+        return $this;
+    }
+
+    public function element_type(string $element_type): static
+    {
+        $this->element_type = $element_type;
+
+        return $this;
+    }
+
     public function getName(): string
     {
         return $this->name;
@@ -106,6 +129,15 @@ class Field
         }
         if (isset($this->analyzer)) {
             $config['analyzer'] = $this->analyzer;
+        }
+        if (isset($this->dims)) {
+            $config['dims'] = $this->dims;
+        }
+        if (isset($this->similarity)) {
+            $config['similarity'] = $this->similarity;
+        }
+        if (isset($this->element_type)) {
+            $config['element_type'] = $this->element_type;
         }
         if (isset($this->object)) {
             $config['properties'] = collect($this->object::indexProperties())
