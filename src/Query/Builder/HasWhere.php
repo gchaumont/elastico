@@ -55,8 +55,8 @@ trait HasWhere
     // public function where(string|\Closure $field, mixed $operator = null, mixed $value = null): self
     public function where($column, $operator = null, $value = null, $boolean = 'and'): self
     {
-        if ($field instanceof \Closure) {
-            $this->getQuery()->filter($field(new Boolean()));
+        if ($column instanceof \Closure) {
+            $this->getQuery()->filter($column(new Boolean()));
 
             return $this;
         }
@@ -67,13 +67,13 @@ trait HasWhere
         $value = static::formatFilterValue($value);
 
         match ($operator) {
-            '>' => $this->filter((new Range())->field($field)->gt($value)),
-            '>=' => $this->filter((new Range())->field($field)->gte($value)),
-            '<' => $this->filter((new Range())->field($field)->lt($value)),
-            '<=' => $this->filter((new Range())->field($field)->lte($value)),
+            '>' => $this->filter((new Range())->field($column)->gt($value)),
+            '>=' => $this->filter((new Range())->field($column)->gte($value)),
+            '<' => $this->filter((new Range())->field($column)->lt($value)),
+            '<=' => $this->filter((new Range())->field($column)->lte($value)),
             '=' => match (is_array($value)) {
-                true => $this->filter((new Terms())->field($field)->values($value)),
-                false => $this->filter((new Term())->field($field)->value($value)),
+                true => $this->filter((new Terms())->field($column)->values($value)),
+                false => $this->filter((new Term())->field($column)->value($value)),
             },
             default => throw new \InvalidArgumentException('Invalid where opterator')
         };

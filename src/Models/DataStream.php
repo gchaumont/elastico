@@ -11,6 +11,6 @@ use Elastico\Mapping\FieldType;
  */
 abstract class DataStream extends Model // implements Serialisable, Recordable
 {
-    #[Field(type: FieldType::date, name: '@timestamp')]
-    public \DateTime $timestamp;
+    // #[Field(type: FieldType::date, name: '@timestamp')]
+    // public \DateTime $timestamp;
 }

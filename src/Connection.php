@@ -271,7 +271,7 @@ class Connection extends BaseConnection implements ConnectionInterface
 
         yield from $response['hits']['hits'];
 
-        $total = $response['hits']['total'];
+        $total = $response['hits']['total']['value'];
 
         while ($total) {
             if (!empty($query['body']['query'])) {

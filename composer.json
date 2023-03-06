@@ -1,6 +1,6 @@
 {
     "name": "gchaumont/elastico",
-    "description": "Elasticsearch ORM for PHP",
+    "description": "Elasticsearch Eloquent ORM",
     "type": "library",
     "license": "MIT",
     "authors": [
