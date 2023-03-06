@@ -187,7 +187,7 @@ abstract class EmbedsOneOrMany extends Relation
     /**
      * {@inheritdoc}
      */
-    public function getBaseQuery()
+    public function toBase()
     {
         // Because we are sharing this relation instance to models, we need
         // to make sure we use separate query instances.

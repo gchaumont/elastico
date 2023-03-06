@@ -507,6 +507,13 @@ class Connection extends BaseConnection implements ConnectionInterface
     }
 
     /**
+     * Reconnect to the database if a PDO connection is missing.
+     */
+    public function reconnectIfMissingConnection()
+    {
+    }
+
+    /**
      * Run a SQL statement.
      *
      * @param string $query
@@ -535,13 +542,6 @@ class Connection extends BaseConnection implements ConnectionInterface
                 $e
             );
         }
-    }
-
-    /**
-     * Reconnect to the database if a PDO connection is missing.
-     */
-    protected function reconnectIfMissingConnection()
-    {
     }
 
     /**
