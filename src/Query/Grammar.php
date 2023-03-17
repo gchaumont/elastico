@@ -62,6 +62,10 @@ class Grammar extends BaseGrammar
 
           $payload['body']['post_filter'] = $query->post_filter?->compile();
 
+          if ($query->knn) {
+              $payload['body']['knn'] = $query->knn;
+          }
+
           if ($query->collapse) {
               $payload['body']['collapse'] = $query->collapse;
           }

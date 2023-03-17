@@ -9,6 +9,7 @@ use Elastico\Aggregations\Metric\Min;
 use Elastico\Aggregations\Metric\Sum;
 use Elastico\Connection;
 use Elastico\Query\Builder\HasAggregations;
+use Elastico\Query\Builder\HasKnn;
 use Elastico\Query\Builder\HasPostFilter;
 use Elastico\Query\Compound\Boolean;
 use Illuminate\Database\Query\Builder as BaseBuilder;
@@ -24,6 +25,7 @@ class Builder extends BaseBuilder
 {
     use HasAggregations;
     use HasPostFilter;
+    use HasKnn;
 
     // TODO: Update all functions referring to "Grammar"
 
@@ -64,7 +66,7 @@ class Builder extends BaseBuilder
      */
     public function explain()
     {
-        throw new Exception('Not Supported');
+        throw new \Exception('Not Supported');
     }
 
     /**
@@ -168,17 +170,20 @@ class Builder extends BaseBuilder
     /**
      * Get a lazy collection for the given query.
      *
+     * @param mixed $keepAlive
+     *
      * @return \Illuminate\Support\LazyCollection
      */
-    public function cursor()
+    public function cursor($keepAlive = '1m')
     {
         if (is_null($this->columns)) {
             $this->columns = ['*'];
         }
 
-        return new LazyCollection(function () {
+        return new LazyCollection(function () use ($keepAlive) {
             yield from $this->connection->cursor(
-                $this->grammar->compileSelect($this),
+                query: $this->grammar->compileSelect($this),
+                keepAlive: $keepAlive,
             );
         });
     }

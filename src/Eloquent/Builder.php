@@ -183,6 +183,20 @@ class Builder extends EloquentBuilder
             ]);
         }
 
+    /**
+     * Get a lazy collection for the given query.
+     *
+     * @param mixed $keepAlive
+     *
+     * @return \Illuminate\Support\LazyCollection
+     */
+    public function cursor($keepAlive = '1m')
+    {
+        return $this->applyScopes()->query->cursor(keepAlive: $keepAlive)->map(function ($record) {
+            return $this->newModelInstance()->newFromBuilder($record);
+        });
+    }
+
     public function insert(array $values)
     {
         if (empty($values)) {

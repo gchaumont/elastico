@@ -234,11 +234,11 @@ class Connection extends BaseConnection implements ConnectionInterface
      * @param string $query
      * @param array  $bindings
      * @param bool   $useReadPdo
+     * @param mixed  $keepAlive
      */
-    public function cursor($query, $bindings = [], $useReadPdo = true): \Generator
+    public function cursor($query, $bindings = [], $useReadPdo = true, $keepAlive = '1m'): \Generator
     {
         $total = null;
-        $keepAlive = '1m';
 
         $response = $this->run($query, $bindings, function ($query, $bindings) use (&$total, $keepAlive) {
             if ($this->pretending()) {
@@ -537,6 +537,7 @@ class Connection extends BaseConnection implements ConnectionInterface
         // lot more helpful to the developer instead of just the database's errors.
         catch (\Exception $e) {
             throw new QueryException(
+                $this->getDriverName(),
                 json_encode($query),
                 $this->prepareBindings($bindings),
                 $e
