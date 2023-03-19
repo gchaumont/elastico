@@ -239,16 +239,17 @@ class Connection extends BaseConnection implements ConnectionInterface
     public function cursor($query, $bindings = [], $useReadPdo = true, $keepAlive = '1m'): \Generator
     {
         $total = null;
+        $payload = null;
 
-        $response = $this->run($query, $bindings, function ($query, $bindings) use (&$total, $keepAlive) {
+        $response = $this->run($query, $bindings, function ($query, $bindings) use (&$total, $keepAlive, &$payload) {
             if ($this->pretending()) {
                 return [];
             }
 
             $payload = $query;
             // $payload['scroll'] = $seconds.'s';
-            $payload['body']['size'] = 1000;
-            $payload['body']['sort'] = '_shard_doc';
+            $payload['body']['size'] ??= 1000;
+            $payload['body']['sort'] ??= '_shard_doc';
 
             $pit = $this->performQuery('openPointInTime', [
                 'index' => $payload['index'],
@@ -274,13 +275,13 @@ class Connection extends BaseConnection implements ConnectionInterface
         $total = $response['hits']['total']['value'];
 
         while ($total) {
-            if (!empty($query['body']['query'])) {
-                $payload['body']['query'] = $query['body']['query'];
-            }
+            // if (!empty($query['body']['query'])) {
+            //     $payload['body']['query'] = $query['body']['query'];
+            // }
             $payload['body']['pit']['id'] = $response['pit_id'];
             $payload['body']['search_after'] = $response['hits']['hits'][count($response['hits']['hits']) - 1]['sort'];
-            $payload['body']['size'] = 1000;
-            $payload['body']['sort'] = '_shard_doc';
+            // $payload['body']['size'] ??= 1000;
+            // $payload['body']['sort'] ??= '_shard_doc';
 
             $response = $this->performQuery('search', $payload);
 

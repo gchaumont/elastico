@@ -276,7 +276,7 @@ class Grammar extends BaseGrammar
 
     public function compileWhereComponents(Builder $query): Query
     {
-        $bool = new Boolean();
+        $bool = Boolean::make();
         // dd($this->wheres);
         // WHERE Types
         // - Basic
@@ -298,7 +298,7 @@ class Grammar extends BaseGrammar
         ;
 
         foreach ($orWheres as $whereGroup) {
-            $bool->should($groupBool = new Boolean());
+            $bool->should($groupBool = Boolean::make());
             foreach ($whereGroup as $where) {
                 if ('raw' == $where['type']) {
                     if ($where['sql'] instanceof Query) {
@@ -311,7 +311,7 @@ class Grammar extends BaseGrammar
                 }
 
                 if ('Nested' == $where['type']) {
-                    $groupBool->filter($where['query']->getGrammar()->compileWhereComponents($where['query']));
+                    $groupBool->must($where['query']->getGrammar()->compileWhereComponents($where['query']));
 
                     continue;
                 }
@@ -343,7 +343,7 @@ class Grammar extends BaseGrammar
                     $act = $where['not'] ? 'mustNot' : 'filter';
 
                     $groupBool->{$act}(
-                        (new Boolean())
+                        Boolean::make()
                             ->filter((new Range())->field($field)->gt($where['values'][0]))
                             ->filter((new Range())->field($field)->lt($where['values'][1]))
                     );
@@ -352,7 +352,11 @@ class Grammar extends BaseGrammar
                 }
                 if ('In' == $where['type']) {
                     if (!empty($where['values'])) {
-                        $groupBool->filter((new Terms())->field($where['column'])->values($where['values']));
+                        $groupBool->filter(
+                            Terms::make()
+                                ->field($where['column'])
+                                ->values($where['values'])
+                        );
                     }
 
                     continue;
@@ -365,21 +369,22 @@ class Grammar extends BaseGrammar
                 $value = $where['value'];
 
                 match ($where['operator']) {
-                    '>' => $groupBool->filter((new Range())->field($field)->gt($value)),
-                    '>=' => $groupBool->filter((new Range())->field($field)->gte($value)),
-                    '<' => $groupBool->filter((new Range())->field($field)->lt($value)),
-                    '<=' => $groupBool->filter((new Range())->field($field)->lte($value)),
+                    '>' => $groupBool->filter(Range::make()->field($field)->gt($value)),
+                    '>=' => $groupBool->filter(Range::make()->field($field)->gte($value)),
+                    '<' => $groupBool->filter(Range::make()->field($field)->lt($value)),
+                    '<=' => $groupBool->filter(Range::make()->field($field)->lte($value)),
                     '<>' => $groupBool->filter(
-                        (new Boolean())->mustNot((new Term())->field($field)->value($value))
+                        Boolean::make()->mustNot(Term::make()->field($field)->value($value))
                     ),
                     '=' => match (is_array($value)) {
-                        true => $groupBool->filter((new Terms())->field($field)->values($value)),
-                        false => $groupBool->filter((new Term())->field($field)->value($value)),
+                        true => $groupBool->must(Terms::make()->field($field)->values($value)),
+                        false => $groupBool->must(Term::make()->field($field)->value($value)),
                     },
-                    // 'like' => $groupBool->must((new Term())->field($field)->value(trim(strtolower($value), '%'))),
-                    // 'like' => $groupBool->must((new Wildcard())->field($field)->value(trim(strtolower($value), '%'))),
-                    'like' => $groupBool->must((new Prefix())->field($field)->value(trim($value, '%'))),
-                    'rank' => $groupBool->should((new RankFeature())->field($field)->boost($value)),
+                    // 'like' => $groupBool->must(( Term::make())->field($field)->value(trim(strtolower($value), '%'))),
+                    // 'like' => $groupBool->must(( Wildcard::make())->field($field)->value(trim(strtolower($value), '%'))),
+                    'like' => $groupBool->must(Prefix::make()->field($field)->value(trim($value, '%'))),
+                    // 'like' => $groupBool->must(Term::make()->field($field)->value(trim($value, '%'))),
+                    'rank' => $groupBool->should(RankFeature::make()->field($field)->boost($value)),
                 };
             }
         }
