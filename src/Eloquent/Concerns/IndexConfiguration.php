@@ -28,7 +28,7 @@ trait IndexConfiguration
         return new \stdClass();
     }
 
-    public static function getDynamicMapping(): bool
+    public static function getDynamicMapping(): string
     {
         return 'strict';
     }

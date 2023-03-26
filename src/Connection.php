@@ -13,6 +13,7 @@ use GuzzleHttp\Promise\Promise;
 use Http\Adapter\Guzzle7\Client as GuzzleAdapter;
 use Illuminate\Database\Connection as BaseConnection;
 use Illuminate\Database\ConnectionInterface;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Database\Events\QueryExecuted;
 use Illuminate\Database\QueryException;
 use Illuminate\Support\LazyCollection;
@@ -537,6 +538,10 @@ class Connection extends BaseConnection implements ConnectionInterface
         // message to include the bindings with SQL, which will make this exception a
         // lot more helpful to the developer instead of just the database's errors.
         catch (\Exception $e) {
+            if (str_starts_with($e->getMessage(), '404 Not Found')) {
+                throw new ModelNotFoundException();
+            }
+
             throw new QueryException(
                 $this->getDriverName(),
                 json_encode($query),

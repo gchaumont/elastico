@@ -187,9 +187,13 @@ class Model extends BaseModel implements Castable
      */
     public function resolveRouteBindingQuery($query, $value, $field = null)
     {
-        return collect([static::find($value)]);
+        $field ??= $this->getRouteKeyName();
 
-        return $query->where($field ?? $this->getRouteKeyName(), $value);
+        if ($field == $this->getKeyName()) {
+            return collect([static::find($value)]);
+        }
+
+        return $query->where($field, $value);
     }
 
     protected function getAttributesForInsert()

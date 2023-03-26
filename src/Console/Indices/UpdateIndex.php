@@ -43,6 +43,12 @@ class UpdateIndex extends Command
             $model->setConnection($this->option('connection'));
         }
         // dd($config['body']['mappings']);
+
+        // $model->getConnection()->getClient()->indices()->putSettings([
+        //     'index' => $config['index'],
+        //     'body' => $config['body']['settings'],
+        // ]);
+
         $model->getConnection()->getClient()->indices()->putMapping([
             'index' => $config['index'],
             'body' => $config['body']['mappings'],
