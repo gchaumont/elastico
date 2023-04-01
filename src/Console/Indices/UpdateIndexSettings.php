@@ -3,7 +3,6 @@
 namespace Elastico\Console\Indices;
 
 use App\Support\Elasticsearch\Client\ElasticsearchClient;
-use App\Support\Elasticsearch\Elasticsearch;
 use Illuminate\Console\Command;
 use Illuminate\Filesystem\Filesystem;
 
@@ -38,9 +37,11 @@ class UpdateIndexSettings extends Command
 
         $config = $class::getIndexConfiguration();
 
+        $model = new $class();
+
         unset($config['body']['settings']['analysis']);
 
-        resolve(Elasticsearch::class)->indices()->putSettings([
+        $model->getConnection()->getClient()->indices()->putSettings([
             'index' => $config['index'],
             'body' => $config['body']['settings'],
         ]);
