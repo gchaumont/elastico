@@ -356,12 +356,37 @@ class Connection extends BaseConnection implements ConnectionInterface
             if ($response instanceof Promise) {
                 $response = $response->wait()->asArray();
             }
-
             $this->recordsHaveBeenModified(
                 'updated' == $response['result']
             );
 
             return 1;
+        });
+    }
+
+    public function updateByQuery($query)
+    {
+        $query = [
+            'method' => 'updateByQuery',
+            'payload' => $query,
+        ];
+
+        return $this->run($query, [], function ($query, $bindings) {
+            if ($this->pretending()) {
+                return 0;
+            }
+
+            $response = $this->performQuery($query['method'], $query['payload']);
+
+            if ($response instanceof Promise) {
+                $response = $response->wait()->asArray();
+            }
+
+            $this->recordsHaveBeenModified(
+                'updated' == $response['updated']
+            );
+
+            return $response['updated'];
         });
     }
 

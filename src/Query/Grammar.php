@@ -186,6 +186,26 @@ class Grammar extends BaseGrammar
         ];
     }
 
+    public function compileUpdateByQuery(BaseBuilder $query, array $values)
+    {
+        $index = $values['_index'] ?? $query->from;
+
+        unset($values['_index']);
+
+        return [
+            'index' => $index,
+            'body' => array_filter([
+                // 'max_docs' => 10000,
+                'script' => [
+                    'source' => $this->buildPainlessScriptSource('', $values),
+                    'lang' => 'painless',
+                    'params' => $values,
+                ],
+                'query' => $this->compileWhereComponents($query)->compile(),
+            ]),
+        ];
+    }
+
     /**
      * Compile an insert statement into SQL.
      *
@@ -416,4 +436,19 @@ class Grammar extends BaseGrammar
          ]
          ;
      }
+
+    private function buildPainlessScriptSource(string $prefix, array $fields): string
+    {
+        $source = '';
+
+        foreach ($fields as $field => $value) {
+            if (is_array($value)) {
+                $source .= $this->buildPainlessScriptSource($prefix.$field.'.', $value);
+            } else {
+                $source .= 'ctx._source.'.$prefix.$field.' = params.'.$prefix.$field.";\n";
+            }
+        }
+
+        return $source;
+    }
 }

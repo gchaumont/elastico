@@ -141,6 +141,9 @@ class Builder extends EloquentBuilder
         if (empty($values)) {
             return 0;
         }
+        if ('_id' !== $uniqueBy) {
+            throw new \InvalidArgumentException('Elastic only supports upserts by _id');
+        }
 
         $values = collect($values)
             ->map(fn ($value) => $value instanceof Model ? ['_id' => $value->getKey(), '_index' => $value->getTable(), ...$value->getAttributes()] : $value)

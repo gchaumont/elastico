@@ -474,8 +474,8 @@ class Builder extends BaseBuilder
     {
         $this->applyBeforeQueryCallbacks();
 
-        return $this->connection->update(
-            $this->grammar->compileUpdate($this, $values)
+        return $this->connection->updateByQuery(
+            $this->grammar->compileUpdateByQuery($this, $values)
         );
     }
 
@@ -594,16 +594,16 @@ class Builder extends BaseBuilder
 
         $this->applyBeforeQueryCallbacks();
 
-        $bindings = $this->cleanBindings(array_merge(
-            Arr::flatten($values, 1),
-            collect($update)->reject(function ($value, $key) {
-                return is_int($key);
-            })->all()
-        ));
+        // $bindings = $this->cleanBindings(array_merge(
+        //     Arr::flatten($values, 1),
+        //     collect($update)->reject(function ($value, $key) {
+        //         return is_int($key);
+        //     })->all()
+        // ));
 
         $response = $this->connection->bulk(
             $this->grammar->compileUpsert($this, $values, (array) $uniqueBy, $update),
-            $bindings
+            []
         );
 
         if ($response['errors']) {
