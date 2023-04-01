@@ -68,16 +68,10 @@ class Model extends BaseModel implements Castable
     public function newFromBuilder($attributes = [], $connection = null)
     {
         $hit = $attributes;
-        // if (request()->wantsJson()) {
-        //     response($hit)->send();
-        // }
+
         $attributes = $hit['_source'];
-        if (!empty($hit['_id'])) {
-            $attributes[$this->getKeyName()] = $hit['_id'];
-        }
-        if (!empty($hit['_index'])) {
-            $attributes['_index'] = $hit['_index'];
-        }
+        $attributes['_id'] = $hit['_id'];
+        $attributes['_index'] = $hit['_index'];
 
         return parent::newFromBuilder($attributes, $connection);
     }
@@ -198,11 +192,11 @@ class Model extends BaseModel implements Castable
 
     protected function getAttributesForInsert()
     {
-        return [
-            '_id' => $this->getKey(),
-            '_index' => $this->getTable(),
-            ...$this->getAttributes(),
-        ];
+        $attributes = $this->getAttributes();
+        $attributes['_id'] = $this->getKey();
+        $attributes['_index'] = $this->getTable();
+
+        return $attributes;
     }
 
     /**
