@@ -3,40 +3,23 @@
 namespace Elastico\Query\Response\Aggregation;
 
 use Elastico\Aggregations\Aggregation;
-use Elastico\Query\Response\PromiseResponse;
 use Elastico\Query\Response\Response;
+use Illuminate\Support\Collection;
 
 /**
  *  Aggregation Response.
  */
 class TopHitsResponse extends AggregationResponse implements \ArrayAccess
 {
-    public function getResponse(): Response
+    public function hits(): Collection
     {
-        return new Response(
-            items: $this->response()['hits']['hits'] ?? [],
-            total: $this->response()['hits']['total']['value'] ?? 0,
-            aggregations: $this->response()['aggregations'] ?? [],
-            response: $this->response(),
-            // query: $query,
-        );
+        $class = $this->aggregation->model;
 
-        return new PromiseResponse(
-            source: fn ($data): array => $data['hits']['hits'],
-            total: fn ($data): int => $data['hits']['total']['value'],
-            aggregations: fn (): array => [],
-            response: $this->response(),
-            model: $this->aggregation->model,
-        );
+        return (new $class())->hydrate($this->response()['hits']['hits']);
     }
 
-    public function hits()
+    public function total(): int
     {
-        return $this->getResponse()->hits();
-    }
-
-    public function total()
-    {
-        return $this->getResponse()->total();
+        return $this->response()['hits']['total']['value'];
     }
 }

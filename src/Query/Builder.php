@@ -474,6 +474,12 @@ class Builder extends BaseBuilder
     {
         $this->applyBeforeQueryCallbacks();
 
+        if (!empty($values['_id'])) {
+            return $this->connection->update(
+                $this->grammar->compileUpdate($this, $values),
+            );
+        }
+
         return $this->connection->updateByQuery(
             $this->grammar->compileUpdateByQuery($this, $values)
         );
@@ -609,7 +615,7 @@ class Builder extends BaseBuilder
         if ($response['errors']) {
             dump($response);
 
-            throw new \RuntimeException('Error inserting documents');
+            throw new \RuntimeException('Error inserting documents '.json_encode($response->asArray()));
         }
 
         return $response;
