@@ -564,6 +564,8 @@ class Connection extends BaseConnection implements ConnectionInterface
         // lot more helpful to the developer instead of just the database's errors.
         catch (\Exception $e) {
             if (str_starts_with($e->getMessage(), '404 Not Found')) {
+                response($e)->send();
+
                 throw new ModelNotFoundException();
             }
 
