@@ -32,7 +32,7 @@ class AsCollectionOf extends AsCollection
 
             public function set($model, $key, $value, $attributes)
             {
-                return [$key => json_encode($value)];
+                return [$key => $value];
             }
         };
     }
