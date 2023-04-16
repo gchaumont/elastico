@@ -19,6 +19,7 @@ use Illuminate\Support\Arr;
  *  Elasticsearch Query Builder
  *  Extension of Larvel Database Query Builder.
  */
+
 class Grammar extends BaseGrammar
 {
     public function compileSelect(BaseBuilder $query)
@@ -35,6 +36,7 @@ class Grammar extends BaseGrammar
             $compiled['body']['aggs'],
             $compiled['body']['select'],
             $compiled['body']['size'],
+            $compiled['body']['knn'],
             $compiled['body']['from'],
             $compiled['body']['post_filter'],
             $compiled['body']['suggest'],
@@ -48,69 +50,67 @@ class Grammar extends BaseGrammar
         return $this->compileSelect($query);
     }
 
-      public function buildPayload(BaseBuilder $query): array
-      {
-          $payload['index'] = $query->from;
+    public function buildPayload(BaseBuilder $query): array
+    {
+        $payload['index'] = $query->from;
 
-          $payload['body']['from'] = $query->offset ?? null;
+        $payload['body']['from'] = $query->offset ?? null;
 
-          $payload['body']['size'] = $query->limit ?? null;
+        $payload['body']['size'] = $query->limit ?? null;
 
-          $payload['body']['query'] = $this->compileWhereComponents($query)->compile();
+        $payload['body']['query'] = $this->compileWhereComponents($query)->compile();
 
-          $payload['body']['sort'] = $this->compileOrderComponents($query);
+        $payload['body']['sort'] = $this->compileOrderComponents($query);
 
-          $payload['body']['post_filter'] = $query->post_filter?->compile();
+        $payload['body']['post_filter'] = $query->post_filter?->compile();
 
-          if ($query->knn) {
-              $payload['body']['knn'] = $query->knn;
-          }
+        if ($query->knn) {
+            $payload['body']['knn'] = $query->knn;
+        }
 
-          if ($query->collapse) {
-              $payload['body']['collapse'] = $query->collapse;
-          }
+        if ($query->collapse) {
+            $payload['body']['collapse'] = $query->collapse;
+        }
 
-          if ($query->suggest) {
-              $payload['body']['suggest'] = $this->compileSuggestComponents($query);
-          }
+        if ($query->suggest) {
+            $payload['body']['suggest'] = $this->compileSuggestComponents($query);
+        }
 
-          if (!empty($query->columns)) {
-              $payload['body']['_source']['includes'] = $query->columns;
-          }
+        if (!empty($query->columns)) {
+            $payload['body']['_source']['includes'] = $query->columns;
+        }
 
-          $payload['body']['aggs'] = $query->getAggregations()
-              ->map(fn ($agg) => $agg->compile())
-              ->all()
-          ;
+        $payload['body']['aggs'] = $query->getAggregations()
+            ->map(fn ($agg) => $agg->compile())
+            ->all();
 
-          $payload['body'] = collect($payload['body'])
-              ->reject(fn ($part) => null === $part)
-              ->reject(fn ($part) => [] === $part)
-              ->all()
-          ;
+        $payload['body'] = collect($payload['body'])
+            ->reject(fn ($part) => null === $part)
+            ->reject(fn ($part) => [] === $part)
+            ->all();
 
-          // if ($query->collapse) {
+        // if ($query->collapse) {
         //     $payload['body']['collapse']['field'] = $query->collapse;
-          // }
+        // }
 
-          // if (!empty($query->post_filter)) {
+        // if (!empty($query->post_filter)) {
         //     $payload['body']['post_filter'] = $query->post_filter->compile();
-          // }
+        // }
 
-          // if (!empty($query->filterPath)) {
+        // if (!empty($query->filterPath)) {
         //     $payload['filter_path'] = $query->filterPath;
-          // }
+        // }
 
-          // if ($query->profile) {
+        // if ($query->profile) {
         //     $payload['body']['profile'] = true;
-          // }
+        // }
 
-          // $query->buildSuggests();
+        // $query->buildSuggests();
 
-          // $query->buildRanks();
+        // $query->buildRanks();
 
-          return $payload;
-      }
+        return $payload;
+    }
 
     /**
      * Compile the random statement into SQL.
@@ -158,8 +158,7 @@ class Grammar extends BaseGrammar
                     $query->toSql()['body'],
                 ])
                 ->all(),
-        ]
-        ;
+        ];
     }
 
     /**
@@ -228,8 +227,7 @@ class Grammar extends BaseGrammar
                     $val,
                 ])
                 ->all(),
-        ]
-        ;
+        ];
     }
 
     /**
@@ -314,8 +312,7 @@ class Grammar extends BaseGrammar
         // - Raw
 
         $orWheres = collect($query->wheres)
-            ->chunkWhile(fn ($where) => 'or' != $where['boolean'])
-        ;
+            ->chunkWhile(fn ($where) => 'or' != $where['boolean']);
 
         foreach ($orWheres as $whereGroup) {
             $bool->should($groupBool = Boolean::make());
@@ -414,28 +411,27 @@ class Grammar extends BaseGrammar
         return $bool;
     }
 
-     public function compileUpsert(BaseBuilder $query, array $values, array $uniqueBy, array $update)
-     {
-         return [
-             'body' => collect($values)
-                 ->flatMap(fn ($val) => [
-                     [
-                         'update' => [
-                             '_id' => Arr::pull($val, '_id'),
-                             '_index' => Arr::pull($val, '_index'),
-                         ],
-                     ],
-                     [
-                         // 'update' => [
-                         'doc' => $val,
-                         'doc_as_upsert' => true,
-                         // ],
-                     ],
-                 ])
-                 ->all(),
-         ]
-         ;
-     }
+    public function compileUpsert(BaseBuilder $query, array $values, array $uniqueBy, array $update)
+    {
+        return [
+            'body' => collect($values)
+                ->flatMap(fn ($val) => [
+                    [
+                        'update' => [
+                            '_id' => Arr::pull($val, '_id'),
+                            '_index' => Arr::pull($val, '_index'),
+                        ],
+                    ],
+                    [
+                        // 'update' => [
+                        'doc' => $val,
+                        'doc_as_upsert' => true,
+                        // ],
+                    ],
+                ])
+                ->all(),
+        ];
+    }
 
     private function buildPainlessScriptSource(string $prefix, array $fields): string
     {
@@ -443,9 +439,9 @@ class Grammar extends BaseGrammar
 
         foreach ($fields as $field => $value) {
             if (is_array($value)) {
-                $source .= $this->buildPainlessScriptSource($prefix.$field.'.', $value);
+                $source .= $this->buildPainlessScriptSource($prefix . $field . '.', $value);
             } else {
-                $source .= 'ctx._source.'.$prefix.$field.' = params.'.$prefix.$field.";\n";
+                $source .= 'ctx._source.' . $prefix . $field . ' = params.' . $prefix . $field . ";\n";
             }
         }
 
