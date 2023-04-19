@@ -28,7 +28,6 @@ class Response extends EloquentCollection
         protected null|string $model = null,
     ) {
         $this->items = $items;
-
         // $this->source = $this->items;
 
         if ($this->query instanceof ModelBuilder) {

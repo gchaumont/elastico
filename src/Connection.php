@@ -75,7 +75,7 @@ class Connection extends BaseConnection implements ConnectionInterface
     public function performQuery($method, $payload)
     {
         return $this->getClient()->{$method}($payload);
-        $identifier = $method.'.'.rand(0, 10000000);
+        $identifier = $method . '.' . rand(0, 10000000);
 
         $this->startingQuery(endpoint: $method, identifier: $identifier);
 
@@ -259,7 +259,8 @@ class Connection extends BaseConnection implements ConnectionInterface
 
             if ($pit instanceof Promise) {
                 $pit = $pit->wait()->asArray();
-            }if ($pit instanceof Elasticsearch) {
+            }
+            if ($pit instanceof Elasticsearch) {
                 $pit = $pit->asArray();
             }
 
@@ -305,8 +306,7 @@ class Connection extends BaseConnection implements ConnectionInterface
                     $total = $hits->count();
                 })
                 ->keyBy(fn ($hit) => $hit instanceof Model ? $hit->getKey() : $hit['_id'])
-                ->all()
-            ;
+                ->all();
         }
 
         if (isset($response['pit_id'])) {
@@ -564,7 +564,7 @@ class Connection extends BaseConnection implements ConnectionInterface
         // lot more helpful to the developer instead of just the database's errors.
         catch (\Exception $e) {
             if (str_starts_with($e->getMessage(), '404 Not Found')) {
-                response($e)->send();
+
 
                 throw new ModelNotFoundException();
             }

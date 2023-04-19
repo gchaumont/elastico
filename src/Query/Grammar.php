@@ -58,7 +58,10 @@ class Grammar extends BaseGrammar
 
         $payload['body']['size'] = $query->limit ?? null;
 
-        $payload['body']['query'] = $this->compileWhereComponents($query)->compile();
+        $baseBool = $this->compileWhereComponents($query);
+        if (!$baseBool->isEmpty()) {
+            $payload['body']['query'] = $baseBool->compile();
+        }
 
         $payload['body']['sort'] = $this->compileOrderComponents($query);
 

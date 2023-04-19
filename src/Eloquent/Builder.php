@@ -147,8 +147,7 @@ class Builder extends EloquentBuilder
 
         $values = collect($values)
             ->map(fn ($value) => $value instanceof Model ? ['_id' => $value->getKey(), '_index' => $value->getTable(), ...$value->getAttributes()] : $value)
-            ->all()
-        ;
+            ->all();
 
         // if (!is_array(reset($values))) {
         //     $values = collect($values)
@@ -165,26 +164,25 @@ class Builder extends EloquentBuilder
         );
     }
 
-        public function paginate($perPage = null, $columns = ['*'], $pageName = 'page', $page = null)
-        {
-            $page = $page ?: Paginator::resolveCurrentPage($pageName);
+    public function paginate($perPage = null, $columns = ['*'], $pageName = 'page', $page = null)
+    {
+        $page = $page ?: Paginator::resolveCurrentPage($pageName);
 
-            $total = $this->toBase()->getCountForPagination();
+        $total = $this->toBase()->getCountForPagination();
 
-            $perPage = (
-                $perPage instanceof \Closure
-                ? $perPage($total)
-                : $perPage
-            ) ?: $this->model->getPerPage();
+        $perPage = ($perPage instanceof \Closure
+            ? $perPage($total)
+            : $perPage
+        ) ?: $this->model->getPerPage();
 
-            // Query anyway because aggregations
-            $results = $this->forPage($page, $perPage)->get($columns);
+        // Query anyway because aggregations
+        $results = $this->forPage($page, $perPage)->get($columns);
 
-            return $this->paginator($results, $total, $perPage, $page, [
-                'path' => Paginator::resolveCurrentPath(),
-                'pageName' => $pageName,
-            ]);
-        }
+        return $this->paginator($results, $total, $perPage, $page, [
+            'path' => Paginator::resolveCurrentPath(),
+            'pageName' => $pageName,
+        ]);
+    }
 
     /**
      * Get a lazy collection for the given query.
@@ -208,8 +206,7 @@ class Builder extends EloquentBuilder
 
         $values = collect($values)
             ->map(fn ($value) => $value instanceof Model ? ['_id' => $value->getKey(), '_index' => $value->getTable(), ...$value->getAttributes()] : $value)
-            ->all()
-        ;
+            ->all();
 
         return $this->toBase()->insert(
             $values
@@ -223,8 +220,10 @@ class Builder extends EloquentBuilder
      */
     protected function addUpdatedAtColumn(array $values)
     {
-        if (!$this->model->usesTimestamps()
-            || is_null($this->model->getUpdatedAtColumn())) {
+        if (
+            !$this->model->usesTimestamps()
+            || is_null($this->model->getUpdatedAtColumn())
+        ) {
             return $values;
         }
 

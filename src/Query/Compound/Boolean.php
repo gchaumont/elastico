@@ -86,4 +86,10 @@ class Boolean extends Query
 
         return $this;
     }
+
+
+    public function isEmpty(): bool
+    {
+        return empty($this->must) && empty($this->should) && empty($this->filter) && empty($this->must_not);
+    }
 }

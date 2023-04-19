@@ -28,6 +28,8 @@ class Model extends BaseModel implements Castable
 
     protected $connection = 'elastic';
 
+    public $_score = null;
+
     /**
      * The parent relation instance.
      *
@@ -73,7 +75,11 @@ class Model extends BaseModel implements Castable
         $attributes['_id'] = $hit['_id'];
         $attributes['_index'] = $hit['_index'];
 
-        return parent::newFromBuilder($attributes, $connection);
+        $new = parent::newFromBuilder($attributes, $connection);
+
+        $new->_score = $hit['_score'] ?? null;
+
+        return $new;
     }
 
     /**
@@ -107,7 +113,8 @@ class Model extends BaseModel implements Castable
     {
         $class = static::class;
 
-        return new class($class) implements CastsAttributes {
+        return new class($class) implements CastsAttributes
+        {
             public function __construct(protected string $class)
             {
             }
@@ -210,8 +217,8 @@ class Model extends BaseModel implements Castable
     protected function getEnumCaseFromValue($enumClass, $value)
     {
         return is_subclass_of($enumClass, \BackedEnum::class)
-                ? $enumClass::tryFrom($value)
-                : constant($enumClass.'::'.$value);
+            ? $enumClass::tryFrom($value)
+            : constant($enumClass . '::' . $value);
     }
 
     /**
