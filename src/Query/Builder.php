@@ -225,8 +225,8 @@ class Builder extends BaseBuilder
         $queryResult = $queryResult->map(fn ($r) => $r['_source']);
 
         return is_array($queryResult->first())
-                    ? $this->pluckFromArrayColumn($queryResult, $column, $key)
-                    : $this->pluckFromObjectColumn($queryResult, $column, $key);
+            ? $this->pluckFromArrayColumn($queryResult, $column, $key)
+            : $this->pluckFromObjectColumn($queryResult, $column, $key);
     }
 
     /**
@@ -272,8 +272,7 @@ class Builder extends BaseBuilder
             [$sub, $bindings] = $this->createSub($column);
 
             return $this->addBinding($bindings, 'where')
-                ->where(new Expression('('.$sub.')'), $operator, $value, $boolean)
-            ;
+                ->where(new Expression('(' . $sub . ')'), $operator, $value, $boolean);
         }
 
         // If the given operator is not found in the list of valid operators we will
@@ -615,7 +614,7 @@ class Builder extends BaseBuilder
         if ($response['errors']) {
             dump($response);
 
-            throw new \RuntimeException('Error inserting documents '.json_encode($response->asArray()));
+            throw new \RuntimeException('Error inserting documents ' . json_encode($response->asArray()));
         }
 
         return $response;
@@ -656,8 +655,7 @@ class Builder extends BaseBuilder
             )
             ->get()
             ->aggregation('agg')
-            ->value()
-        ;
+            ->value();
     }
 
     /**
@@ -711,7 +709,7 @@ class Builder extends BaseBuilder
                     field: $field,
                     size: $size,
                     string: $string,
-                    after : $after,
+                    after: $after,
                     insensitive: $insensitive,
                 );
 
@@ -730,31 +728,31 @@ class Builder extends BaseBuilder
         });
     }
 
-        public function orderBy(
-            $column,
-            $direction = 'asc',
-            string $missing = null,
-            string $mode = null,
-            array $nested = null
-        ) {
-            // if ($this->isQueryable($column)) {
-            //     [$query, $bindings] = $this->createSub($column);
+    public function orderBy(
+        $column,
+        $direction = 'asc',
+        string $missing = null,
+        string $mode = null,
+        array $nested = null
+    ) {
+        // if ($this->isQueryable($column)) {
+        //     [$query, $bindings] = $this->createSub($column);
 
-            //     $column = new Expression('('.$query.')');
+        //     $column = new Expression('('.$query.')');
 
-            //     $this->addBinding($bindings, $this->unions ? 'unionOrder' : 'order');
-            // }
+        //     $this->addBinding($bindings, $this->unions ? 'unionOrder' : 'order');
+        // }
 
-            $direction = strtolower($direction);
+        $direction = strtolower($direction);
 
-            if (!in_array($direction, ['asc', 'desc'], true)) {
-                throw new \InvalidArgumentException('Order direction must be "asc" or "desc".');
-            }
-
-            $this->orders[] = compact('column', 'direction', 'missing', 'mode', 'nested');
-
-            return $this;
+        if (!in_array($direction, ['asc', 'desc'], true)) {
+            throw new \InvalidArgumentException('Order direction must be "asc" or "desc".');
         }
+
+        $this->orders[] = compact('column', 'direction', 'missing', 'mode', 'nested');
+
+        return $this;
+    }
 
     public function suggest(
         string $name,
@@ -803,7 +801,7 @@ class Builder extends BaseBuilder
 
         $separator = str_contains(strtolower($column), ' as ') ? ' as ' : '\.';
 
-        return last(preg_split('~'.$separator.'~i', $column));
+        return last(preg_split('~' . $separator . '~i', $column));
     }
 
     /**
@@ -819,11 +817,11 @@ class Builder extends BaseBuilder
             $clone = $this->cloneForPaginationCount();
 
             if (is_null($clone->columns) && !empty($this->joins)) {
-                $clone->select($this->from.'.*');
+                $clone->select($this->from . '.*');
             }
 
             return $this->newQuery()
-                ->from(new Expression('('.$clone->toSql().') as '.$this->grammar->wrap('aggregate_table')))
+                ->from(new Expression('(' . $clone->toSql() . ') as ' . $this->grammar->wrap('aggregate_table')))
                 ->mergeBindings($clone)
                 ->setAggregate('count', $this->withoutSelectAliases($columns))
                 ->get()->all();

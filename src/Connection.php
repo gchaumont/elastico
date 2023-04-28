@@ -153,7 +153,12 @@ class Connection extends BaseConnection implements ConnectionInterface
         ];
 
         return $this->run($query, [], function ($query, $bindings) {
-            return $this->performQuery($query['method'], $query['payload']);
+            $r = $this->performQuery($query['method'], $query['payload']);
+            if ($r['errors'] ?? false) {
+                throw new \Exception(json_encode($r->asArray()));
+            }
+
+            return $r;
         });
     }
 
@@ -328,7 +333,9 @@ class Connection extends BaseConnection implements ConnectionInterface
      */
     public function insert($query, $bindings = [])
     {
-        return $this->statement($query, $bindings);
+        $r =  $this->statement($query, $bindings);
+
+        return $r;
     }
 
     /**

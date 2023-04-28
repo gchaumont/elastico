@@ -203,7 +203,6 @@ class Builder extends EloquentBuilder
         if (empty($values)) {
             return 0;
         }
-
         $values = collect($values)
             ->map(fn ($value) => $value instanceof Model ? ['_id' => $value->getKey(), '_index' => $value->getTable(), ...$value->getAttributes()] : $value)
             ->all();
