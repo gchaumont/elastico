@@ -9,7 +9,7 @@ use Elastico\Query\Query;
  */
 class Nested extends Query
 {
-    protected $type = 'nested';
+    protected string $type = 'nested';
 
     protected string $path;
 

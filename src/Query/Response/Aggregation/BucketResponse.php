@@ -17,7 +17,11 @@ class BucketResponse extends AggregationResponse implements \ArrayAccess
         return $this->collect('buckets')
             ->transform(fn ($bucket) => $this->aggregation->toResponse(
                 response: $bucket,
-            ))
-        ;
+            ));
+    }
+
+    public function doc_count(): int
+    {
+        return $this->get('doc_count');
     }
 }

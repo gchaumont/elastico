@@ -27,7 +27,7 @@ class Response extends EloquentCollection
         protected null|Builder|EloquentBuilder $query = null,
         protected null|string $model = null,
     ) {
-        $this->items = $items;
+        $this->items = collect($items)->all();
         // $this->source = $this->items;
 
         if ($this->query instanceof ModelBuilder) {

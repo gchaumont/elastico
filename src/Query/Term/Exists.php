@@ -9,7 +9,7 @@ use Elastico\Query\Query;
  */
 class Exists extends Query
 {
-    protected $type = 'exists';
+    protected string $type = 'exists';
 
     protected ?int $boost = null;
 

@@ -11,6 +11,8 @@ abstract class Query
 {
     use Conditionable;
 
+    protected string $type;
+
     abstract public function getPayload(): array;
 
     final public function compile(): array

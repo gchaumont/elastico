@@ -9,7 +9,7 @@ use Elastico\Query\Query;
  */
 class Range extends Query
 {
-    protected $type = 'range';
+    protected string $type = 'range';
 
     protected string $field;
 

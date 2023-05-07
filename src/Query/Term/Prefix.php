@@ -9,7 +9,7 @@ use Elastico\Query\Query;
  */
 class Prefix extends Query
 {
-    protected $type = 'prefix';
+    protected string $type = 'prefix';
 
     protected string $field;
 

@@ -9,11 +9,13 @@ use Elastico\Query\Query;
  */
 class Wildcard extends Query
 {
-    protected $type = 'wildcard';
+    protected string $type = 'wildcard';
 
     protected ?int $boost = null;
 
     protected string $field;
+
+    protected string $value;
 
     public function getPayload(): array
     {

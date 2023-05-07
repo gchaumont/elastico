@@ -9,7 +9,7 @@ use Elastico\Query\Query;
  */
 class Term extends Query
 {
-    protected $type = 'term';
+    protected string $type = 'term';
 
     protected string $field;
 

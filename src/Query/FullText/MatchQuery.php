@@ -9,7 +9,7 @@ use Elastico\Query\Query;
  */
 class MatchQuery extends Query
 {
-    protected $type = 'match';
+    protected string $type = 'match';
 
     protected string $field;
 

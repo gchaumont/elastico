@@ -25,7 +25,7 @@ class Percentiles extends Aggregation
         if (isset($this->percents)) {
             $payload['percents'] = $this->percents;
         }
-        if (isset($this->keyked)) {
+        if (isset($this->keyed)) {
             $payload['keyed'] = $this->keyed;
         }
 

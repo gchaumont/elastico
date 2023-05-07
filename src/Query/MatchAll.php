@@ -7,7 +7,7 @@ namespace Elastico\Query;
  */
 class MatchAll extends Query
 {
-    protected $type = 'match_all';
+    protected string $type =  'match_all';
 
     protected ?int $boost = null;
 
