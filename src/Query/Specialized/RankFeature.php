@@ -9,7 +9,7 @@ use Elastico\Query\Query;
  */
 class RankFeature extends Query
 {
-    protected $type = 'rank_feature';
+    protected string $type = 'rank_feature';
 
     protected string $field;
 

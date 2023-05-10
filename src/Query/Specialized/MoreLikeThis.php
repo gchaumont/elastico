@@ -9,7 +9,7 @@ use Elastico\Query\Query;
  */
 class MoreLikeThis extends Query
 {
-    protected $type = 'more_like_this';
+    protected string $type = 'more_like_this';
 
     protected array $fields;
 

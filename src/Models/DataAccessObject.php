@@ -2,13 +2,14 @@
 
 namespace Elastico\Models;
 
-use Elastico\Eloquent\Model;
+
 use Elastico\Models\Features\Mappable;
+use Illuminate\Database\Eloquent\Model;
 use Elastico\Models\Features\Serialisable;
 use Elastico\Models\Features\Unserialisable;
-use Illuminate\Contracts\Database\Eloquent\Castable as CastableContract;
-use Illuminate\Contracts\Database\Eloquent\CastsAttributes;
 use Illuminate\Database\Eloquent\Concerns\HasAttributes;
+use Illuminate\Contracts\Database\Eloquent\CastsAttributes;
+use Illuminate\Contracts\Database\Eloquent\Castable as CastableContract;
 
 /**
  * Serialises Data Objects from and to the Database.
@@ -57,12 +58,13 @@ abstract class DataAccessObject implements CastableContract
     {
         $class = static::class;
 
-        return new class($class) implements CastsAttributes {
+        return new class($class) implements CastsAttributes
+        {
             public function __construct(protected string $class)
             {
             }
 
-            public function get($model, $key, $value, $attributes)
+            public function get($model, string $key, mixed $value, array $attributes)
             {
                 $class = $this->class;
 
@@ -77,8 +79,11 @@ abstract class DataAccessObject implements CastableContract
                 return new $class($value);
             }
 
-            public function set($model, $key, $value, $attributes)
+            public function set($model, string  $key, mixed $value, array $attributes)
             {
+                if ($value == null) {
+                    return [$key => null];
+                }
                 return [$key => $value->getAttributes()];
             }
         };
@@ -180,7 +185,7 @@ abstract class DataAccessObject implements CastableContract
     protected function getEnumCaseFromValue($enumClass, $value)
     {
         return is_subclass_of($enumClass, \BackedEnum::class)
-                ? $enumClass::tryFrom($value)
-                : constant($enumClass.'::'.$value);
+            ? $enumClass::tryFrom($value)
+            : constant($enumClass . '::' . $value);
     }
 }

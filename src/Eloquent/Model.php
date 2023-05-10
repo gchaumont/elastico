@@ -30,6 +30,14 @@ class Model extends BaseModel implements Castable
 
     public $_score = null;
 
+    // public $_seq_no = null;
+
+    // public $_primary_term = null;
+
+    // public $_version = null;
+
+    // public $_explanation = null;
+
     /**
      * The parent relation instance.
      *
@@ -177,6 +185,14 @@ class Model extends BaseModel implements Castable
         return parent::getAttribute($key);
     }
 
+    protected function getStorableEnumValue($value)
+    {
+        if ($value === null) {
+            return null;
+        }
+
+        return parent::getStorableEnumValue($value);
+    }
     /**
      * Retrieve the model for a bound value.
      *

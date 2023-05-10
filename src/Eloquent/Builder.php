@@ -121,6 +121,17 @@ class Builder extends EloquentBuilder
         // return $builder->getModel()->newCollection($models);
     }
 
+    public function whereKey($id)
+    {
+        $query = parent::whereKey($id);
+
+        if (is_countable($id)) {
+            $query->limit(count($id));
+        }
+        return  $query;
+    }
+
+
     public function getModels($columns = ['*'])
     {
         return $this->model->hydrate(

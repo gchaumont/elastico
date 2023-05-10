@@ -14,7 +14,8 @@ class Builder extends ElasticBuilder
     public function __construct(
         // null|string $connection = null,
         // public readonly string $model,
-    ) {
+    )
+    {
         // parent::__construct($connection);
 
         // $this->index($this->model::searchableIndexName());
@@ -34,6 +35,7 @@ class Builder extends ElasticBuilder
     {
         return $this->with;
     }
+
 
     public function with(string|array $relations /* , Closure $callback = null */): self
     {

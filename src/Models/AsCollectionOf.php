@@ -12,7 +12,8 @@ class AsCollectionOf extends AsCollection
     {
         $type = $arguments[0];
 
-        return new class($type) implements CastsAttributes {
+        return new class($type) implements CastsAttributes
+        {
             public function __construct(public string $type)
             {
                 // $this->type = $type;
@@ -26,8 +27,14 @@ class AsCollectionOf extends AsCollection
 
                 $data = $attributes[$key];
                 $class = $this->type;
+                $isEnum = enum_exists($class);
 
-                return is_array($data) ? (new Collection($data))->map(fn ($item) => new $class($item)) : null;
+                if (!is_array($data)) {
+                    return null;
+                }
+
+                return (new Collection($data))
+                    ->map(fn ($item) => $isEnum ? $class::tryFrom($item) : new $class($item));
             }
 
             public function set($model, $key, $value, $attributes)
