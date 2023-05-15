@@ -209,6 +209,24 @@ class Builder extends EloquentBuilder
         });
     }
 
+    /**
+     * Delete records from the database.
+     *
+     * @return mixed
+     */
+    public function delete($id = null)
+    {
+        if (isset($this->onDelete)) {
+            return call_user_func($this->onDelete, $this);
+        }
+
+        if (!is_null($id)) {
+            $this->toBase()->delete($id);
+        }
+
+        return $this->toBase()->delete();
+    }
+
     public function insert(array $values)
     {
         if (empty($values)) {
