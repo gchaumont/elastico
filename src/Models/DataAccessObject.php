@@ -8,6 +8,7 @@ use Illuminate\Database\Eloquent\Model;
 use Elastico\Models\Features\Serialisable;
 use Elastico\Models\Features\Unserialisable;
 use Illuminate\Database\Eloquent\Concerns\HasAttributes;
+use Illuminate\Database\Eloquent\Concerns\HidesAttributes;
 use Illuminate\Contracts\Database\Eloquent\CastsAttributes;
 use Illuminate\Contracts\Database\Eloquent\Castable as CastableContract;
 
@@ -18,6 +19,7 @@ abstract class DataAccessObject implements CastableContract
 {
     use Mappable;
     use HasAttributes;
+    use HidesAttributes;
 
     // protected $dateFormat = \DateTime::ATOM;
     // use Serialisable;
@@ -87,6 +89,11 @@ abstract class DataAccessObject implements CastableContract
                 return [$key => $value->getAttributes()];
             }
         };
+    }
+
+    public function toArray()
+    {
+        return array_merge($this->attributesToArray());
     }
 
     public function getIncrementing()

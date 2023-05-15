@@ -39,7 +39,7 @@ class AsCollectionOf extends AsCollection
 
             public function set($model, $key, $value, $attributes)
             {
-                return [$key => $value];
+                return [$key => collect($value)->toArray()];
             }
         };
     }
