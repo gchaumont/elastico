@@ -221,7 +221,7 @@ class Builder extends EloquentBuilder
         }
 
         if (!is_null($id)) {
-            $this->toBase()->delete($id);
+            return $this->toBase()->delete($id);
         }
 
         return $this->toBase()->delete();
