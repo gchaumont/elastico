@@ -11,11 +11,12 @@ use Illuminate\Database\Eloquent\Concerns\HasAttributes;
 use Illuminate\Database\Eloquent\Concerns\HidesAttributes;
 use Illuminate\Contracts\Database\Eloquent\CastsAttributes;
 use Illuminate\Contracts\Database\Eloquent\Castable as CastableContract;
+use Illuminate\Contracts\Support\Arrayable;
 
 /**
  * Serialises Data Objects from and to the Database.
  */
-abstract class DataAccessObject implements CastableContract
+abstract class DataAccessObject implements CastableContract, Arrayable
 {
     use Mappable;
     use HasAttributes;
@@ -86,6 +87,7 @@ abstract class DataAccessObject implements CastableContract
                 if ($value == null) {
                     return [$key => null];
                 }
+
                 return [$key => $value->getAttributes()];
             }
         };
