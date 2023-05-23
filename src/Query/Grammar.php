@@ -50,6 +50,28 @@ class Grammar extends BaseGrammar
         return $this->compileSelect($query);
     }
 
+    public function compileDeleteMany(BaseBuilder $query, iterable $ids)
+    {
+        return [
+            'body' => collect($ids)
+                ->flatMap(fn ($val) => [
+                    [
+                        'delete' => [
+                            '_id' => $val,
+                            '_index' => $query->from,
+                        ],
+                    ],
+                    // [
+                    //     // 'update' => [
+                    //     // 'doc' => $val,
+                    //     // 'doc_as_upsert' => true,
+                    //     // ],
+                    // ],
+                ])
+                ->all(),
+        ];
+    }
+
     public function buildPayload(BaseBuilder $query): array
     {
         $payload['index'] = $query->from;
@@ -59,6 +81,7 @@ class Grammar extends BaseGrammar
         $payload['body']['size'] = $query->limit ?? null;
 
         $baseBool = $this->compileWhereComponents($query);
+
         if (!$baseBool->isEmpty()) {
             $payload['body']['query'] = $baseBool->compile();
         }
@@ -348,9 +371,9 @@ class Grammar extends BaseGrammar
                 }
 
                 if (in_array($where['type'], ['Exists', 'NotExists'])) {
-                    dump($where, $query);
+                    // dump($where, $query);
 
-                    throw new \Exception('TODO');
+                    throw new \Exception('Elasticsearch does not support Exists/NotExists');
                 }
 
                 if (in_array($where['type'], ['FullText'])) {
@@ -375,7 +398,7 @@ class Grammar extends BaseGrammar
                         $groupBool->filter(
                             Terms::make()
                                 ->field($where['column'])
-                                ->values($where['values'])
+                                ->values(array_values($where['values']))
                         );
                     }
 

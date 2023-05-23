@@ -2,6 +2,7 @@
 
 namespace Elastico\Eloquent;
 
+
 use Elastico\Eloquent\Concerns\QueriesRelationships;
 use Elastico\Query\Builder as BaseBuilder;
 use Illuminate\Contracts\Support\Arrayable;
@@ -46,6 +47,7 @@ class Builder extends EloquentBuilder
         'getMany',
         'enumerateTerms',
         'enumerate',
+        'deleteMany'
     ];
 
     public function __construct(BaseBuilder $query)
@@ -240,6 +242,10 @@ class Builder extends EloquentBuilder
             $values
         );
     }
+
+
+
+
 
     /**
      * Add the "updated at" column to an array of values.

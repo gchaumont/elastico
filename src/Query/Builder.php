@@ -554,6 +554,15 @@ class Builder extends BaseBuilder
         );
     }
 
+    public function deleteMany(iterable $ids)
+    {
+        return collect($this->connection->bulk(
+            $this->grammar->compileDeleteMany($this, $ids),
+        )['items'])
+            ->filter(fn ($item) => $item['delete']['result'] == 'deleted')
+            ->count();
+    }
+
     /**
      * Run a truncate statement on the table.
      */

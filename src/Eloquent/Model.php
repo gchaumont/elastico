@@ -2,6 +2,8 @@
 
 namespace Elastico\Eloquent;
 
+use Illuminate\Database\Eloquent\Collection as EloquentCollection;
+use Illuminate\Support\Collection as BaseCollection;
 use Elastico\Eloquent\Concerns\EmbedsRelations;
 use Elastico\Eloquent\Concerns\HybridRelations;
 use Elastico\Eloquent\Concerns\IndexConfiguration;
@@ -302,6 +304,7 @@ class Model extends BaseModel implements Castable
 
         return true;
     }
+
 
     /**
      * Perform the actual delete query on this model instance.
