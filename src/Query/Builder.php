@@ -656,10 +656,10 @@ class Builder extends BaseBuilder
         return $this->take(0)
             ->setAggregations(
                 collect([(match ($function) {
-                    'sum' => new Sum('agg'),
-                    'avg' => new Avg('agg'),
-                    'min' => new Min('agg'),
-                    'max' => new Max('agg'),
+                    'sum' => Sum::make('agg'),
+                    'avg' => Avg::make('agg'),
+                    'min' => Min::make('agg'),
+                    'max' => Max::make('agg'),
                 })->field($columns[0])])
             )
             ->get()
