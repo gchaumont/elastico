@@ -2,15 +2,16 @@
 
 namespace Elastico\Query;
 
-use Elastic\Elasticsearch\Exception\ClientResponseException;
+use GuzzleHttp\Promise\Promise;
+use Elastico\Query\Response\Response;
+use Illuminate\Support\LazyCollection;
+use Elastico\Query\Response\PromiseResponse;
 use Elastic\Elasticsearch\Response\Elasticsearch;
 use Elastico\Eloquent\Builder as EloquentBuilder;
-use Elastico\Query\Response\PromiseResponse;
-use Elastico\Query\Response\Response;
-use GuzzleHttp\Promise\Promise;
+use Illuminate\Database\Eloquent\Relations\Relation;
 use Illuminate\Database\Query\Builder as BaseBuilder;
+use Elastic\Elasticsearch\Exception\ClientResponseException;
 use Illuminate\Database\Query\Processors\Processor as BaseProcessor;
-use Illuminate\Support\LazyCollection;
 
 /**
  *  Elasticsearch Query Builder
@@ -56,14 +57,13 @@ class Processor extends BaseProcessor
                     ->map(fn ($query, $i) => $this->processSelect($query->toBase(), $results['responses'][$i]))
             )
             ->map(function ($response, $i) use ($queries) {
-                if ($queries->get($i) instanceof EloquentBuilder) {
+                if ($queries->get($i) instanceof EloquentBuilder || $queries->get($i) instanceof Relation) {
                     $response->resetItems($queries->get($i)->getModel()->hydrate($response->all())->all());
                 }
 
                 return $response;
             })
-            ->all()
-        ;
+            ->all();
     }
 
     public function processFind(BaseBuilder $query, $results)
@@ -84,11 +84,10 @@ class Processor extends BaseProcessor
                 response: $results,
             ))
                 ->hits()
-                ->first()
-            ;
+                ->first();
 
             // } catch (\Elastic\Transport\Exception\NotFoundException $e) {
-        //     return null;
+            //     return null;
         } catch (ClientResponseException $e) {
             if ('404' == $e->getResponse()->getStatusCode()) {
                 return null;

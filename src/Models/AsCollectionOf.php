@@ -41,8 +41,8 @@ class AsCollectionOf extends AsCollection
                 }
 
                 return Collection::make($data)
-                    ->when($isEnum, fn ($collection) => $collection->map(fn ($item) => $class::tryFrom($item))
-                        ->when(!$isEnum, fn ($collection) => $collection->map(fn ($item) => new $class($item))));
+                    ->when($isEnum, fn ($collection) => $collection->map(fn ($item) => $class::tryFrom($item)))
+                    ->when(!$isEnum, fn ($collection) => $collection->map(fn ($item) => new $class($item)));
             }
 
             public function set($model, $key, $value, $attributes)
