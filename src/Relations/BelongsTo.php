@@ -11,6 +11,13 @@ class BelongsTo extends EloquentBelongsTo implements ElasticRelation
 {
     protected $findKeys;
     protected $noRelatedKeys;
+    /**
+     * Indicates whether the eagerly loaded relation should implicitly return an empty collection.
+     *
+     * @var bool
+     * TODO: check if replace 
+     */
+    // protected $eagerKeysWereEmpty = false;
 
     /**
      * Get the key for comparing against the parent key in "has" query.

@@ -25,7 +25,7 @@ class Response extends EloquentCollection
 {
     use ParsesRelationships;
 
-    protected array $with;
+    // protected array $with;
 
     protected BaseCollection $requested_aggregations;
 
@@ -40,9 +40,9 @@ class Response extends EloquentCollection
         $this->items = collect($items)->all();
         // $this->source = $this->items;
 
-        if ($this->query instanceof ModelBuilder) {
-            $this->with = $this->query?->getWith() ?? [];
-        }
+        // if ($this->query instanceof ModelBuilder) {
+        //     $this->with = $this->query?->getWith() ?? [];
+        // }
 
         // $this->model ??= $this->query?->getModel();
         $this->requested_aggregations = $this->query?->getAggregations() ?? new BaseCollection();

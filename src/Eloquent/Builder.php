@@ -98,9 +98,18 @@ class Builder extends EloquentBuilder
             return $this->model->newCollection();
         }
 
-        return $this->model->hydrate(
+        $models =  $this->model->hydrate(
             $this->toBase()->findMany($ids, $columns)->all()
         );
+
+        // Add eagerloading because we use findMany to load relations more efficiently with whereKey
+        // also it's just useful to have eagerloading on findMany
+        if (count($models) > 0) {
+            $items = $this->eagerLoadRelations($models->all());
+            $models->resetItems($items);
+        }
+
+        return $models;
     }
 
     /**
@@ -266,10 +275,6 @@ class Builder extends EloquentBuilder
             $values
         );
     }
-
-
-
-
 
     /**
      * Add the "updated at" column to an array of values.
