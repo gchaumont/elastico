@@ -2,15 +2,18 @@
 
 namespace Elastico\Eloquent\Concerns;
 
+use Elastico\Eloquent\Model;
 use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Database\Eloquent\Relations\BelongsTo;
-use Illuminate\Database\Eloquent\Relations\BelongsToMany;
-use Illuminate\Database\Eloquent\Relations\HasOneOrMany;
 use Illuminate\Database\Eloquent\Relations\Relation;
-use Jenssegers\Mongodb\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasOneOrMany;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use Elastico\Query\Response\Aggregation\AggregationResponse;
 
 trait QueriesRelationships
 {
+
+
     /**
      * Add a relationship count / exists condition to the query.
      *
@@ -171,6 +174,6 @@ trait QueriesRelationships
             return $this->model->getKeyName();
         }
 
-        throw new \Exception(class_basename($relation).' is not supported for hybrid query constraints.');
+        throw new \Exception(class_basename($relation) . ' is not supported for hybrid query constraints.');
     }
 }

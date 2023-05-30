@@ -230,7 +230,21 @@ class Connection extends BaseConnection implements ConnectionInterface
                 return [];
             }
 
-            return $this->performQuery($query['method'], $query['payload']);
+            $responses = $this->performQuery($query['method'], $query['payload']);
+            $responses = $this->getPostProcessor()->resolvePromise($responses);
+
+            foreach ($responses['responses'] as $response) {
+
+                if ($response['error'] ?? false) {
+                    throw new QueryException(
+                        $this->getDriverName(),
+                        json_encode($query),
+                        $this->prepareBindings($bindings),
+                        new Exception(($response['error']['reason'] ?? '') . ': ' . ($response['error']['root_cause'][0]['reason'] ?? ''))
+                    );
+                }
+            }
+            return $responses;
         });
     }
 

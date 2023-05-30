@@ -9,7 +9,7 @@ use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Pagination\Paginator;
 use MongoDB\BSON\ObjectID;
 
-class EmbedsMany extends EmbedsOneOrMany
+class EmbedsMany extends EmbedsOneOrMany implements ElasticRelation
 {
     /**
      * {@inheritdoc}
@@ -90,12 +90,11 @@ class EmbedsMany extends EmbedsOneOrMany
         // Get the correct foreign key value.
         $foreignKey = $this->getForeignKeyValue($model);
 
-        $values = $this->getUpdateValues($model->getDirty(), $this->localKey.'.$.');
+        $values = $this->getUpdateValues($model->getDirty(), $this->localKey . '.$.');
 
         // Update document in database.
-        $result = $this->getBaseQuery()->where($this->localKey.'.'.$model->getKeyName(), $foreignKey)
-            ->update($values)
-        ;
+        $result = $this->getBaseQuery()->where($this->localKey . '.' . $model->getKeyName(), $foreignKey)
+            ->update($values);
 
         // Attach the model to its parent.
         if ($result) {

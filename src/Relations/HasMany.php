@@ -6,7 +6,7 @@ use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model as EloquentModel;
 use Illuminate\Database\Eloquent\Relations\HasMany as EloquentHasMany;
 
-class HasMany extends EloquentHasMany
+class HasMany extends EloquentHasMany implements ElasticRelation
 {
     /**
      * Get the plain foreign key.

@@ -2,12 +2,13 @@
 
 namespace Elastico\Eloquent;
 
-
-use Elastico\Eloquent\Concerns\QueriesRelationships;
+use Illuminate\Support\Arr;
+use Illuminate\Pagination\Paginator;
 use Elastico\Query\Builder as BaseBuilder;
 use Illuminate\Contracts\Support\Arrayable;
+use Elastico\Eloquent\Concerns\LoadsAggregates;
+use Elastico\Eloquent\Concerns\QueriesRelationships;
 use Illuminate\Database\Eloquent\Builder as EloquentBuilder;
-use Illuminate\Pagination\Paginator;
 
 /**
  *  Elasticsearch Query Builder
@@ -16,6 +17,7 @@ use Illuminate\Pagination\Paginator;
 class Builder extends EloquentBuilder
 {
     use QueriesRelationships;
+    use LoadsAggregates;
 
     protected $passthru = [
         'aggregate',
@@ -65,12 +67,14 @@ class Builder extends EloquentBuilder
      */
     public function find($id, $columns = ['*'])
     {
+        $columns = $this->getColumnNames($columns);
+
         if (is_array($id) || $id instanceof Arrayable) {
             return $this->findMany($id, $columns);
         }
 
         return $this->model->hydrate(
-            array_filter([$this->toBase()->find($id, $columns)])
+            [$this->toBase()->find($id, $columns)]
         )->first();
 
         return $this->whereKey($id)->first($columns);
@@ -86,6 +90,8 @@ class Builder extends EloquentBuilder
      */
     public function findMany($ids, $columns = ['*'])
     {
+        $columns = $this->getColumnNames($columns);
+
         $ids = $ids instanceof Arrayable ? $ids->toArray() : $ids;
 
         if (empty($ids)) {
@@ -108,6 +114,8 @@ class Builder extends EloquentBuilder
     {
         $builder = $this->applyScopes();
 
+        $columns = $this->getColumnNames($columns);
+
         $response = $this->query->get($columns);
 
         $models = $this->model->hydrate($response->all())->all();
@@ -119,8 +127,13 @@ class Builder extends EloquentBuilder
             $models = $builder->eagerLoadRelations($models);
         }
 
+        if (count($models) > 0 && count($this->withAggregations) > 0) {
+            $models = $this->eagerLoadAggregations($models);
+
+            $models = $this->resolveAggregates($models);
+        }
+
         return $response->resetItems($models);
-        // return $builder->getModel()->newCollection($models);
     }
 
     public function whereKey($id)
@@ -130,12 +143,14 @@ class Builder extends EloquentBuilder
         if (is_countable($id)) {
             $query->limit(count($id));
         }
-        return  $query;
+        return $query;
     }
 
 
     public function getModels($columns = ['*'])
     {
+        $columns = $this->getColumnNames($columns);
+
         return $this->model->hydrate(
             $this->query->get($columns)->all()
         )->all();
@@ -183,6 +198,8 @@ class Builder extends EloquentBuilder
 
         $total = $this->toBase()->getCountForPagination();
 
+        $columns = $this->getColumnNames($columns);
+
         $perPage = ($perPage instanceof \Closure
             ? $perPage($total)
             : $perPage
@@ -206,7 +223,14 @@ class Builder extends EloquentBuilder
      */
     public function cursor($keepAlive = '1m')
     {
+        if (empty($this->query->columns) || $this->query->columns === ['*']) {
+            $this->select($this->getModel()->getFieldNames());
+        }
         return $this->applyScopes()->query->cursor(keepAlive: $keepAlive)->map(function ($record) {
+            foreach ($this->query->columns as $column) {
+                $record['_source'][$column] ??= null;
+            }
+
             return $this->newModelInstance()->newFromBuilder($record);
         });
     }
@@ -267,5 +291,15 @@ class Builder extends EloquentBuilder
             [$column => $this->model->freshTimestampString()],
             $values
         );
+    }
+
+    protected function getColumnNames(string|array $columns): array
+    {
+        // return Arr::wrap($columns);
+        $columns = Arr::wrap($columns);
+        if (empty($columns) || count($columns) === 1 && $columns[0] === '*') {
+            return $this->getModel()->getFieldNames();
+        }
+        return $columns;
     }
 }

@@ -22,6 +22,11 @@ class AggregationResponse implements ArrayAccess
         $this->response = $this->aggregation->formatAggregationResult($this->response);
     }
 
+    public function getName(): string
+    {
+        return $this->aggregation->getName();
+    }
+
     public function aggregations(): Collection
     {
         return $this->aggregations ??= $this->aggregation->getAggregations()
@@ -52,6 +57,11 @@ class AggregationResponse implements ArrayAccess
     public function value(): mixed
     {
         return $this->get('value');
+    }
+
+    public function doc_count()
+    {
+        return $this->get('doc_count');
     }
 
     public function collect(string $key): Collection

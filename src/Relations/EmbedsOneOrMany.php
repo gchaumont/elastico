@@ -8,7 +8,7 @@ use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Model as EloquentModel;
 use Illuminate\Database\Eloquent\Relations\Relation;
 
-abstract class EmbedsOneOrMany extends Relation
+abstract class EmbedsOneOrMany extends Relation implements ElasticRelation
 {
     /**
      * The local key of the parent model.
@@ -200,7 +200,7 @@ abstract class EmbedsOneOrMany extends Relation
     public function getQualifiedParentKeyName()
     {
         if ($parentRelation = $this->getParentRelation()) {
-            return $parentRelation->getPathHierarchy().'.'.$this->parent->getKeyName();
+            return $parentRelation->getPathHierarchy() . '.' . $this->parent->getKeyName();
         }
 
         return $this->parent->getKeyName();
@@ -219,7 +219,7 @@ abstract class EmbedsOneOrMany extends Relation
         $results = [];
 
         foreach ($array as $key => $value) {
-            $results[$prepend.$key] = $value;
+            $results[$prepend . $key] = $value;
         }
 
         return $results;
@@ -386,7 +386,7 @@ abstract class EmbedsOneOrMany extends Relation
     protected function getPathHierarchy($glue = '.')
     {
         if ($parentRelation = $this->getParentRelation()) {
-            return $parentRelation->getPathHierarchy($glue).$glue.$this->localKey;
+            return $parentRelation->getPathHierarchy($glue) . $glue . $this->localKey;
         }
 
         return $this->localKey;

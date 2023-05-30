@@ -3,20 +3,23 @@
 namespace Elastico\Eloquent\Concerns;
 
 // use Elastico\Eloquent\Builder as EloquentBuilder;
-use Elastico\Eloquent\Builder;
-use Elastico\Eloquent\Model;
-use Elastico\Relations\BelongsTo;
-use Elastico\Relations\BelongsToMany;
-use Elastico\Relations\HasMany;
-use Elastico\Relations\HasOne;
-use Elastico\Relations\MorphMany;
-use Elastico\Relations\MorphTo;
-use Illuminate\Database\Eloquent\Builder  as EloquentBuilder;
-use Illuminate\Database\Eloquent\Relations\MorphOne;
 use Illuminate\Support\Str;
+use Elastico\Eloquent\Model;
+use Elastico\Eloquent\Builder;
+use Elastico\Eloquent\HybridEloquentBuilder;
+use Elastico\Relations\HasOne;
+use Elastico\Relations\HasMany;
+use Elastico\Relations\MorphTo;
+use Elastico\Relations\BelongsTo;
+use Elastico\Relations\MorphMany;
+use Elastico\Query\Response\Response;
+use Elastico\Relations\BelongsToMany;
+use Illuminate\Database\Eloquent\Relations\MorphOne;
+use Illuminate\Database\Eloquent\Builder  as EloquentBuilder;
 
 trait HybridRelations
 {
+    use HasAggregations;
     /**
      * Define a one-to-one relationship.
      *
@@ -156,7 +159,7 @@ trait HybridRelations
         // foreign key name by using the name of the relationship function, which
         // when combined with an "_id" should conventionally match the columns.
         if (null === $foreignKey) {
-            $foreignKey = Str::snake($relation).'_id';
+            $foreignKey = Str::snake($relation) . '_id';
         }
 
         $instance = new $related();
@@ -272,11 +275,11 @@ trait HybridRelations
         // First, we'll need to determine the foreign key and "other key" for the
         // relationship. Once we have determined the keys we'll make the query
         // instances as well as the relationship instances we need for this.
-        $foreignKey = $foreignKey ?: $this->getForeignKey().'s';
+        $foreignKey = $foreignKey ?: $this->getForeignKey() . 's';
 
         $instance = new $related();
 
-        $otherKey = $otherKey ?: $instance->getForeignKey().'s';
+        $otherKey = $otherKey ?: $instance->getForeignKey() . 's';
 
         // If no table name was provided, we can guess it by concatenating the two
         // models using underscores in alphabetical order. The two model names
@@ -311,7 +314,7 @@ trait HybridRelations
             return new Builder($query);
         }
 
-        return new EloquentBuilder($query);
+        return new HybridEloquentBuilder($query);
     }
 
     /**
@@ -326,5 +329,17 @@ trait HybridRelations
         }
 
         return parent::guessBelongsToManyRelation();
+    }
+
+
+    /**
+     * Create a new Eloquent Collection instance.
+     *
+     * @param  array  $models
+     * @return \Illuminate\Database\Eloquent\Collection
+     */
+    public function newCollection(array $items = [])
+    {
+        return new Response($items);
     }
 }

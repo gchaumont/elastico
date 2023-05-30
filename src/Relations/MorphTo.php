@@ -5,7 +5,7 @@ namespace Elastico\Relations;
 use Illuminate\Database\Eloquent\Model as EloquentModel;
 use Illuminate\Database\Eloquent\Relations\MorphTo as EloquentMorphTo;
 
-class MorphTo extends EloquentMorphTo
+class MorphTo extends EloquentMorphTo implements ElasticRelation
 {
     /**
      * {@inheritdoc}

@@ -9,7 +9,7 @@ use Illuminate\Database\Eloquent\Model as EloquentModel;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany as EloquentBelongsToMany;
 use Illuminate\Support\Arr;
 
-class BelongsToMany extends EloquentBelongsToMany
+class BelongsToMany extends EloquentBelongsToMany implements ElasticRelation
 {
     /**
      * Get the key for comparing against the parent key in "has" query.

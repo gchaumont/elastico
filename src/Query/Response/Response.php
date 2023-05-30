@@ -2,27 +2,37 @@
 
 namespace Elastico\Query\Response;
 
-use Elastico\Models\Builder\Builder as ModelBuilder;
-use Elastico\Models\Builder\EloquentBuilder;
+use Closure;
+use Exception;
 use Elastico\Query\Builder;
+use Illuminate\Support\Str;
+use Elastico\Eloquent\Model;
+use Elastico\Aggregations\Aggregation;
+use Illuminate\Support\LazyCollection;
+use Elastico\Relations\ElasticRelation;
+use Elastico\Models\Builder\EloquentBuilder;
+use Elastico\Eloquent\Concerns\ParsesRelationships;
+use Elastico\Models\Builder\Builder as ModelBuilder;
+use Illuminate\Support\Collection as BaseCollection;
 use Elastico\Query\Response\Aggregation\AggregationResponse;
 use Illuminate\Database\Eloquent\Collection as EloquentCollection;
-use Illuminate\Support\Collection as BaseCollection;
-use Illuminate\Support\LazyCollection;
+use Illuminate\Database\Eloquent\Relations\Relation as EloquentRelation;
 
 /**
  * Elastic Base Response.
  */
 class Response extends EloquentCollection
 {
+    use ParsesRelationships;
+
     protected array $with;
 
-    protected BaseCollection $query_aggs;
+    protected BaseCollection $requested_aggregations;
 
     public function __construct(
         iterable|LazyCollection $items,
         protected null|int $total = null,
-        protected iterable|BaseCollection|LazyCollection $aggregations = [],
+        protected array|BaseCollection|LazyCollection $aggregations = [],
         protected null|array $response = null,
         protected null|Builder|EloquentBuilder $query = null,
         protected null|string $model = null,
@@ -35,7 +45,7 @@ class Response extends EloquentCollection
         }
 
         // $this->model ??= $this->query?->getModel();
-        $this->query_aggs = $this->query?->getAggregations() ?? new BaseCollection();
+        $this->requested_aggregations = $this->query?->getAggregations() ?? new BaseCollection();
     }
 
     public function hits(): Collection
@@ -57,7 +67,14 @@ class Response extends EloquentCollection
 
     public function aggregations(): LazyCollection|BaseCollection
     {
-        return $this->query_aggs->map(fn ($agg): AggregationResponse => $agg->toResponse(response: $this->aggregations[$agg->getName()]));
+        try {
+
+            return $this
+                ->requested_aggregations
+                ->map(fn (Aggregation $agg): AggregationResponse => $agg->toResponse(response: $this->aggregations[$agg->getName()]));
+        } catch (\Throwable $th) {
+            dd($this);
+        }
 
         return collect($this->aggregations);
     }
@@ -84,5 +101,68 @@ class Response extends EloquentCollection
             // response(serialize($this->aggregations()))->send();
         }
         dd($this);
+    }
+
+    public function loadAggregation(string|iterable $relations, iterable|Aggregation|Closure $aggregations = []): static
+    {
+        return $this->loadAggregations([
+            [$relations, $aggregations]
+        ]);
+    }
+
+    public function loadAggregations(iterable $aggregations): static
+    {
+        if ($this->isNotEmpty()) {
+            if (empty($aggregations)) {
+                return $this;
+            }
+
+            $query = $this->first()->newQueryWithoutRelationships()->withAggregations($aggregations)->take(0);
+
+            $this->items = $query->eagerLoadAggregations($this->items);
+        }
+        return $this;
+    }
+
+    /**
+     * Load a set of aggregations over relationship's column onto the collection.
+     *
+     * @param  array<array-key, (callable(\Illuminate\Database\Eloquent\Builder): mixed)|string>|string  $relations
+     * @param  string  $column
+     * @param  string|null  $function
+     * @return $this
+     */
+    public function loadAggregate($relations, $column, $function = null)
+    {
+        if ($this->isEmpty()) {
+            return $this;
+        }
+
+
+        if (!is_array($relations)) {
+            $relations = [$relations];
+        }
+
+        $relations = $this->partitionEloquentElasticRelationships($this->first(), $relations);
+
+
+        if (count($relations['elastic'])) {
+
+            $query = $this->first()->newQueryWithoutRelationships()->withAggregate($relations['elastic'], $column, $function)->take(0);
+
+            $this->items = $query->eagerLoadAggregations($this->items);
+
+            $this->items = $query->resolveAggregates($this->items);
+        }
+
+
+        if (count($relations['eloquent'])) {
+            $collection = parent::loadAggregate($relations['eloquent'], $column, $function);
+            $this->items = $collection->all();
+        }
+
+
+
+        return $this;
     }
 }

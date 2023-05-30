@@ -6,7 +6,7 @@ use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model as EloquentModel;
 use Illuminate\Database\Eloquent\Relations\HasOne as EloquentHasOne;
 
-class HasOne extends EloquentHasOne
+class HasOne extends EloquentHasOne implements ElasticRelation
 {
     /**
      * Get the key for comparing against the parent key in "has" query.

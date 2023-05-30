@@ -103,12 +103,14 @@ class Builder extends BaseBuilder
      */
     public function find($id, $columns = ['*'])
     {
-        return $this->processor->processFind(
-            $this,
-            $this->connection->find(
-                $this->grammar->compileGet($this->from, $id, $columns)
-            )
-        );
+        return $this->onceWithColumns(Arr::wrap($columns), function () use ($id, $columns) {
+            return $this->processor->processFind(
+                $this,
+                $this->connection->find(
+                    $this->grammar->compileGet($this->from, $id, $columns)
+                )
+            );
+        });
     }
 
     /**
@@ -122,12 +124,14 @@ class Builder extends BaseBuilder
      */
     public function findMany($ids, $columns = ['*'])
     {
-        return $this->processor->processFindMany(
-            $this,
-            $this->connection->findMany(
-                $this->grammar->compileFindMany($this->from, $ids, $columns)
-            )
-        );
+        return $this->onceWithColumns(Arr::wrap($columns), function () use ($ids, $columns) {
+            return $this->processor->processFindMany(
+                $this,
+                $this->connection->findMany(
+                    $this->grammar->compileFindMany($this->from, $ids, $columns)
+                )
+            );
+        });
     }
 
     /**
@@ -623,6 +627,8 @@ class Builder extends BaseBuilder
         if ($response['errors']) {
             dump($response);
 
+
+
             throw new \RuntimeException('Error inserting documents ' . json_encode($response->asArray()));
         }
 
@@ -653,7 +659,8 @@ class Builder extends BaseBuilder
      */
     public function aggregate($function, $columns = ['*'])
     {
-        return $this->take(0)
+        return $this
+            ->take(0)
             ->setAggregations(
                 collect([(match ($function) {
                     'sum' => Sum::make('agg'),

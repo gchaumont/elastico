@@ -2,8 +2,13 @@
 
 namespace Elastico\Eloquent\Concerns;
 
+use stdClass;
+use Elastico\Mapping\Field;
+
 trait IndexConfiguration
 {
+    public static array $index_settings;
+
     public static function getIndexConfiguration(): array
     {
         return [
@@ -23,9 +28,16 @@ trait IndexConfiguration
         ];
     }
 
+    public static function getFieldNames(): array
+    {
+        return collect(static::indexProperties())
+            ->map(fn (Field $field) => $field->getName())
+            ->all();
+    }
+
     public static function indexSettings()
     {
-        return new \stdClass();
+        return static::$index_settings ??  new stdClass();
     }
 
     public static function getDynamicMapping(): string

@@ -2,16 +2,15 @@
 
 namespace Elastico\Query\Response;
 
-use Elastic\Elasticsearch\Response\Elasticsearch;
-use Elastico\Models\Builder\Builder as ModelBuilder;
-use Elastico\Models\Builder\EloquentBuilder;
-use Elastico\Models\DataAccessObject;
-use Elastico\Models\Model;
-use Elastico\Query\Builder;
-use Elastico\Query\Response\Aggregation\AggregationResponse;
 use Http\Promise\Promise;
-use Illuminate\Support\Collection as BaseCollection;
+use Elastico\Models\Model;
+use Elastico\Eloquent\Builder;
+use Elastico\Models\DataAccessObject;
 use Illuminate\Support\LazyCollection;
+use Elastico\Query\Builder as BaseBuilder;
+use Elastic\Elasticsearch\Response\Elasticsearch;
+use Illuminate\Support\Collection as BaseCollection;
+use Elastico\Query\Response\Aggregation\AggregationResponse;
 
 /**
  * Elastic Base Response.
@@ -34,9 +33,9 @@ class PromiseResponse extends Response
 
     protected $items;
 
-    protected BaseCollection $query_aggs;
+    protected BaseCollection $requested_aggregations;
 
-    protected iterable|BaseCollection|LazyCollection $aggregations;
+    protected array|BaseCollection|LazyCollection $aggregations;
 
     protected null|array|Elasticsearch|Promise $promiseResponse;
 
@@ -45,7 +44,7 @@ class PromiseResponse extends Response
         callable $total = null,
         callable $aggregations = null,
         null|array|Elasticsearch|Promise $response = null,
-        protected null|Builder|EloquentBuilder $query = null,
+        protected null|BaseBuilder|Builder $query = null,
         string $model = null,
     ) {
         $this->source = fn (): \Generator => yield from $source($response);
@@ -55,13 +54,12 @@ class PromiseResponse extends Response
 
         $this->promiseResponse = $response;
 
-        if ($this->query instanceof ModelBuilder) {
             $this->with = $this->query?->getWith() ?? [];
         }
 
         // $this->model = $this->query?->getModel() ?? $model;
 
-        $this->query_aggs = $this->query?->getAggregations() ?? new BaseCollection();
+        $this->requested_aggregations = $this->query?->getAggregations() ?? new BaseCollection();
 
         // $this->source = $this->hits();
     }
@@ -74,8 +72,7 @@ class PromiseResponse extends Response
                 fn ($hits) => $hits
                     ->map(fn ($hit): DataAccessObject|Model => $this->model::unserialise($hit))
                     ->when(!empty($this->with), fn ($collection) => $collection->load($this->with))
-            )->when(empty($this->model), fn ($hits) => $hits)
-        ;
+            )->when(empty($this->model), fn ($hits) => $hits);
     }
 
     public function resetItems(array $items)
@@ -93,10 +90,8 @@ class PromiseResponse extends Response
     public function aggregations(): LazyCollection|BaseCollection
     {
         return $this->aggregations ??= LazyCollection::make(function () {
-            return $this->query_aggs->map(fn ($agg): AggregationResponse => $agg->toResponse(response: ($this->get_aggregations)($this->response())[$agg->getName()]));
-        })
-
-        ;
+            return $this->requested_aggregations->map(fn ($agg): AggregationResponse => $agg->toResponse(response: ($this->get_aggregations)($this->response())[$agg->getName()]));
+        });
     }
 
     public function aggregation(string $name): null|AggregationResponse

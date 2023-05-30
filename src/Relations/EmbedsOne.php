@@ -6,7 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Model as EloquentModel;
 use MongoDB\BSON\ObjectID;
 
-class EmbedsOne extends EmbedsOneOrMany
+class EmbedsOne extends EmbedsOneOrMany implements ElasticRelation
 {
     public function initRelation(array $models, $relation)
     {
@@ -72,7 +72,7 @@ class EmbedsOne extends EmbedsOneOrMany
             return $this->parent->save();
         }
 
-        $values = $this->getUpdateValues($model->getDirty(), $this->localKey.'.');
+        $values = $this->getUpdateValues($model->getDirty(), $this->localKey . '.');
 
         $result = $this->getBaseQuery()->update($values);
 
