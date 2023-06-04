@@ -9,21 +9,19 @@ use Elastico\Aggregations\Aggregation;
  */
 class Terms extends BucketAggregation
 {
-    public string $type = 'terms';
+    public const TYPE = 'terms';
 
-    public string $field;
-
-    public int $minDocCount;
-
-    public int $size = 10;
-
-    public string $missing;
-
-    public $include;
-
-    public $exclude;
-
-    public string $execution_hint;
+    public function __construct(
+        public string $field,
+        public int $size = 10,
+        public null|int $min_doc_count = null,
+        public null|string $missing = null,
+        public null|string $execution_hint = null,
+        public $include = null,
+        public  $exclude = null,
+    ) {
+        # code...
+    }
 
     public function getPayload(): array
     {
@@ -31,19 +29,19 @@ class Terms extends BucketAggregation
             'field' => $this->field,
             'size' => $this->size,
         ];
-        if (isset($this->include)) {
+        if (!is_null($this->include)) {
             $agg['include'] = $this->include;
         }
-        if (isset($this->exclude)) {
+        if (!is_null($this->exclude)) {
             $agg['exclude'] = $this->exclude;
         }
-        if (isset($this->minDocCount)) {
-            $agg['min_doc_count'] = $this->minDocCount;
+        if (!is_null($this->min_doc_count)) {
+            $agg['min_doc_count'] = $this->min_doc_count;
         }
-        if (isset($this->missing)) {
+        if (!is_null($this->missing)) {
             $agg['missing'] = $this->missing;
         }
-        if (isset($this->execution_hint)) {
+        if (!is_null($this->execution_hint)) {
             $agg['execution_hint'] = $this->execution_hint;
         }
 
@@ -66,7 +64,7 @@ class Terms extends BucketAggregation
 
     public function min(int $min): self
     {
-        $this->minDocCount = $min;
+        $this->min_doc_count = $min;
 
         return $this;
     }

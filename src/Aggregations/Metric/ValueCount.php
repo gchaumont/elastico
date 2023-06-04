@@ -9,9 +9,12 @@ use Elastico\Aggregations\Aggregation;
  */
 class ValueCount extends Aggregation
 {
-    public string $type = 'value_count';
+    public const TYPE = 'value_count';
 
-    public string $field;
+    public function __construct(
+        public string $field,
+    ) {
+    }
 
     public function getPayload(): array
     {

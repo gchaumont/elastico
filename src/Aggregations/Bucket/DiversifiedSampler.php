@@ -11,13 +11,15 @@ use Exception;
  */
 class DiversifiedSampler extends BucketAggregation
 {
-    public string $type = 'diversified_sampler';
+    public const TYPE = 'diversified_sampler';
 
-    public int $shardSize;
-
-    public int $maxDocsPerValue;
-
-    public string $field;
+    public function __construct(
+        public string $field,
+        public null|int $shard_size = null,
+        public null|int $max_docs_per_value = null,
+        public null|string $execution_hint = null,
+    ) {
+    }
 
     public function getPayload(): array
     {
@@ -25,12 +27,16 @@ class DiversifiedSampler extends BucketAggregation
             'field' => $this->field,
         ];
 
-        if (isset($this->shard_size)) {
+        if (!is_null($this->shard_size)) {
             $payload['shard_size'] = $this->shard_size;
         }
 
-        if (isset($this->maxDocsPerValue)) {
-            $payload['max_docs_per_value'] = $this->maxDocsPerValue;
+        if (!is_null($this->max_docs_per_value)) {
+            $payload['max_docs_per_value'] = $this->max_docs_per_value;
+        }
+
+        if (!is_null($this->execution_hint)) {
+            $payload['execution_hint'] = $this->execution_hint;
         }
 
         return $payload;
@@ -38,7 +44,7 @@ class DiversifiedSampler extends BucketAggregation
 
     public function maxDocsPerValue(int $max): self
     {
-        $this->maxDocsPerValue = $max;
+        $this->max_docs_per_value = $max;
 
         return $this;
     }
@@ -52,12 +58,12 @@ class DiversifiedSampler extends BucketAggregation
 
     public function shardSize(int $shardSize): self
     {
-        $this->shardSize = $shardSize;
+        $this->shard_size = $shardSize;
 
         return $this;
     }
 
-    public function execution_hint(string|ExecutionHint $execution_hint): self
+    public function execution_hint(string $execution_hint): self
     {
         if (!in_array($execution_hint, ['map', 'global_ordinals', 'bytes_hash'])) {
             throw new Exception('Unallowed execution_hint value', 1);

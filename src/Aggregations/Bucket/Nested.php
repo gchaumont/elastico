@@ -9,9 +9,13 @@ use Elastico\Aggregations\Aggregation;
  */
 class Nested extends BucketAggregation
 {
-    public string $type = 'nested';
+    public const TYPE = 'nested';
 
-    public string $path;
+    public function __construct(
+        public string $path,
+    ) {
+        # code...
+    }
 
     public function getPayload(): array
     {

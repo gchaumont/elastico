@@ -10,22 +10,20 @@ use stdClass;
  */
 class SignificantTerms extends BucketAggregation
 {
-    public string $type = 'significant_terms';
+    public const TYPE = 'significant_terms';
 
-    public string $field;
 
-    public string $significance_type;
-
-    public array $background_filter;
-
-    public int $min_doc_count;
-
-    public int $size = 10;
-
-    public $include;
-
-    public string $execution_hint;
-    public $exclude;
+    public function __construct(
+        public string $field,
+        public string $significance_type,
+        public null|array $background_filter = null,
+        public null|int $min_doc_count = null,
+        public int $size = 10,
+        public $include = null,
+        public $exclude = null,
+        public null|string $execution_hint = null,
+    ) {
+    }
 
     public function getPayload(): array
     {
@@ -34,10 +32,10 @@ class SignificantTerms extends BucketAggregation
             $this->significance_type => new stdClass(),
             'size' => $this->size,
         ];
-        if (isset($this->include)) {
+        if (!is_null($this->include)) {
             $agg['include'] = $this->include;
         }
-        if (isset($this->exclude)) {
+        if (!is_null($this->exclude)) {
             $agg['exclude'] = $this->exclude;
         }
         if (!empty($this->min_doc_count)) {
@@ -47,7 +45,7 @@ class SignificantTerms extends BucketAggregation
             $agg['background_filter'] = $this->background_filter;
             $agg[$this->significance_type] = ['background_is_superset' => false];
         }
-        if (isset($this->execution_hint)) {
+        if (!is_null($this->execution_hint)) {
             $agg['execution_hint'] = $this->execution_hint;
         }
 

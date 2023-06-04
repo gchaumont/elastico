@@ -9,11 +9,13 @@ use Elastico\Aggregations\Aggregation;
  */
 class VariableWidthHistogram extends BucketAggregation
 {
-    public string $type = 'variable_width_histogram';
+    public const TYPE = 'variable_width_histogram';
 
-    public string $field;
-
-    public int $buckets;
+    public function __construct(
+        public string $field,
+        public int $buckets
+    ) {
+    }
 
     public function getPayload(): array
     {

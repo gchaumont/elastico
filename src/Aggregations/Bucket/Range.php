@@ -9,15 +9,14 @@ use Elastico\Aggregations\Aggregation;
  */
 class Range extends BucketAggregation
 {
-    public string $type = 'range';
+    public const TYPE = 'range';
 
-    public string $field;
-
-    public array $ranges;
-
-    public bool $keyed;
-
-    public int $size = 10;
+    public function __construct(
+        public string $field,
+        public array $ranges,
+        public ?bool $keyed = null,
+    ) {
+    }
 
     public function getPayload(): array
     {
@@ -26,7 +25,7 @@ class Range extends BucketAggregation
             'ranges' => $this->ranges,
         ];
 
-        if (true == ($this->keyed ?? null)) {
+        if ($this->keyed === true) {
             $agg['keyed'] = true;
         }
 

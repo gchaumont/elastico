@@ -9,23 +9,19 @@ use Elastico\Aggregations\Aggregation;
  */
 class SignificantText extends BucketAggregation
 {
-    public string $type = 'significant_text';
+    public const TYPE = 'significant_text';
 
-    public string $field;
-
-    public string $significance_type;
-
-    public bool $filter_duplicate_text;
-
-    public array $background_filter;
-
-    public int $min_doc_count;
-
-    public int $size = 10;
-
-    public $include;
-
-    public $exclude;
+    public function __construct(
+        public string $field,
+        public string $significance_type,
+        public null|bool $filter_duplicate_text = null,
+        public null|array $background_filter = null,
+        public null|int $min_doc_count = null,
+        public int $size = 10,
+        public $include = null,
+        public $exclude = null,
+    ) {
+    }
 
     public function getPayload(): array
     {
@@ -34,13 +30,13 @@ class SignificantText extends BucketAggregation
             $this->significance_type => new \stdClass(),
             'size' => $this->size,
         ];
-        if (isset($this->include)) {
+        if (!is_null($this->include)) {
             $agg['include'] = $this->include;
         }
-        if (isset($this->filter_duplicate_text)) {
+        if (!is_null($this->filter_duplicate_text)) {
             $agg['filter_duplicate_text'] = $this->filter_duplicate_text;
         }
-        if (isset($this->exclude)) {
+        if (!is_null($this->exclude)) {
             $agg['exclude'] = $this->exclude;
         }
         if (!empty($this->min_doc_count)) {

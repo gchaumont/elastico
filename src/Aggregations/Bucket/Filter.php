@@ -10,13 +10,14 @@ use Elastico\Query\Query;
  */
 class Filter extends BucketAggregation
 {
-    public string $type = 'filter';
+    public const TYPE = 'filter';
 
-    public array|Query $filter;
-
-    public int $min_doc_count;
-
-    public int $size = 10;
+    public function __construct(
+        public array|Query $filter,
+        public null|int $min_doc_count = null,
+        public null|int $size = null,
+    ) {
+    }
 
     public function getPayload(): array
     {

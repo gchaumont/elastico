@@ -12,28 +12,31 @@ class TopHits extends Aggregation
 {
     const RESPONSE_CLASS = TopHitsResponse::class;
 
-    public string $type = 'top_hits';
+    public const TYPE = 'top_hits';
 
-    public array $_source;
+    public function __construct(
+        public null|int $size = null,
+        public null|int $from = 0,
+        public null|string $model = null,
+        public null|array $sort = null,
+        public null|array $_source = null,
 
-    public array $sort;
-
-    public int $size;
-
-    public int $from = 0;
-
-    public string $model;
+    ) {
+    }
 
     public function getPayload(): array
     {
         $payload = [
             'from' => $this->from,
-            'size' => $this->size,
         ];
-        if (isset($this->_source)) {
+
+        if ($this->size !== null) {
+            $payload['size'] = $this->size;
+        }
+        if (!empty($this->_source)) {
             $payload['_source'] = $this->_source;
         }
-        if (isset($this->sort)) {
+        if (!empty($this->sort)) {
             $payload['sort'] = $this->sort;
         }
 

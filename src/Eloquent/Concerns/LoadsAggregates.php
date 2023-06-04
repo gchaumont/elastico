@@ -18,9 +18,10 @@ use Elastico\Relations\ElasticRelation;
 use Illuminate\Database\Eloquent\Model;
 use Elastico\Aggregations\Bucket\Filter;
 use Elastico\Aggregations\Metric\Cardinality;
-use Elastico\Eloquent\Builder as EloquentBuilder;
+
 use Elastico\Eloquent\Concerns\ParsesRelationships;
 use Illuminate\Database\Eloquent\Relations\Relation;
+use Illuminate\Database\Eloquent\Builder as EloquentBuilder;
 
 trait LoadsAggregates
 {
@@ -59,15 +60,15 @@ trait LoadsAggregates
 
             $this->withAggregation(
                 $relations['elastic'],
-                match ($function) {
-                    'count' => Filter::make($function)->filter(MatchAll::make('all')),
-                    'sum' => Sum::make($function)->field($column),
-                    'avg' => Avg::make($function)->field($column),
-                    'max' => Max::make($function)->field($column),
-                    'min' => Min::make($function)->field($column),
-                    'cardinality' => Cardinality::make($function)->field($column),
+                [$function => match ($function) {
+                    'count' => new Filter(filter: MatchAll::make('all')),
+                    'sum' => new Sum(field: $column),
+                    'avg' => new Avg(field: $column),
+                    'max' => new Max(field: $column),
+                    'min' => new Min(field: $column),
+                    'cardinality' => new Cardinality(field: $column),
                     default => throw new InvalidArgumentException('Invalid aggregate function: ' . $function),
-                }
+                }]
             );
         }
 
@@ -78,7 +79,7 @@ trait LoadsAggregates
         return $this;
     }
 
-    public function withAggregation(string|array $relations, Aggregation|iterable $aggregations): static
+    public function withAggregation(string|array $relations, iterable $aggregations): static
     {
         $this->withAggregations[]  = func_get_args();
 
@@ -107,9 +108,9 @@ trait LoadsAggregates
             ->keyBy(fn (Model $item) => $item->getKey());
 
         return $items
-            ->map(function (Model $item, string $model_key) use ($aggregations): Collection {
+            ->getBulk(function (Model $item) use ($aggregations): Collection {
                 return collect($aggregations)
-                    ->map(function (array $aggregation, string $aggregation_key) use ($item, $model_key): Collection {
+                    ->map(function (array $aggregation, string $aggregation_key) use ($item): Collection {
                         [$relations, $aggregation] = $aggregation;
 
                         $relations = $item
@@ -118,13 +119,13 @@ trait LoadsAggregates
 
                         return collect($relations)
                             ->keyBy(fn ($relation, string $relation_key): string => Str::after($relation_key, ' as '))
-                            ->keyBy(fn ($relation, string $relation_key): string  => $model_key . static::AGGREGATION_SEPARATOR . $relation_key . static::AGGREGATION_SEPARATOR . $aggregation_key)
+                            ->keyBy(fn ($relation, string $relation_key): string  => implode(static::AGGREGATION_SEPARATOR, [$relation_key, $aggregation_key]))
                             ->map(fn (Closure $relation): Builder|Relation  => $relation($item))
                             ->each(function (Relation|Builder $relation) use ($aggregation, $item): void {
                                 collect(is_iterable($aggregation) ? $aggregation : [$aggregation])
-                                    ->each(function (Aggregation|Closure $aggregation)   use ($item, $relation): void {
+                                    ->each(function (Aggregation|Closure $aggregation, string $name)   use ($item, $relation): void {
                                         if ($aggregation instanceof Aggregation) {
-                                            $relation->take(0)->addAggregation($aggregation);
+                                            $relation->take(0)->addAggregation($name, $aggregation);
                                         } else if ($aggregation instanceof Closure) {
                                             $aggregation($relation, $item);
                                         } else {
@@ -134,20 +135,23 @@ trait LoadsAggregates
                             });
                     })
                     ->collapse();
+                # code...
             })
-            ->collapse()
-            ->pipe(fn (Collection $queries): Collection  => $queries->isEmpty()
-                ? collect()
-                // TODO:  group relations by connection to load from multiple clusters?
-                : collect($queries->first()->getConnection()->query()->getMany($queries)))
-            ->groupBy(
-                groupBy: fn (Response $response, string $key): string => explode(static::AGGREGATION_SEPARATOR, $key)[0],
-                preserveKeys: true
-            )
-            ->map(fn (Collection $group, string $item_id): Collection => $group->keyBy(fn ($r, string $key) => explode(static::AGGREGATION_SEPARATOR, $key)[1] . static::AGGREGATION_SEPARATOR . explode(static::AGGREGATION_SEPARATOR, $key)[2]))
+            // ->map(function (Model $item, string $model_key) use ($aggregations): Collection {
+            // })
+            // ->collapse()
+            // ->pipe(fn (Collection $queries): Collection  => $queries->isEmpty()
+            //     ? collect()
+            //     // TODO:  group relations by connection to load from multiple clusters?
+            //     : collect($queries->first()->getConnection()->query()->getMany($queries)))
+            // ->groupBy(
+            //     groupBy: fn (Response $response, string $key): string => explode(static::AGGREGATION_SEPARATOR, $key, 2)[0],
+            //     preserveKeys: true
+            // )
+            // ->map(fn (Collection $group, string $item_id): Collection => $group->keyBy(fn ($r, string $key) => explode(static::AGGREGATION_SEPARATOR, $key, 2)[1] . static::AGGREGATION_SEPARATOR . explode(static::AGGREGATION_SEPARATOR, $key, 3)[2]))
             ->map(fn (Collection $group, string $item_id): Collection => $group
-                ->each(fn (Response $response, string $response_key) => $items->get($item_id)->addAggregations(explode(static::AGGREGATION_SEPARATOR, $response_key)[0], $response->aggregations())))
-            ->map(fn (Collection $group, string $item_id): Model => $items->get($item_id))
+                ->each(fn (Response $response, string $response_key) => $items->get($item_id)->addAggregations(explode(static::AGGREGATION_SEPARATOR, $response_key, 2)[0], $response->aggregations())))
+            ->pipe(fn (Collection $c): Collection => $items)
             ->all();
     }
 

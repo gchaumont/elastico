@@ -7,6 +7,7 @@ use Exception;
 use Elastico\Query\Builder;
 use Illuminate\Support\Str;
 use Elastico\Eloquent\Model;
+use Illuminate\Support\Collection;
 use Elastico\Aggregations\Aggregation;
 use Illuminate\Support\LazyCollection;
 use Elastico\Relations\ElasticRelation;
@@ -71,7 +72,7 @@ class Response extends EloquentCollection
 
             return $this
                 ->requested_aggregations
-                ->map(fn (Aggregation $agg): AggregationResponse => $agg->toResponse(response: $this->aggregations[$agg->getName()]));
+                ->map(fn (Aggregation $agg, string $name): AggregationResponse => $agg->toResponse(response: $this->aggregations[$name]));
         } catch (\Throwable $th) {
             dd($this);
         }
@@ -164,5 +165,21 @@ class Response extends EloquentCollection
 
 
         return $this;
+    }
+
+
+    public function loadQueries(iterable $queries): static
+    {
+        return $this->getBulk($queries)
+            ->map(function (Collection $responses, string $model_id): Model {
+                $model = $this->get($model_id);
+
+                $responses->each(function (Response $response, string $query_key) use ($model) {
+                    $model->addResponse($query_key, $response);
+                });
+
+                return $model;
+            })
+            ->eloquent();
     }
 }

@@ -19,16 +19,17 @@ trait HasAggregations
         return $this->getAggregations()->get($name);
     }
 
-    public function addAggregation(Aggregation $aggregation): self
+    public function addAggregation(string $name, Aggregation $aggregation): self
     {
-        $this->getAggregations()->put($aggregation->getName(), $aggregation);
+        $this->getAggregations()->put($name, $aggregation);
 
         return $this;
     }
 
     public function addAggregations(iterable $aggregations): self
     {
-        collect($aggregations)->map(fn ($agg) => $this->addAggregation($agg));
+        collect($aggregations)
+            ->map(fn (Aggregation $aggregation, string $name) => $this->addAggregation($name, $aggregation));
 
         return $this;
     }

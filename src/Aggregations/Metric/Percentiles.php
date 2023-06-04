@@ -9,23 +9,24 @@ use Elastico\Aggregations\Aggregation;
  */
 class Percentiles extends Aggregation
 {
-    public string $type = 'percentiles';
+    public const TYPE = 'percentiles';
 
-    public string $field;
-
-    public array $percents;
-
-    public bool $keyed;
+    public function __construct(
+        public string $field,
+        public null|array $percents = null,
+        public null|bool $keyed = null,
+    ) {
+    }
 
     public function getPayload(): array
     {
         $payload = [
             'field' => $this->field,
         ];
-        if (isset($this->percents)) {
+        if (!is_null($this->percents)) {
             $payload['percents'] = $this->percents;
         }
-        if (isset($this->keyed)) {
+        if (!is_null($this->keyed)) {
             $payload['keyed'] = $this->keyed;
         }
 

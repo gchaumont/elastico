@@ -9,9 +9,12 @@ use Elastico\Aggregations\Aggregation;
  */
 class Missing extends BucketAggregation
 {
-    public string $type = 'missing';
+    public const TYPE = 'missing';
 
-    public string $field;
+    public function __construct(
+        public string $field,
+    ) {
+    }
 
     public function getPayload(): array
     {

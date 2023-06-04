@@ -9,9 +9,12 @@ use Elastico\Aggregations\Aggregation;
  */
 class Stats extends Aggregation
 {
-    public string $type = 'stats';
+    public const TYPE = 'stats';
 
-    public string $field;
+    public function __construct(
+        public string $field,
+    ) {
+    }
 
     public function getPayload(): array
     {

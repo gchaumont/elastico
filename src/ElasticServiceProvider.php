@@ -2,8 +2,15 @@
 
 namespace Elastico;
 
+use Closure;
+use Elastico\Query\Builder;
 use Elastico\Eloquent\Model;
+use Illuminate\Support\Collection;
+use Illuminate\Support\Facades\DB;
+use Elastico\Query\Response\Response;
 use Illuminate\Support\ServiceProvider;
+use Illuminate\Database\Eloquent\Relations\Relation;
+use Elastico\Eloquent\Builder as ElasticEloquentBuilder;
 
 /**
  *  Elasticsearch ServiceProvider.
@@ -17,6 +24,21 @@ class ElasticServiceProvider extends ServiceProvider
         Model::setEventDispatcher($this->app['events']);
 
         $this->registerCommands();
+
+
+        Collection::macro('getBulk', function (iterable|callable $queries) {
+            return $this->flatMap(function (mixed $model, string $model_key) use ($queries): Collection {
+                $queries = $queries instanceof Closure ? $queries($model) : collect($queries)->map(fn ($query) => $query($model));
+
+                return collect($queries)
+                    ->keyBy(fn ($query, $query_key): string => implode('::', [$model_key, $query_key]));
+            })
+                ->groupBy(fn (Builder|ElasticEloquentBuilder|Relation $query): string => $query->getConnection()->getName(), preserveKeys: true)
+                ->map(fn (Collection $queries, string $connection): array => DB::connection($connection)->query()->getMany($queries->all()))
+                ->collapse()
+                ->groupBy(fn (Response $response, string $query_key): string => explode('::', $query_key, 2)[0], preserveKeys: true)
+                ->map(fn (Collection $responses, string $model_id): Collection => $responses->keyBy(fn (Response $response, $response_key) => explode('::', $response_key, 2)[1]));
+        });
     }
 
     public function register()

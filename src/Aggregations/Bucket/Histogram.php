@@ -9,11 +9,14 @@ use Elastico\Aggregations\Aggregation;
  */
 class Histogram extends BucketAggregation
 {
-    public string $type = 'histogram';
+    public const TYPE = 'histogram';
 
-    public string $field;
-
-    public int $interval;
+    public function __construct(
+        public string $field,
+        public int $interval,
+    ) {
+        # code...
+    }
 
     public function getPayload(): array
     {

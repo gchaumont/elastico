@@ -22,15 +22,10 @@ class AggregationResponse implements ArrayAccess
         $this->response = $this->aggregation->formatAggregationResult($this->response);
     }
 
-    public function getName(): string
-    {
-        return $this->aggregation->getName();
-    }
-
     public function aggregations(): Collection
     {
         return $this->aggregations ??= $this->aggregation->getAggregations()
-            ->map(fn ($aggregation) => $aggregation->toResponse(response: $this->get($aggregation->getName())));
+            ->map(fn (Aggregation $aggregation, string $name) => $aggregation->toResponse(response: $this->get($name)));
     }
 
     public function aggregation(string $key): null|self

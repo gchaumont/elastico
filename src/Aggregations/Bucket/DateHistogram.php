@@ -9,45 +9,42 @@ use Elastico\Aggregations\Aggregation;
  */
 class DateHistogram extends BucketAggregation
 {
-    public string $type = 'date_histogram';
+    public const TYPE = 'date_histogram';
 
-    public string $field;
-
-    public string $calendar_interval;
-
-    public string $fixed_interval;
-
-    public string $format;
-
-    public string $time_zone;
-
-    public string $min_doc_count;
-
-    public array $extended_bounds;
+    public function __construct(
+        public string $field,
+        public null|string $calendar_interval = null,
+        public null|string $fixed_interval = null,
+        public null|string $format = null,
+        public null|string $time_zone = null,
+        public null|int $min_doc_count = null,
+        public null|array $extended_bounds = null,
+    ) {
+    }
 
     public function getPayload(): array
     {
         $agg = [
             'field' => $this->field,
         ];
-        if (!empty($this->calendar_interval)) {
+        if (!is_null($this->calendar_interval)) {
             $agg['calendar_interval'] = $this->calendar_interval;
         }
-        if (!empty($this->fixed_interval)) {
+        if (!is_null($this->fixed_interval)) {
             $agg['fixed_interval'] = $this->fixed_interval;
         }
 
-        if (!empty($this->format)) {
+        if (!is_null($this->format)) {
             $agg['format'] = $this->format;
         }
-        if (!empty($this->time_zone)) {
+        if (!is_null($this->time_zone)) {
             $agg['time_zone'] = $this->time_zone;
         }
-        if (isset($this->min_doc_count)) {
+        if (!is_null($this->min_doc_count)) {
             $agg['min_doc_count'] = $this->min_doc_count;
         }
 
-        if (isset($this->extended_bounds)) {
+        if (!is_null($this->extended_bounds)) {
             $agg['extended_bounds'] = $this->extended_bounds;
         }
 

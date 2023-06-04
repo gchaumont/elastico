@@ -9,9 +9,12 @@ use Elastico\Aggregations\Aggregation;
  */
 class AvgBucket extends Aggregation
 {
-    public string $type = 'avg_bucket';
+    public const TYPE = 'avg_bucket';
 
-    public string $buckets_path;
+    public function __construct(
+        public string $buckets_path,
+    ) {
+    }
 
     public function getPayload(): array
     {

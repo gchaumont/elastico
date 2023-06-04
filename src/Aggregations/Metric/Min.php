@@ -9,11 +9,13 @@ use Elastico\Aggregations\Aggregation;
  */
 class Min extends Aggregation
 {
-    public string $type = 'min';
+    public const TYPE = 'min';
 
-    public string $field;
-
-    public array $script;
+    public function __construct(
+        public string $field,
+        public null|array $script = null,
+    ) {
+    }
 
     public function getPayload(): array
     {

@@ -9,9 +9,12 @@ use Elastico\Aggregations\Aggregation;
  */
 class Avg extends Aggregation
 {
-    public string $type = 'avg';
+    public const TYPE = 'avg';
 
-    public string $field;
+    public function __construct(
+        public string $field
+    ) {
+    }
 
     public function getPayload(): array
     {

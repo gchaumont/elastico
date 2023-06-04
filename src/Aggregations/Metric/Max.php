@@ -9,11 +9,13 @@ use Elastico\Aggregations\Aggregation;
  */
 class Max extends Aggregation
 {
-    public string $type = 'max';
+    public const TYPE = 'max';
 
-    public string $field;
-
-    public array $script;
+    public function __construct(
+        public string $field,
+        public null|array $script = null,
+    ) {
+    }
 
     public function getPayload(): array
     {

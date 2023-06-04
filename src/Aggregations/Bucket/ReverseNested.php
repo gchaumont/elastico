@@ -9,9 +9,12 @@ use Elastico\Aggregations\Aggregation;
  */
 class ReverseNested extends BucketAggregation
 {
-    public string $type = 'reverse_nested';
+    public const TYPE = 'reverse_nested';
 
-    public ?string $path = null;
+    public function __construct(
+        public ?string $path = null,
+    ) {
+    }
 
     public function getPayload(): array
     {

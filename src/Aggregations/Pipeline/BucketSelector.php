@@ -9,11 +9,13 @@ use Elastico\Aggregations\Aggregation;
  */
 class BucketSelector extends Aggregation
 {
-    public string $type = 'bucket_selector';
+    public const TYPE = 'bucket_selector';
 
-    public array $path;
-
-    public string $script;
+    public function __construct(
+        public array $path,
+        public string $script
+    ) {
+    }
 
     public function getPayload(): array
     {

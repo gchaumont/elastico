@@ -9,13 +9,15 @@ use Elastico\Aggregations\Aggregation;
  */
 class BucketSort extends Aggregation
 {
-    public string $type = 'bucket_sort';
+    public const TYPE = 'bucket_sort';
 
-    public int $size = 10;
 
-    public array $sort;
-
-    public int $from = 0;
+    public function __construct(
+        public int $size = 10,
+        public array $sort,
+        public int $from = 0,
+    ) {
+    }
 
     public function getPayload(): array
     {

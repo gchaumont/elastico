@@ -20,6 +20,10 @@ use Illuminate\Contracts\Database\Eloquent\CastsAttributes;
 use Illuminate\Database\Eloquent\Builder as EloquentBuilder;
 use Illuminate\Database\Eloquent\Collection as EloquentCollection;
 
+/**
+ * Model.
+ * @method static \Elastico\Eloquent\Builder whereIn()
+ */
 class Model extends BaseModel implements Castable
 {
     use IndexConfiguration;

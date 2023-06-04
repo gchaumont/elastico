@@ -15,42 +15,25 @@ abstract class Aggregation
     use Conditionable;
     use HasAggregations;
 
+    public const TYPE = 'abstract';
+
     const RESPONSE_CLASS = AggregationResponse::class;
-
-    public string $type;
-
-    public function __construct(protected string $name)
-    {
-    }
 
     public static function make(...$args): static
     {
         return new static(...$args);
     }
 
-    public function getName(): string
-    {
-        return $this->name;
-    }
-
     abstract public function getPayload(): array;
 
     final public function compile(): array
     {
-        $this->build();
-
-        $payload = [
-            $this->type => $this->getPayload() ?: new \stdClass(),
-        ];
-        foreach ($this->getAggregations() as $name => $subAggregation) {
-            $payload['aggs'][$name] = $subAggregation->compile();
-        }
-
-        return $payload;
-    }
-
-    public function build(): void
-    {
+        return collect([
+            static::TYPE => $this->getPayload() ?: new \stdClass(),
+            'aggs' => $this->getAggregations()->map(fn ($aggregation) => $aggregation->compile())->all(),
+        ])
+            ->filter()
+            ->all();
     }
 
     public function toResponse(array $response): AggregationResponse

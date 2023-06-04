@@ -9,9 +9,13 @@ use Elastico\Aggregations\Aggregation;
  */
 class Cardinality extends Aggregation
 {
-    public string $type = 'cardinality';
+    public const TYPE  = 'cardinality';
 
-    public string $field;
+    public function __construct(
+        public string $field,
+    ) {
+    }
+
 
     public function getPayload(): array
     {

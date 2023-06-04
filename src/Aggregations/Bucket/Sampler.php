@@ -9,20 +9,23 @@ use Elastico\Aggregations\Aggregation;
  */
 class Sampler extends BucketAggregation
 {
-    public string $type = 'sampler';
+    public const TYPE = 'sampler';
 
-    public int $shardSize;
+    public function __construct(
+        public ?int $shard_size = null,
+    ) {
+    }
 
     public function getPayload(): array
     {
         return array_filter([
-            'shard_size' => $this->shardSize ?? null,
+            'shard_size' => $this->shard_size,
         ]);
     }
 
     public function shardSize(int $shardSize): self
     {
-        $this->shardSize = $shardSize;
+        $this->shard_size = $shardSize;
 
         return $this;
     }
