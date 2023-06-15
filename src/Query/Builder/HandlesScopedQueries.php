@@ -27,12 +27,10 @@ trait HandlesScopedQueries
                 ])),
                 query: $this,
             ))
-                ->hits()
-                ->first()
-            ;
+                ->first();
 
             // } catch (\Elastic\Transport\Exception\NotFoundException $e) {
-        //     return null;
+            //     return null;
         } catch (ClientResponseException $e) {
             if ('404' == $e->getResponse()->getStatusCode()) {
                 return null;
@@ -74,7 +72,7 @@ trait HandlesScopedQueries
                 aggregations: fn ($r): array => [],
                 response: $response,
                 query: $this,
-            ))->hits();
+            ));
         });
     }
 
@@ -108,13 +106,14 @@ trait HandlesScopedQueries
             ->values()
             ->all());
 
-        $response = $this->getConnection()->performQuery('msearch', ['body' => $queries
-            ->map(fn ($query) => $query->buildPayload())
-            ->flatMap(fn ($payload) => [
-                ['index' => $payload['index']],
-                $payload['body'],
-            ])
-            ->all(),
+        $response = $this->getConnection()->performQuery('msearch', [
+            'body' => $queries
+                ->map(fn ($query) => $query->buildPayload())
+                ->flatMap(fn ($payload) => [
+                    ['index' => $payload['index']],
+                    $payload['body'],
+                ])
+                ->all(),
         ]);
 
         return LazyCollection::make(function () use ($response, $queries) {
@@ -133,8 +132,7 @@ trait HandlesScopedQueries
                             response: $response['responses'][$i],
                             query: $query
                         ))
-                )
-            ;
+                );
         });
     }
 
@@ -181,10 +179,9 @@ trait HandlesScopedQueries
                     'action' => collect($item)->keys()->first(),
                     ...collect($item)->first(),
                 ])
-                ->reject(fn ($item) => empty($item['error']))
-            ;
+                ->reject(fn ($item) => empty($item['error']));
 
-            throw new \Exception('Bulk  errors '.json_encode($errors->all()));
+            throw new \Exception('Bulk  errors ' . json_encode($errors->all()));
         }
 
         return $response;

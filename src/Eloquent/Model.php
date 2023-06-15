@@ -4,21 +4,15 @@ namespace Elastico\Eloquent;
 
 use Illuminate\Support\Arr;
 use Illuminate\Support\Str;
-use Illuminate\Support\Collection;
 use Elastico\Query\Response\Response;
-use Elastico\Eloquent\Concerns\EmbedsRelations;
 use Elastico\Eloquent\Concerns\HasAggregations;
 use Elastico\Eloquent\Concerns\HybridRelations;
 use Elastico\Eloquent\Concerns\IndexConfiguration;
-use Elastico\Query\Response\Aggregation\AggregationResponse;
-use Illuminate\Contracts\Cache\Store;
 use Illuminate\Contracts\Database\Eloquent\Castable;
 use Illuminate\Database\Eloquent\Model as BaseModel;
 use Illuminate\Database\Eloquent\Relations\Relation;
-use Illuminate\Support\Collection as BaseCollection;
 use Illuminate\Contracts\Database\Eloquent\CastsAttributes;
 use Illuminate\Database\Eloquent\Builder as EloquentBuilder;
-use Illuminate\Database\Eloquent\Collection as EloquentCollection;
 
 /**
  * Model.

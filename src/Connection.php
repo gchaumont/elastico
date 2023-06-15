@@ -320,7 +320,6 @@ class Connection extends BaseConnection implements ConnectionInterface
                 response: $response,
                 // query: $query
             ))
-                ->hits()
                 ->tap(function ($hits) use (&$total) {
                     $total = $hits->count();
                 })

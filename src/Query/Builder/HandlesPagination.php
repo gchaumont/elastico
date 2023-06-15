@@ -40,14 +40,14 @@ trait HandlesPagination
 
             $pit = $this->getConnection()->performQuery('openPointInTime', [
                 'index' => $payload['index'],
-                'keep_alive' => $seconds.'s',
+                'keep_alive' => $seconds . 's',
             ]);
 
             if ($pit instanceof Promise) {
                 $pit = $pit->wait()->asArray();
             }
 
-            $pit['keep_alive'] = $seconds.'s';
+            $pit['keep_alive'] = $seconds . 's';
 
             $payload['body']['pit'] = $pit;
             unset($payload['index']);
@@ -61,13 +61,11 @@ trait HandlesPagination
                 response: $response,
                 query: $this,
             ))
-                ->hits()
                 ->tap(function ($hits) use (&$total) {
                     $total = $hits->count();
                 })
                 ->keyBy(fn ($hit) => $hit instanceof Model ? $hit->getKey() : $hit['_id'])
-                ->all()
-            ;
+                ->all();
             if ($response instanceof Promise) {
                 $response = $response->wait()->asArray();
             }
@@ -89,13 +87,11 @@ trait HandlesPagination
                     response: $response,
                     query: $this
                 ))
-                    ->hits()
                     ->tap(function ($hits) use (&$total) {
                         $total = $hits->count();
                     })
                     ->keyBy(fn ($hit) => $hit instanceof Model ? $hit->getKey() : $hit['_id'])
-                    ->all()
-                ;
+                    ->all();
             }
 
             if (isset($response['pit_id'])) {
@@ -145,15 +141,14 @@ trait HandlesPagination
 
         $response = $this->take($perPage)
             ->skip($perPage * ($page - 1))
-            ->get()
-        ;
+            ->get();
 
         return new LengthAwarePaginator(
             items: $response->hits(),
             total: min(10000, $response->total()),
             perPage: $perPage,
             currentPage: $page,
-            options: ['path' => '/'.request()->path()]
+            options: ['path' => '/' . request()->path()]
         );
     }
 }

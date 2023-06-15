@@ -3,21 +3,16 @@
 namespace Elastico\Query\Response;
 
 use Closure;
-use Exception;
 use Elastico\Query\Builder;
-use Illuminate\Support\Str;
 use Elastico\Eloquent\Model;
 use Illuminate\Support\Collection;
 use Elastico\Aggregations\Aggregation;
 use Illuminate\Support\LazyCollection;
-use Elastico\Relations\ElasticRelation;
 use Elastico\Models\Builder\EloquentBuilder;
 use Elastico\Eloquent\Concerns\ParsesRelationships;
-use Elastico\Models\Builder\Builder as ModelBuilder;
 use Illuminate\Support\Collection as BaseCollection;
 use Elastico\Query\Response\Aggregation\AggregationResponse;
 use Illuminate\Database\Eloquent\Collection as EloquentCollection;
-use Illuminate\Database\Eloquent\Relations\Relation as EloquentRelation;
 
 /**
  * Elastic Base Response.
@@ -35,7 +30,7 @@ class Response extends EloquentCollection
         protected null|int $total = null,
         protected array|BaseCollection|LazyCollection $aggregations = [],
         protected null|array $response = null,
-        protected null|Builder|EloquentBuilder $query = null,
+        protected null|Builder $query = null,
         protected null|string $model = null,
     ) {
         $this->items = collect($items)->all();
@@ -47,11 +42,6 @@ class Response extends EloquentCollection
 
         // $this->model ??= $this->query?->getModel();
         $this->requested_aggregations = $this->query?->getAggregations() ?? new BaseCollection();
-    }
-
-    public function hits(): Collection
-    {
-        return new Collection($this->items);
     }
 
     public function resetItems(array $items)
