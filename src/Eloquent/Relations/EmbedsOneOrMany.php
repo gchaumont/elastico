@@ -1,6 +1,6 @@
 <?php
 
-namespace Elastico\Relations;
+namespace Elastico\Eloquent\Relations;
 
 use Elastico\Eloquent\Model;
 use Illuminate\Database\Eloquent\Builder;

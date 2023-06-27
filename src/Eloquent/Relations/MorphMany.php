@@ -1,6 +1,6 @@
 <?php
 
-namespace Elastico\Relations;
+namespace Elastico\Eloquent\Relations;
 
 use Illuminate\Database\Eloquent\Model as EloquentModel;
 use Illuminate\Database\Eloquent\Relations\MorphMany as EloquentMorphMany;

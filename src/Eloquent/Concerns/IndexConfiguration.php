@@ -49,4 +49,16 @@ trait IndexConfiguration
     {
         return [];
     }
+
+    // public static function getTemplateConfiguration(): array
+    // {
+    //     $configuration = static::getIndexConfiguration();
+
+    //     $configuration['body'] = [
+    //         'index_patterns' => $configuration['index'],
+    //         'template' => $configuration['body'],
+    //     ];
+
+    //     return $configuration;
+    // }
 }

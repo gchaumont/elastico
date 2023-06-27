@@ -1,6 +1,6 @@
 <?php
 
-namespace Elastico\Models;
+namespace Elastico\Eloquent\Casts;
 
 use Illuminate\Contracts\Database\Eloquent\CastsAttributes;
 use Illuminate\Database\Eloquent\Casts\AsCollection;
