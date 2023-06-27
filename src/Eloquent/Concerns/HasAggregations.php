@@ -5,7 +5,7 @@ namespace Elastico\Eloquent\Concerns;
 use Elastico\Query\Response\Response;
 use Illuminate\Support\Str;
 use Illuminate\Support\Collection;
-use Elastico\Relations\ElasticRelation;
+use Elastico\Eloquent\Relations\ElasticRelation;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\Relation as EloquentRelation;
 

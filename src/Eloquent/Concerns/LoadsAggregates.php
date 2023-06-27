@@ -14,7 +14,7 @@ use Elastico\Aggregations\Metric\Min;
 use Elastico\Aggregations\Metric\Sum;
 use Elastico\Query\Response\Response;
 use Elastico\Aggregations\Aggregation;
-use Elastico\Relations\ElasticRelation;
+use Elastico\Eloquent\Relations\ElasticRelation;
 use Illuminate\Database\Eloquent\Model;
 use Elastico\Aggregations\Bucket\Filter;
 use Elastico\Aggregations\Metric\Cardinality;

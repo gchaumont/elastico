@@ -2,8 +2,8 @@
 
 namespace Elastico\Eloquent\Concerns;
 
-use Elastico\Relations\EmbedsMany;
-use Elastico\Relations\EmbedsOne;
+use Elastico\Eloquent\Relations\EmbedsMany;
+use Elastico\Eloquent\Relations\EmbedsOne;
 use Illuminate\Support\Str;
 
 trait EmbedsRelations

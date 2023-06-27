@@ -4,7 +4,7 @@ namespace Elastico\Eloquent\Concerns;
 
 
 use Illuminate\Support\Str;
-use Elastico\Relations\ElasticRelation;
+use Elastico\Eloquent\Relations\ElasticRelation;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\Relation as EloquentRelation;
 
