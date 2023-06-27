@@ -8,6 +8,7 @@ use Elastic\Elasticsearch\Response\Elasticsearch;
 use Elastico\Eloquent\Model;
 use Elastico\Query\Builder;
 use Elastico\Query\Response\PromiseResponse;
+use Elastico\Query\Response\Response;
 use Exception;
 use GuzzleHttp\Promise\Promise;
 use Http\Adapter\Guzzle7\Client as GuzzleAdapter;
@@ -313,18 +314,31 @@ class Connection extends BaseConnection implements ConnectionInterface
                 $response = $response->asArray();
             }
 
-            yield from (new PromiseResponse(
-                source: fn ($r): array => $r['hits']['hits'],
-                total: fn ($r): int => count($r['hits']['total']),
-                aggregations: fn ($r): array => [],
+            yield from (new Response(
+                items: $response['hits']['hits'],
+                total: count($response['hits']['hits']),
+                aggregations: [],
                 response: $response,
-                // query: $query
+                // query: $query,
             ))
                 ->tap(function ($hits) use (&$total) {
                     $total = $hits->count();
                 })
                 ->keyBy(fn ($hit) => $hit instanceof Model ? $hit->getKey() : $hit['_id'])
                 ->all();
+
+            // yield from (new PromiseResponse(
+            //     source: fn ($r): array => $r['hits']['hits'],
+            //     total: fn ($r): int => count($r['hits']['total']),
+            //     aggregations: fn ($r): array => [],
+            //     response: $response,
+            //     // query: $query
+            // ))
+            // ->tap(function ($hits) use (&$total) {
+            //     $total = $hits->count();
+            // })
+            // ->keyBy(fn ($hit) => $hit instanceof Model ? $hit->getKey() : $hit['_id'])
+            //     ->all();
         }
 
         if (isset($response['pit_id'])) {

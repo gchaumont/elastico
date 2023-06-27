@@ -12,7 +12,8 @@ class BucketResponse extends AggregationResponse implements \ArrayAccess
     // For Bucket Aggregations
     public function buckets(): Collection
     {
-        return $this->collect('buckets')
+        return $this
+            ->collect('buckets')
             ->transform(fn ($bucket) => $this->aggregation->toResponse(
                 response: $bucket,
             ));

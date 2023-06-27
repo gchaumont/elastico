@@ -663,11 +663,12 @@ class Builder extends BaseBuilder
             ->take(0)
             ->setAggregations(
                 collect([(match ($function) {
-                    'sum' => Sum::make('agg'),
-                    'avg' => Avg::make('agg'),
-                    'min' => Min::make('agg'),
-                    'max' => Max::make('agg'),
+                    'sum' => new Sum(field: $columns[0]),
+                    'avg' => new Avg(field: $columns[0]),
+                    'min' => new Min(field: $columns[0]),
+                    'max' => new Max(field: $columns[0]),
                 })->field($columns[0])])
+                    ->keyBy(static fn () => 'agg')
             )
             ->get()
             ->aggregation('agg')

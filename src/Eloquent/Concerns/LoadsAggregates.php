@@ -47,7 +47,6 @@ trait LoadsAggregates
      */
     public function withAggregate($relations, $column, $function = null)
     {
-
         if (empty($relations)) {
             return $this;
         };
@@ -61,7 +60,7 @@ trait LoadsAggregates
             $this->withAggregation(
                 $relations['elastic'],
                 [$function => match ($function) {
-                    'count' => new Filter(filter: MatchAll::make('all')),
+                    'count' => new Filter(filter: new MatchAll),
                     'sum' => new Sum(field: $column),
                     'avg' => new Avg(field: $column),
                     'max' => new Max(field: $column),
@@ -177,8 +176,8 @@ trait LoadsAggregates
                                     $column = null;
                                 }
                                 $field_name = implode('_', array_filter([$relation, $function, $column]));
-                                $field_name = $relation;
-
+                                // dump($field_name);
+                                // $field_name = $relation;
 
                                 $value = match ($function) {
                                     'count' => $model->getAggregations($relation)->get($function)->doc_count(),
