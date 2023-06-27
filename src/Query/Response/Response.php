@@ -80,7 +80,7 @@ class Response extends EloquentCollection
         return $this->response;
     }
 
-    public function getQuery(): null|Builder|EloquentBuilder
+    public function getQuery(): null|Builder
     {
         return $this->query;
     }
