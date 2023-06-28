@@ -7,7 +7,6 @@ use Elastic\Elasticsearch\ClientBuilder;
 use Elastic\Elasticsearch\Response\Elasticsearch;
 use Elastico\Eloquent\Model;
 use Elastico\Query\Builder;
-use Elastico\Query\Response\PromiseResponse;
 use Elastico\Query\Response\Response;
 use Exception;
 use GuzzleHttp\Promise\Promise;

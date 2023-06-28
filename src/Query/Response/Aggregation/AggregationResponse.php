@@ -25,7 +25,7 @@ class AggregationResponse implements ArrayAccess
     public function aggregations(): Collection
     {
         return $this->aggregations ??= $this->aggregation->getAggregations()
-            ->map(fn (Aggregation $aggregation, string $name) => $aggregation->toResponse(response: $this->get($name)));
+            ->map(fn (Aggregation $aggregation, string $name): AggregationResponse => $aggregation->toResponse(response: $this->get($name)));
     }
 
     public function aggregation(string $key): null|self
