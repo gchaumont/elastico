@@ -2,8 +2,9 @@
 
 namespace Elastico\Console\DataStreams;
 
-use App\Support\Elasticsearch\Elasticsearch;
+use Elastico\Eloquent\DataStream;
 use Illuminate\Console\Command;
+use stdClass;
 
 class CreateDataStream extends Command
 {
@@ -30,17 +31,39 @@ class CreateDataStream extends Command
     {
         $class = $this->argument('index');
 
-        $template = $class::getTemplateConfiguration();
+        $model = new $class;
+
+        if (!$model instanceof DataStream) {
+            return $this->error("{$class} is not a DataStream");
+        }
+
+        $policy = $model->getILMPolicy();
+
+        $model->getConnection()->getClient()->ilm()->putLifecycle([
+            'policy' => $policy->getName(),
+            'body' => $policy->toArray()
+        ]);
+
+        $config = $model::getIndexConfiguration();
+
+        $template = [];
+        $template['body']['index_patterns'] = [$model->getTable() . '*'];
         $template['body']['data_stream'] = new \stdClass();
-        $template['body']['index_patterns'] = $class::INDEX_NAME.'*';
         $template['body']['priority'] = '300'; // higher than 200 avoid collision with builtin templates
+        $template['body']['template'] = $config['body'];
+        if ($template['body']['template']['settings'] == new stdClass) {
+            unset($template['body']['template']['settings']);
+        }
+        $template['body']['template']['settings']['index']['lifecycle']['name'] = $policy->getName();
 
-        $template['body']['template']['settings']['index']['lifecycle']['name'] = $class::INDEX_LIFECYCLE;
-        // Create with Alias
-        // $template['body']['template']['settings']['index']['lifecycle']['rollover_alias'] = AdvertisementRecord::INDEX_NAME;
+        $model->getConnection()->getClient()->indices()->putIndexTemplate([
+            'name' => $model->getTable(),
+            'body' => $template['body'],
+        ]);
 
-        $r = resolve(Elasticsearch::class)->indices()->createTemplate($template, $class::INDEX_NAME);
-        $r = resolve(Elasticsearch::class)->indices()->createDataStream(['name' => $class::INDEX_NAME]);
+        $model->getConnection()->getClient()->indices()->createDataStream([
+            'name' => $model->getTable()
+        ]);
 
         return $this->info("{$class} DataStream Created");
     }

@@ -2,9 +2,10 @@
 
 namespace Elastico\Console\Indices;
 
-use App\Support\Elasticsearch\Client\ElasticsearchClient;
-use Elastico\Exceptions\IndexNotFoundException;
 use Illuminate\Console\Command;
+use Elastico\Eloquent\DataStream;
+use Elastico\Exceptions\IndexNotFoundException;
+use App\Support\Elasticsearch\Client\ElasticsearchClient;
 
 class DeleteIndex extends Command
 {
@@ -37,6 +38,11 @@ class DeleteIndex extends Command
         } else {
             $indexName = $this->argument('index');
         }
+
+        if ((new $class) instanceof DataStream) {
+            return $this->call('elastic:datastream:delete',  ['index' => $class]);
+        }
+
         if (empty($indexName)) {
             return;
         }

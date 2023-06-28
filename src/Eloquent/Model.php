@@ -25,7 +25,6 @@ class Model extends BaseModel implements Castable
     use HasAggregations;
     // use EmbedsRelations;
 
-
     public $incrementing = false;
 
     protected $keyType = 'string';

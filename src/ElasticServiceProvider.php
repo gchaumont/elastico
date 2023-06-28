@@ -81,6 +81,7 @@ class ElasticServiceProvider extends ServiceProvider
                 Console\Cluster\SetupCluster::class,
 
                 Console\DataStreams\CreateDataStream::class,
+                Console\DataStreams\DeleteDataStream::class,
 
                 Console\Documents\Reindex::class,
 

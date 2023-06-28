@@ -243,14 +243,14 @@ class Grammar extends BaseGrammar
         // basic routine regardless of an amount of records given to us to insert.
         return [
             'body' => collect($values)
-                ->flatMap(fn ($val) => [
+                ->flatMap(static fn (array $doc): array => [
                     [
-                        'index' => [
-                            '_id' => Arr::pull($val, '_id'),
-                            '_index' => Arr::pull($val, '_index'),
-                        ],
+                        !empty($doc['_id']) ? 'index' : 'create' => array_filter([
+                            '_id' => Arr::pull($doc, '_id'),
+                            '_index' => Arr::pull($doc, '_index'),
+                        ]),
                     ],
-                    $val,
+                    $doc,
                 ])
                 ->all(),
         ];
