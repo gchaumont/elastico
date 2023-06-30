@@ -2,13 +2,13 @@
 
 namespace Elastico\Query\Builder;
 
-use Elastico\Models\Model;
-use Elastico\Query\Compound\Boolean;
-use Elastico\Query\Term\Exists;
-use Elastico\Query\Term\Range;
+use Elastico\Eloquent\Model;
 use Elastico\Query\Term\Term;
+use Elastico\Query\Term\Range;
 use Elastico\Query\Term\Terms;
+use Elastico\Query\Term\Exists;
 use Illuminate\Support\Collection;
+use Elastico\Query\Compound\Boolean;
 
 trait HasWhere
 {
