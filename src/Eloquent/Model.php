@@ -265,6 +265,16 @@ class Model extends BaseModel implements Castable
     }
 
     /**
+     * Begin querying the model.
+     *
+     * @return \Elastico\Eloquent\Builder
+     */
+    public static function query()
+    {
+        return (new static)->newQuery();
+    }
+
+    /**
      * Perform a model update operation.
      *
      * @return bool
