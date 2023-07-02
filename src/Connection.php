@@ -6,6 +6,7 @@ use Elastic\Elasticsearch\Client;
 use Elastic\Elasticsearch\ClientBuilder;
 use Elastic\Elasticsearch\Response\Elasticsearch;
 use Elastico\Eloquent\Model;
+use Elastico\Exceptions\BulkException;
 use Elastico\Query\Builder;
 use Elastico\Query\Response\Collection;
 use Exception;
@@ -154,8 +155,9 @@ class Connection extends BaseConnection implements ConnectionInterface
 
         return $this->run($query, [], function ($query, $bindings) {
             $r = $this->performQuery($query['method'], $query['payload']);
+
             if ($r['errors'] ?? false) {
-                throw new \Exception(json_encode($r->asArray()));
+                throw new BulkException(json_encode($r->asArray()));
             }
 
             return $r;
@@ -597,7 +599,6 @@ class Connection extends BaseConnection implements ConnectionInterface
         // lot more helpful to the developer instead of just the database's errors.
         catch (\Exception $e) {
             if (str_starts_with($e->getMessage(), '404 Not Found')) {
-
 
                 throw new ModelNotFoundException();
             }
