@@ -3,27 +3,23 @@
 namespace Elastico\Eloquent\Concerns;
 
 use Elastico\Query\Response\Collection;
-use Illuminate\Support\Str;
-use Illuminate\Support\Collection;
-use Elastico\Eloquent\Relations\ElasticRelation;
-use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\Relations\Relation as EloquentRelation;
+use Illuminate\Support\Collection as BaseCollection;
 
 /**
  * Stores aggregation results on the model.
  */
 trait HasAggregations
 {
-    public Collection $aggregations;
+    public BaseCollection $aggregations;
 
-    public Collection $responses;
+    public BaseCollection $responses;
 
     public array $aggregates;
 
 
-    public function addAggregations(string $relation, Collection $aggregations)
+    public function addAggregations(string $relation, BaseCollection $aggregations)
     {
-        $this->aggregations ??= new Collection();
+        $this->aggregations ??= new BaseCollection();
         if (!$this->aggregations->has($relation)) {
             $this->aggregations->put($relation, $aggregations);
         } else {
@@ -33,7 +29,7 @@ trait HasAggregations
         return $this;
     }
 
-    public function getAggregations(string $relation = null): Collection
+    public function getAggregations(string $relation = null): BaseCollection
     {
         if ($relation) {
             return $this->aggregations->get($relation);
@@ -44,7 +40,7 @@ trait HasAggregations
 
     public function addResponse(string $key, Collection $response): static
     {
-        $this->responses ??= new Collection();
+        $this->responses ??= new BaseCollection();
         $this->responses->put($key, $response);
 
         return $this;
