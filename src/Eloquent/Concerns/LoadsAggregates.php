@@ -164,18 +164,21 @@ trait LoadsAggregates
         return collect($models)
             ->map(function (Model $model) use ($aggregates) {
                 $extraAttributes = collect($aggregates)
-                    ->flatMap(function (array $aggregate) use ($model) {
+                    ->flatMap(function (array $aggregate) use ($model): array {
                         [$relations, $column, $function] = $aggregate;
                         $relations = !is_array($relations) ? [$relations] : $relations;
                         $relations = $this->parseRelationArray($relations);
 
                         return collect($relations)
-                            ->keyBy(fn (Closure $relation, string $relation_key) => Str::after($relation_key, ' as '))
-                            ->mapWithKeys(function (Closure $rel, string $relation) use ($model, $function, $column): array {
+                            ->mapWithKeys(function (Closure $rel, string $relation_key) use ($model, $function, $column): array {
                                 if ($column === '*' || $column === ['*']) {
                                     $column = null;
                                 }
-                                $field_name = implode('_', array_filter([$relation, $function, $column]));
+                                if (str_contains($relation_key, ' as ')) {
+                                    $field_name = $relation = Str::after($relation_key, ' as ');
+                                } else {
+                                    $field_name = implode('_', array_filter([$relation_key, $function, $column]));
+                                }
                                 // dump($field_name);
                                 // $field_name = $relation;
 
@@ -189,7 +192,8 @@ trait LoadsAggregates
                                     default => throw new InvalidArgumentException('Invalid aggregate function: ' . $function),
                                 };
                                 return [$field_name => $value];
-                            });
+                            })
+                            ->all();
                     })
                     ->all();
 
