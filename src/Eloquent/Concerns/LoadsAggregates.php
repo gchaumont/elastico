@@ -7,7 +7,7 @@ use Illuminate\Support\Str;
 use Elastico\Query\MatchAll;
 use InvalidArgumentException;
 use Elastico\Eloquent\Builder;
-use Illuminate\Support\Collection;
+use Illuminate\Support\Collection as BaseCollection;
 use Elastico\Aggregations\Metric\Avg;
 use Elastico\Aggregations\Metric\Max;
 use Elastico\Aggregations\Metric\Min;
@@ -109,7 +109,7 @@ trait LoadsAggregates
         return $items
             ->getBulk(function (Model $item) use ($aggregations): Collection {
                 return collect($aggregations)
-                    ->map(function (array $aggregation, string $aggregation_key) use ($item): Collection {
+                    ->map(function (array $aggregation, string $aggregation_key) use ($item): BaseCollection {
                         [$relations, $aggregation] = $aggregation;
 
                         $relations = $item
@@ -148,9 +148,9 @@ trait LoadsAggregates
             //     preserveKeys: true
             // )
             // ->map(fn (Collection $group, string $item_id): Collection => $group->keyBy(fn ($r, string $key) => explode(static::AGGREGATION_SEPARATOR, $key, 2)[1] . static::AGGREGATION_SEPARATOR . explode(static::AGGREGATION_SEPARATOR, $key, 3)[2]))
-            ->map(fn (Collection $group, string $item_id): Collection => $group
+            ->map(fn (BaseCollection $group, string $item_id): BaseCollection => $group
                 ->each(fn (Collection $response, string $response_key) => $items->get($item_id)->addAggregations(explode(static::AGGREGATION_SEPARATOR, $response_key, 2)[0], $response->aggregations())))
-            ->pipe(fn (Collection $c): Collection => $items)
+            ->pipe(fn (BaseCollection $c): Collection => $items)
             ->all();
     }
 

@@ -4,7 +4,7 @@ namespace Elastico\Query\Response\Aggregation;
 
 use ArrayAccess;
 use RuntimeException;
-use Illuminate\Support\Collection;
+use Illuminate\Support\Collection as BaseCollection;
 use Elastico\Query\Response\Collection;
 use Elastico\Aggregations\Aggregation;
 
@@ -13,7 +13,7 @@ use Elastico\Aggregations\Aggregation;
  */
 class AggregationResponse implements ArrayAccess
 {
-    protected Collection $aggregations;
+    protected BaseCollection $aggregations;
 
     final public function __construct(
         protected readonly Aggregation $aggregation,
@@ -59,9 +59,9 @@ class AggregationResponse implements ArrayAccess
         return $this->get('doc_count');
     }
 
-    public function collect(string $key): Collection
+    public function collect(string $key): BaseCollection
     {
-        return Collection::make($this->get($key));
+        return BaseCollection::make($this->get($key));
     }
 
     public function offsetExists(mixed $offset): bool
