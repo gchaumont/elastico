@@ -133,7 +133,8 @@ trait LoadsAggregates
                                     });
                             });
                     })
-                    ->collapse();
+                    ->collapse()
+                    ->eloquent();
                 # code...
             })
             // ->map(function (Model $item, string $model_key) use ($aggregations): Collection {
