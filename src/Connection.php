@@ -154,13 +154,13 @@ class Connection extends BaseConnection implements ConnectionInterface
         ];
 
         return $this->run($query, [], function ($query, $bindings) {
-            $r = $this->performQuery($query['method'], $query['payload']);
+            return $this->performQuery($query['method'], $query['payload']);
 
             if ($r['errors'] ?? false) {
                 throw new BulkException(json_encode($r->asArray()));
             }
 
-            return $r;
+            // return $r;
         });
     }
 

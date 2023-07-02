@@ -8,6 +8,7 @@ use Elastico\Aggregations\Metric\Max;
 use Elastico\Aggregations\Metric\Min;
 use Elastico\Aggregations\Metric\Sum;
 use Elastico\Connection;
+use Elastico\Exceptions\BulkException;
 use Elastico\Query\Builder\HasAggregations;
 use Elastico\Query\Builder\HasKnn;
 use Elastico\Query\Builder\HasPostFilter;
@@ -401,10 +402,17 @@ class Builder extends BaseBuilder
         // Finally, we will run this query against the database connection and return
         // the results. We will need to also flatten these bindings before running
         // the query so they are all in one huge, flattened array for execution.
-        return $this->connection->bulk(
+        $response =  $this->connection->bulk(
             $this->grammar->compileInsert($this, $values),
             $this->cleanBindings(Arr::flatten($values, 1))
         );
+
+        if ($response['errors'] ?? false) {
+
+            throw new BulkException('Error inserting documents ' . json_encode($response->asArray()));
+        }
+
+        return $response;
     }
 
     /**
@@ -564,9 +572,15 @@ class Builder extends BaseBuilder
 
     public function deleteMany(iterable $ids)
     {
-        return collect($this->connection->bulk(
+        $response = $this->connection->bulk(
             $this->grammar->compileDeleteMany($this, $ids),
-        )['items'])
+        );
+
+        if ($response['errors'] ?? false) {
+            throw new BulkException('Error inserting documents ' . json_encode($response->asArray()));
+        }
+
+        return collect($response['items'])
             ->filter(fn ($item) => $item['delete']['result'] == 'deleted')
             ->count();
     }
@@ -628,13 +642,10 @@ class Builder extends BaseBuilder
             []
         );
 
-        // if ($response['errors']) {
-        //     dump($response);
+        if ($response['errors'] ?? false) {
 
-
-
-        //     throw new \RuntimeException('Error inserting documents ' . json_encode($response->asArray()));
-        // }
+            throw new BulkException('Error inserting documents ' . json_encode($response->asArray()));
+        }
 
         return $response;
     }
