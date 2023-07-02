@@ -160,7 +160,7 @@ class Collection extends EloquentCollection
     public function loadQueries(iterable $queries): static
     {
         return $this->getBulk($queries)
-            ->map(function (Collection $responses, string $model_id): Model {
+            ->map(function (BaseCollection $responses, string $model_id): Model {
                 $model = $this->get($model_id);
 
                 $responses->each(function (Collection $response, string $query_key) use ($model) {
