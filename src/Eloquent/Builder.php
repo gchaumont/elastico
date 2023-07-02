@@ -65,7 +65,7 @@ class Builder extends EloquentBuilder
      * @param mixed        $id
      * @param array|string $columns
      *
-     * @return null|\Illuminate\Database\Eloquent\Collection|\Illuminate\Database\Eloquent\Model|static|static[]
+     * @return null|\Elastico\Query\Response\Collection|\Illuminate\Database\Eloquent\Model|static|static[]
      */
     public function find($id, $columns = ['*'])
     {
@@ -88,7 +88,7 @@ class Builder extends EloquentBuilder
      * @param array|\Illuminate\Contracts\Support\Arrayable $ids
      * @param array|string                                  $columns
      *
-     * @return \Illuminate\Database\Eloquent\Collection
+     * @return \Elastico\Query\Response\Collection
      */
     public function findMany($ids, $columns = ['*'])
     {
@@ -119,7 +119,7 @@ class Builder extends EloquentBuilder
      *
      * @param array|string $columns
      *
-     * @return \Illuminate\Database\Eloquent\Collection|static[]
+     * @return \Elastico\Query\Response\Collection|static[]
      */
     public function get($columns = ['*'])
     {
