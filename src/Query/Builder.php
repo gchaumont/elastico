@@ -20,6 +20,7 @@ use Illuminate\Support\LazyCollection;
 /**
  *  Elasticsearch Query Builder
  *  Extension of Larvel Database Query Builder.
+ * 
  */
 class Builder extends BaseBuilder
 {

@@ -13,6 +13,8 @@ use Illuminate\Database\Eloquent\Builder as EloquentBuilder;
 /**
  *  Elasticsearch Query Builder
  *  Extension of Larvel Database Eloquent Builder.
+ * 
+ * @mixin \Elastico\Query\Builder
  */
 class Builder extends EloquentBuilder
 {
