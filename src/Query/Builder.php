@@ -75,7 +75,7 @@ class Builder extends BaseBuilder
      *
      * @param array|string $columns
      *
-     * @return \Query\Response\Collection
+     * @return \Elastico\Query\Response\Collection
      */
     public function get($columns = ['*'])
     {
@@ -202,7 +202,7 @@ class Builder extends BaseBuilder
      * @param string      $column
      * @param null|string $key
      *
-     * @return \Query\Response\Collection
+     * @return \Elastico\Query\Response\Collection
      */
     public function pluck($column, $key = null)
     {
