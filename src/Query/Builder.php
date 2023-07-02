@@ -628,13 +628,13 @@ class Builder extends BaseBuilder
             []
         );
 
-        if ($response['errors']) {
-            dump($response);
+        // if ($response['errors']) {
+        //     dump($response);
 
 
 
-            throw new \RuntimeException('Error inserting documents ' . json_encode($response->asArray()));
-        }
+        //     throw new \RuntimeException('Error inserting documents ' . json_encode($response->asArray()));
+        // }
 
         return $response;
     }
