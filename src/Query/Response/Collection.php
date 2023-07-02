@@ -157,7 +157,7 @@ class Collection extends EloquentCollection
     }
 
 
-    public function loadQueries(iterable $queries): static
+    public function loadQueries(callable|iterable $queries): static
     {
         return $this->getBulk($queries)
             ->map(function (BaseCollection $responses, string $model_id): Model {
