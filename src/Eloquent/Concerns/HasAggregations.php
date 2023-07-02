@@ -2,7 +2,7 @@
 
 namespace Elastico\Eloquent\Concerns;
 
-use Elastico\Query\Response\Response;
+use Elastico\Query\Response\Collection;
 use Illuminate\Support\Str;
 use Illuminate\Support\Collection;
 use Elastico\Eloquent\Relations\ElasticRelation;
@@ -42,7 +42,7 @@ trait HasAggregations
         return $this->aggregations;
     }
 
-    public function addResponse(string $key, Response $response): static
+    public function addResponse(string $key, Collection $response): static
     {
         $this->responses ??= new Collection();
         $this->responses->put($key, $response);
@@ -50,7 +50,7 @@ trait HasAggregations
         return $this;
     }
 
-    public function getResponse(string $key): Response
+    public function getResponse(string $key): Collection
     {
         return $this->responses->get($key);
     }

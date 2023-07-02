@@ -12,7 +12,7 @@ use Elastico\Aggregations\Metric\Avg;
 use Elastico\Aggregations\Metric\Max;
 use Elastico\Aggregations\Metric\Min;
 use Elastico\Aggregations\Metric\Sum;
-use Elastico\Query\Response\Response;
+use Elastico\Query\Response\Collection;
 use Elastico\Aggregations\Aggregation;
 use Elastico\Eloquent\Relations\ElasticRelation;
 use Illuminate\Database\Eloquent\Model;
@@ -149,7 +149,7 @@ trait LoadsAggregates
             // )
             // ->map(fn (Collection $group, string $item_id): Collection => $group->keyBy(fn ($r, string $key) => explode(static::AGGREGATION_SEPARATOR, $key, 2)[1] . static::AGGREGATION_SEPARATOR . explode(static::AGGREGATION_SEPARATOR, $key, 3)[2]))
             ->map(fn (Collection $group, string $item_id): Collection => $group
-                ->each(fn (Response $response, string $response_key) => $items->get($item_id)->addAggregations(explode(static::AGGREGATION_SEPARATOR, $response_key, 2)[0], $response->aggregations())))
+                ->each(fn (Collection $response, string $response_key) => $items->get($item_id)->addAggregations(explode(static::AGGREGATION_SEPARATOR, $response_key, 2)[0], $response->aggregations())))
             ->pipe(fn (Collection $c): Collection => $items)
             ->all();
     }

@@ -4,7 +4,7 @@ namespace Elastico\Eloquent;
 
 use Illuminate\Support\Arr;
 use Illuminate\Support\Str;
-use Elastico\Query\Response\Response;
+use Elastico\Query\Response\Collection;
 use Elastico\Eloquent\Concerns\HasAggregations;
 use Elastico\Eloquent\Concerns\HybridRelations;
 use Elastico\Eloquent\Concerns\IndexConfiguration;
@@ -70,7 +70,7 @@ class Model extends BaseModel implements Castable
      */
     public function newCollection(array $models = [])
     {
-        return new Response($models);
+        return new Collection($models);
     }
 
     /**

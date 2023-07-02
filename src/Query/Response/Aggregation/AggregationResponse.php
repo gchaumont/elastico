@@ -5,7 +5,7 @@ namespace Elastico\Query\Response\Aggregation;
 use ArrayAccess;
 use RuntimeException;
 use Illuminate\Support\Collection;
-use Elastico\Query\Response\Response;
+use Elastico\Query\Response\Collection;
 use Elastico\Aggregations\Aggregation;
 
 /**
@@ -17,7 +17,7 @@ class AggregationResponse implements ArrayAccess
 
     final public function __construct(
         protected readonly Aggregation $aggregation,
-        protected array|Response $response,
+        protected array|Collection $response,
     ) {
         $this->response = $this->aggregation->formatAggregationResult($this->response);
     }

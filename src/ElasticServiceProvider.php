@@ -7,7 +7,7 @@ use Elastico\Query\Builder;
 use Elastico\Eloquent\Model;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
-use Elastico\Query\Response\Response;
+use Elastico\Query\Response\Collection;
 use Illuminate\Support\ServiceProvider;
 use Illuminate\Database\Eloquent\Relations\Relation;
 use Elastico\Eloquent\Builder as ElasticEloquentBuilder;
@@ -36,8 +36,8 @@ class ElasticServiceProvider extends ServiceProvider
                 ->groupBy(fn (Builder|ElasticEloquentBuilder|Relation $query): string => $query->getConnection()->getName(), preserveKeys: true)
                 ->map(fn (Collection $queries, string $connection): array => DB::connection($connection)->query()->getMany($queries->all()))
                 ->collapse()
-                ->groupBy(fn (Response $response, string $query_key): string => explode('::', $query_key, 2)[0], preserveKeys: true)
-                ->map(fn (Collection $responses, string $model_id): Collection => $responses->keyBy(fn (Response $response, $response_key) => explode('::', $response_key, 2)[1]));
+                ->groupBy(fn (Collection $response, string $query_key): string => explode('::', $query_key, 2)[0], preserveKeys: true)
+                ->map(fn (Collection $responses, string $model_id): Collection => $responses->keyBy(fn (Collection $response, $response_key) => explode('::', $response_key, 2)[1]));
         });
     }
 

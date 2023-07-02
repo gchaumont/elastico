@@ -4,7 +4,7 @@ namespace Elastico\Aggregations;
 
 use Elastico\Query\Builder\HasAggregations;
 use Elastico\Query\Response\Aggregation\AggregationResponse;
-use Elastico\Query\Response\Response;
+use Elastico\Query\Response\Collection;
 use Illuminate\Support\Traits\Conditionable;
 
 /**
@@ -44,7 +44,7 @@ abstract class Aggregation
         );
     }
 
-    public function formatAggregationResult(array $data): array|Response
+    public function formatAggregationResult(array $data): array|Collection
     {
         return $data;
     }

@@ -4,7 +4,7 @@ namespace Elastico\Query;
 
 use Exception;
 use GuzzleHttp\Promise\Promise;
-use Elastico\Query\Response\Response;
+use Elastico\Query\Response\Collection;
 use Elastic\Elasticsearch\Response\Elasticsearch;
 use Elastico\Eloquent\Builder as EloquentBuilder;
 use Illuminate\Database\Eloquent\Relations\Relation;
@@ -34,7 +34,7 @@ class Processor extends BaseProcessor
             }
         }
 
-        return new Response(
+        return new Collection(
             items: $results['hits']['hits'] ?? [],
             total: $results['hits']['total']['value'] ?? 0,
             aggregations: $results['aggregations'] ?? [],
@@ -72,7 +72,7 @@ class Processor extends BaseProcessor
             $results['_source'][$column] ??= null;
         }
 
-        return (new Response(
+        return (new Collection(
             items: [$results],
             total: 1,
             aggregations: [],
@@ -109,7 +109,7 @@ class Processor extends BaseProcessor
             }
         }
 
-        return new Response(
+        return new Collection(
             items: $results['docs'] ?? [],
             total: count($results['docs']),
             aggregations: [],

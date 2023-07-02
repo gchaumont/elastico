@@ -75,7 +75,7 @@ class Builder extends BaseBuilder
      *
      * @param array|string $columns
      *
-     * @return \Illuminate\Support\Collection
+     * @return \Query\Response\Collection
      */
     public function get($columns = ['*'])
     {
@@ -84,6 +84,9 @@ class Builder extends BaseBuilder
         });
     }
 
+    /**
+     * @return array<string, \Query\Response\Collection>
+     */
     public function getMany(iterable $queries)
     {
         return $this->processor->processSelectMany(
@@ -199,7 +202,7 @@ class Builder extends BaseBuilder
      * @param string      $column
      * @param null|string $key
      *
-     * @return \Illuminate\Support\Collection
+     * @return \Query\Response\Collection
      */
     public function pluck($column, $key = null)
     {

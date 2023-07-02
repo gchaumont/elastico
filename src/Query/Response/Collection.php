@@ -5,7 +5,6 @@ namespace Elastico\Query\Response;
 use Closure;
 use Elastico\Query\Builder;
 use Elastico\Eloquent\Model;
-use Illuminate\Support\Collection;
 use Elastico\Aggregations\Aggregation;
 use Illuminate\Support\LazyCollection;
 use Elastico\Models\Builder\EloquentBuilder;
@@ -17,7 +16,7 @@ use Illuminate\Database\Eloquent\Collection as EloquentCollection;
 /**
  * Elastic Base Response.
  */
-class Response extends EloquentCollection
+class Collection extends EloquentCollection
 {
     use ParsesRelationships;
 
@@ -164,7 +163,7 @@ class Response extends EloquentCollection
             ->map(function (Collection $responses, string $model_id): Model {
                 $model = $this->get($model_id);
 
-                $responses->each(function (Response $response, string $query_key) use ($model) {
+                $responses->each(function (Collection $response, string $query_key) use ($model) {
                     $model->addResponse($query_key, $response);
                 });
 

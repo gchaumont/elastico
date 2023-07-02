@@ -7,7 +7,7 @@ use Elastic\Elasticsearch\ClientBuilder;
 use Elastic\Elasticsearch\Response\Elasticsearch;
 use Elastico\Eloquent\Model;
 use Elastico\Query\Builder;
-use Elastico\Query\Response\Response;
+use Elastico\Query\Response\Collection;
 use Exception;
 use GuzzleHttp\Promise\Promise;
 use Http\Adapter\Guzzle7\Client as GuzzleAdapter;
@@ -313,7 +313,7 @@ class Connection extends BaseConnection implements ConnectionInterface
                 $response = $response->asArray();
             }
 
-            yield from (new Response(
+            yield from (new Collection(
                 items: $response['hits']['hits'],
                 total: count($response['hits']['hits']),
                 aggregations: [],

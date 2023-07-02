@@ -12,7 +12,7 @@ use Elastico\Eloquent\Relations\HasMany;
 use Elastico\Eloquent\Relations\MorphTo;
 use Elastico\Eloquent\Relations\BelongsTo;
 use Elastico\Eloquent\Relations\MorphMany;
-use Elastico\Query\Response\Response;
+use Elastico\Query\Response\Collection;
 use Elastico\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\MorphOne;
 use Illuminate\Database\Eloquent\Builder  as EloquentBuilder;
@@ -340,6 +340,6 @@ trait HybridRelations
      */
     public function newCollection(array $items = [])
     {
-        return new Response($items);
+        return new Collection($items);
     }
 }
