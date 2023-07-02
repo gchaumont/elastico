@@ -107,7 +107,7 @@ trait LoadsAggregates
             ->keyBy(fn (Model $item) => $item->getKey());
 
         return $items
-            ->getBulk(function (Model $item) use ($aggregations): Collection {
+            ->getBulk(function (Model $item) use ($aggregations): BaseCollection {
                 return collect($aggregations)
                     ->map(function (array $aggregation, string $aggregation_key) use ($item): BaseCollection {
                         [$relations, $aggregation] = $aggregation;
@@ -133,8 +133,7 @@ trait LoadsAggregates
                                     });
                             });
                     })
-                    ->collapse()
-                    ->eloquent();
+                    ->collapse();
                 # code...
             })
             // ->map(function (Model $item, string $model_key) use ($aggregations): Collection {
