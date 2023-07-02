@@ -150,7 +150,7 @@ trait LoadsAggregates
             // ->map(fn (Collection $group, string $item_id): Collection => $group->keyBy(fn ($r, string $key) => explode(static::AGGREGATION_SEPARATOR, $key, 2)[1] . static::AGGREGATION_SEPARATOR . explode(static::AGGREGATION_SEPARATOR, $key, 3)[2]))
             ->map(fn (BaseCollection $group, string $item_id): BaseCollection => $group
                 ->each(fn (Collection $response, string $response_key) => $items->get($item_id)->addAggregations(explode(static::AGGREGATION_SEPARATOR, $response_key, 2)[0], $response->aggregations())))
-            ->pipe(fn (BaseCollection $c): Collection => $items)
+            ->pipe(fn (BaseCollection $c): BaseCollection => $items)
             ->all();
     }
 
