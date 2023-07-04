@@ -552,7 +552,12 @@ class Connection extends BaseConnection implements ConnectionInterface
     {
         $this->totalQueryDuration += $time ?? 0.0;
         $bindings = [];
-        $this->event(new QueryExecuted(json_encode($query), $bindings, $time, $this));
+        $this->event(new QueryExecuted(
+            mb_substr(json_encode($query), 0, 1000),
+            $bindings,
+            $time,
+            $this
+        ));
 
         if ($this->loggingQueries) {
             $this->queryLog[] = compact('query', 'bindings', 'time');
