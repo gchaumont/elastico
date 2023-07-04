@@ -29,6 +29,20 @@ class HasMany extends EloquentHasMany implements ElasticRelation
     }
 
     /**
+     * Set the base constraints on the relation query.
+     *
+     * @return void
+     */
+    public function addConstraints()
+    {
+        if (static::$constraints) {
+            $query = $this->getRelationQuery();
+
+            $query->where($this->foreignKey, '=', $this->getParentKey());
+        }
+    }
+
+    /**
      * {@inheritdoc}
      */
     public function getRelationExistenceQuery(Builder $query, Builder $parentQuery, $columns = ['*'])
