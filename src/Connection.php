@@ -242,7 +242,7 @@ class Connection extends BaseConnection implements ConnectionInterface
                         $this->getDriverName(),
                         json_encode($query),
                         $this->prepareBindings($bindings),
-                        new Exception(($response['error']['reason'] ?? substr(json_encode($response['error']), 0, 100)) . ': ' . ($response['error']['root_cause'][0]['reason'] ?? ''))
+                        new Exception(substr(json_encode($response['error']), 0, 100)) // new Exception(($response['error']['reason'] ?? substr(json_encode($response['error']), 0, 100)) . ': ' . ($response['error']['root_cause'][0]['reason'] ?? ''))
                     );
                 }
             }
