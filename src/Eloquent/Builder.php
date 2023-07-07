@@ -237,13 +237,31 @@ class Builder extends EloquentBuilder
         if (empty($this->query->columns) || $this->query->columns === ['*']) {
             $this->select($this->getModel()->getFieldNames());
         }
-        return $this->applyScopes()->query->cursor(keepAlive: $keepAlive)->map(function ($record) {
+        $lazyCollection = $this->applyScopes()->query->cursor(keepAlive: $keepAlive)->map(function ($record) {
             foreach ($this->query->columns as $column) {
                 $record['_source'][$column] ??= null;
             }
 
             return $this->newModelInstance()->newFromBuilder($record);
         });
+
+        // TODO: eager load relations on the lazy collection
+
+        // if (count($models) > 0) {
+        //     $items = $this->eagerLoadRelations($models->all());
+        //     $models->resetItems($items);
+        // }
+
+        # eager load the relations on the lazy collection 
+
+        // $lazyCollection
+        //     ->chunk(100)
+        //     ->map(function ($models) {
+        //         $this->eagerLoadRelations($models->all());
+        //     });
+
+
+        return $lazyCollection;
     }
 
     /**

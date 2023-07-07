@@ -2,10 +2,9 @@
 
 namespace Elastico\Console\Setup;
 
-use Elastic\Elasticsearch\ClientBuilder;
-use GuzzleHttp\Client as GuzzleClient;
-use Illuminate\Console\Command;
+use Throwable;
 use Spatie\Ssh\Ssh;
+use Illuminate\Console\Command;
 
 class InstallElasticsearch extends Command
 {
@@ -25,6 +24,7 @@ class InstallElasticsearch extends Command
                                 {--seed-hosts=* : The Hosts used for discovery}
                                 {--initial-masters=* : The master-eligible nodes}
                                 {--enrollment-token= : The enrollment token to join an existing cluster}
+                                {--s3-endpoint= : The S3 endpoint}
                                 ';
 
     /**
@@ -36,6 +36,9 @@ class InstallElasticsearch extends Command
 
     protected Ssh $ssh;
 
+    private string $elastic_password;
+
+
     /**
      * Execute the console command.
      *
@@ -43,32 +46,49 @@ class InstallElasticsearch extends Command
      */
     public function handle()
     {
-        $this->createSSH(
-            ip: $this->argument('ip'),
-            user : $this->option('user'),
-            port : $this->option('port'),
-            privateKey : $this->option('private-key') // '/Users/gchaumont/.ssh/id_ed25519'
-        );
+        try {
+            $this->validateInput();
 
-        $this->installElasticsearch();
+            $this->createSSH(
+                ip: $this->argument('ip'),
+                user: $this->option('user'),
+                port: $this->option('port'),
+                privateKey: $this->option('private-key'), // '/Users/gchaumont/.ssh/id_ed25519'
+                password: $this->option('root-password'),
+            );
 
-        $this->configureNode(
-            cluster: $this->option('cluster') ?? $this->ask('What is the Cluster name?'),
-            host: $this->option('host'),
-            seed_hosts : $this->option('seed-hosts') ?? [],
-            master_nodes : $this->option('initial-masters') ?? [],
-        );
+            $this->installElasticsearch();
 
-        // // return;
-        $this->joinCluster(token: $this->option('enrollment-token'));
+            $this->configureNode(
+                cluster: $this->option('cluster') ?? $this->ask('What is the Cluster name?'),
+                host: $this->option('host'),
+                seed_hosts: $this->option('seed-hosts') ?? [],
+                master_nodes: $this->option('initial-masters') ?? [],
+                s3_endpoint: $this->option('s3-endpoint'),
+            );
 
-        $this->startElasticsearch();
+            // // return;
+            $this->joinCluster(token: $this->option('enrollment-token'));
 
-        $this->testConnection();
-        $this->copyCertificate();
+            $this->startElasticsearch();
 
-        $this->info('Elastic password: '.($this->elastic_password ?? null));
-        $this->info('Certificate File: '.__DIR__.'/elastic-http-certificate.crt');
+            // $this->testConnection();
+            $this->copyCertificate();
+
+            $this->info('Elastic password: ' . ($this->elastic_password ?? null));
+            $this->info('Certificate File: ' . __DIR__ . '/elastic-http-certificate.crt');
+        } catch (Throwable $th) {
+            $this->error($th->getMessage());
+        }
+    }
+
+    public function validateInput(): void
+    {
+        if (!$this->argument('ip')) {
+            throw new Exception('The SSH IP address is required.');
+        }
+
+        // Add any other validation as per your needs
     }
 
     public function testConnection(): void
@@ -92,14 +112,17 @@ class InstallElasticsearch extends Command
             mkdir(storage_path('elastic'));
         }
 
-        $this->ssh->download('/etc/elasticsearch/certs/http_ca.crt', storage_path('elastic/elastic-http-certificate.crt'));
+        if (!file_exists(storage_path('elastic/elastic-http-certificate.crt'))) {
+            $this->ssh->download('/etc/elasticsearch/certs/http_ca.crt', storage_path('elastic/elastic-http-certificate.crt'));
+        }
     }
 
     public function createSSH(
         string $user,
         string $ip,
         int $port,
-        null|string $privateKey = null
+        null|string $privateKey = null,
+        null|string $password = null,
     ): void {
         $this->ssh = Ssh::create(
             user: $user,
@@ -107,31 +130,41 @@ class InstallElasticsearch extends Command
             port: $port
         )
             ->disableStrictHostKeyChecking()
-            ->onOutput($this->handleOutput())
-        ;
+            ->onOutput($this->handleOutput());
 
         if ($privateKey) {
             $this->ssh->usePrivateKey($privateKey);
         }
 
-        if ($pw = $this->option('root-password')) {
-            $this->ssh->execute("printf \"{$pw}\n\" | sudo -S su -");
+        if ($password) {
+            $this->ssh->execute("printf \"{$password}\n\" | sudo -S su -");
         }
     }
 
     public function handleOutput(): \Closure
     {
         return function ($type, $line) {
-            $match = preg_match('#The generated password for the elastic built-in superuser is : (\S*)#', $line, $matches);
-            if (1 === $match) {
-                $this->elastic_password = $matches[1];
-            }
-            match ($type) {
-                'err' => $this->warn($line),
-                'out' => $this->line($line),
-            };
+            $this->handlePasswordCapture($line);
+            $this->handleConsoleOutput($type, $line);
         };
     }
+
+    private function handlePasswordCapture($line): void
+    {
+        $match = preg_match('#The generated password for the elastic built-in superuser is : (\S*)#', $line, $matches);
+        if (1 === $match) {
+            $this->elastic_password = $matches[1];
+        }
+    }
+
+    private function handleConsoleOutput($type, $line): void
+    {
+        match ($type) {
+            'err' => $this->warn($line),
+            'out' => $this->line($line),
+        };
+    }
+
 
     public function joinCluster(null|string $token): void
     {
@@ -139,7 +172,7 @@ class InstallElasticsearch extends Command
             $this->info('Preparing node to join existing cluster');
 
             // If this node should join an existing cluster, you can reconfigure this with
-            $this->ssh->execute("yes | /usr/share/elasticsearch/bin/elasticsearch-reconfigure-node --enrollment-token {$token}");
+            $this->ssh->execute("yes | /usr/share/elasticsearch/bin/elasticsearch-reconfigure-node --enrollment-token " . escapeshellarg($token));
         }
     }
 
@@ -159,12 +192,6 @@ class InstallElasticsearch extends Command
             'echo ">> Installing Elasticsearch"',
             'sudo apt-get update && sudo apt-get install elasticsearch',
             'echo ">> Elastic Search Installed"',
-
-            // 'echo ">> Adding deb package"',
-            // 'echo "deb https://artifacts.elastic.co/packages/7.x/apt stable main" | sudo tee -a /etc/apt/sources.list.d/elastic-7.x.list',
-
-            // 'echo ">> Installing Java and Elastic Search"',
-            // 'apt -y install default-jre elasticsearch',
         ]);
     }
 
@@ -180,7 +207,7 @@ class InstallElasticsearch extends Command
         ]);
     }
 
-    public function configureNode(string $cluster, string $host, array $seed_hosts, array $master_nodes = []): void
+    public function configureNode(string $cluster, string $host, array $seed_hosts, array $master_nodes = [], string $s3_endpoint = null): void
     {
         $temp_file = tmpfile();
 
@@ -203,14 +230,26 @@ class InstallElasticsearch extends Command
         ];
 
         // if ($seed_hosts) {
-        //     $config['#discovery.seed_hosts: ["host1", "host2"]'] = 'discovery.seed_hosts: ['.implode(',', $seed_hosts).']';
+        //     $config['#discovery.seed_hosts: ["host1", "host2"]'] = 'discovery.seed_hosts: [' . implode(',', $seed_hosts) . ']';
         // }
         // if ($master_nodes) {
-        //     $config['#cluster.initial_master_nodes: ["node-1", "node-2"]'] = 'cluster.initial_master_nodes: ['.implode(',', $master_nodes).']';
+        //     $config['#cluster.initial_master_nodes: ["node-1", "node-2"]'] = 'cluster.initial_master_nodes: [' . implode(',', $master_nodes) . ']';
         // }
 
         foreach ($config as $key => $value) {
             $contents = str_replace($key, $value, $contents);
+        }
+
+        # if content does not contain config : http.host: 0.0.0.0 add it 
+
+        if (!str_contains($contents, 'http.host:')) {
+            $contents .= "\nhttp.host: 0.0.0.0";
+        }
+
+        # same with s3.client.spaces.endpoint: fra1.digitaloceanspaces.com
+
+        if ($s3_endpoint && !str_contains($contents, 's3.client.spaces.endpoint:')) {
+            $contents .= "\ns3.client.spaces.endpoint: $s3_endpoint";
         }
 
         fwrite($temp_file, $contents);

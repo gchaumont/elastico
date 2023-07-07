@@ -5,11 +5,11 @@ namespace Elastico;
 use Closure;
 use Elastico\Query\Builder;
 use Elastico\Eloquent\Model;
-use Illuminate\Support\Collection as BaseCollection;
 use Illuminate\Support\Facades\DB;
 use Elastico\Query\Response\Collection;
 use Illuminate\Support\ServiceProvider;
 use Illuminate\Database\Eloquent\Relations\Relation;
+use Illuminate\Support\Collection as BaseCollection;
 use Elastico\Eloquent\Builder as ElasticEloquentBuilder;
 
 /**

@@ -13,7 +13,13 @@ class UpgradeElasticsearch extends Command
      *
      * @var string
      */
-    protected $signature = 'elastic:elasticsearch:upgrade';
+    protected $signature = 'elastic:elasticsearch:upgrade
+                        {ip : The SSH IP Adress} 
+                        {--user=root : The SSH User} 
+                        {--root-password= : The password for the RootUser} 
+                        {--private-key= : The path to the SSH Private Key } 
+                        {--port=22 : The SSH Port }
+    ';
 
     /**
      * The console command description.
@@ -29,31 +35,24 @@ class UpgradeElasticsearch extends Command
      */
     public function handle()
     {
-        $nodes = Digitalocean::getDroplets(tag: 'elasticsearch')
-            ->filter(fn ($node) => is_numeric(substr($node['name'], -2, 2)))
-        ;
-
         // $this->elastic->indices()->flush(['index' => '*']);
         $this->call('elastic:shards:allocate', ['--disable' => true]);
 
-        foreach ($nodes as $node) {
-            $sshClient = Ssh::create('root', $node['public_ip'])
-                ->disableStrictHostKeyChecking()
-                ->usePrivateKey('/Users/gchaumont/.ssh/id_ed25519')
-                ->onOutput(fn ($type, $line) => $this->info($type.' '.$line))
-            ;
+        $sshClient = Ssh::create('root', $this->argument('ip'))
+            ->disableStrictHostKeyChecking()
+            ->usePrivateKey($this->option('private-key'))
+            ->onOutput(fn ($type, $line) => $this->info($type . ' ' . $line));
 
-            $process = $sshClient
-                ->execute([
-                    'systemctl stop elasticsearch.service',
-                    'apt-get update && sudo apt-get --yes -o Dpkg::Options::="--force-confold" install elasticsearch ',
-                    'systemctl start elasticsearch.service',
-                ])
-            ;
+        $process = $sshClient
+            ->execute([
+                'systemctl stop elasticsearch.service',
+                'apt-get update && sudo apt-get --yes -o Dpkg::Options::="--force-confold" install elasticsearch ',
+                'systemctl start elasticsearch.service',
+            ]);
 
-            $this->info($process->isSuccessful() ? 'success' : 'failed');
-            $this->info($process->getOutput() ?: 'no output');
-        }
+        $this->info($process->isSuccessful() ? 'success' : 'failed');
+        $this->info($process->getOutput() ?: 'no output');
+
 
         $this->call('elastic:shards:allocate', ['--enable' => true]);
     }

@@ -6,14 +6,13 @@ use Spatie\Ssh\Ssh;
 
 class TokenGenerator
 {
-    public static function generate(
+    public static function handle(
         string $ip,
         string $user = 'root',
         int $port = 22,
         string $privateKey = null,
         string $tokenType = 'node'
-    ) {
-        $token = null;
+    ): string {
         $ssh = static::createSSH(
             ip: $ip,
             user: $user,
@@ -27,7 +26,11 @@ class TokenGenerator
             }
         });
 
-        $ssh->execute('/usr/share/elasticsearch/bin/elasticsearch-create-enrollment-token -s '.$tokenType);
+        $ssh->execute('/usr/share/elasticsearch/bin/elasticsearch-create-enrollment-token -s ' . escapeshellarg($tokenType));
+
+        if (empty($token)) {
+            throw new \Exception('Could not generate Token');
+        }
 
         return $token;
     }
@@ -43,8 +46,7 @@ class TokenGenerator
             host: $ip,
             port: $port
         )
-            ->disableStrictHostKeyChecking()
-            ;
+            ->disableStrictHostKeyChecking();
 
         if ($privateKey) {
             $ssh->usePrivateKey($privateKey);

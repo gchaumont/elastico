@@ -199,6 +199,9 @@ class Model extends BaseModel implements Castable
 
         return parent::getStorableEnumValue($value);
     }
+
+
+
     /**
      * Retrieve the model for a bound value.
      *

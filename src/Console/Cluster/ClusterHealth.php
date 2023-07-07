@@ -2,8 +2,8 @@
 
 namespace Elastico\Console\Cluster;
 
-use App\Support\Elasticsearch\Elasticsearch;
 use Illuminate\Console\Command;
+use Illuminate\Support\Facades\DB;
 
 class ClusterHealth extends Command
 {
@@ -12,7 +12,9 @@ class ClusterHealth extends Command
      *
      * @var string
      */
-    protected $signature = 'elastic:cluster:health';
+    protected $signature = 'elastic:cluster:health
+        {--connection=elastic : The DB Connection }
+    ';
 
     /**
      * The console command description.
@@ -28,7 +30,7 @@ class ClusterHealth extends Command
      */
     public function handle()
     {
-        $elastic = app()->make(Elasticsearch::class);
+        $elastic = DB::connection('elastic')->getClient();
 
         try {
             $r = $elastic->cluster()->health();
@@ -39,6 +41,6 @@ class ClusterHealth extends Command
         // $r = $elastic->nodes()->info();
         // $r = $elastic->nodes()->stats();
 
-        dump($r);
+        dump($r->asArray());
     }
 }

@@ -2,8 +2,9 @@
 
 namespace Elastico\Console\Setup;
 
-use Illuminate\Console\Command;
 use Spatie\Ssh\Ssh;
+use Illuminate\Console\Command;
+use Elastico\Actions\Setup\TokenGenerator;
 
 class GenerateEnrollmentToken extends Command
 {
@@ -37,11 +38,13 @@ class GenerateEnrollmentToken extends Command
      */
     public function handle()
     {
-        $token = TokenGenerator::generate(
+        $token = TokenGenerator::handle(
             ip: $this->argument('ip'),
-            user: $this->argument('user'),
-            port: $this->argument('port'),
-            privateKey: $this->argument('privateKey'),
+            user: $this->option('user'),
+            port: $this->option('port'),
+            privateKey: $this->option('private-key'),
         );
+
+        $this->info($token);
     }
 }
