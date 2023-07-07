@@ -177,6 +177,7 @@ trait LoadsAggregates
                                 if (str_contains($relation_key, ' as ')) {
                                     $field_name = $relation = Str::after($relation_key, ' as ');
                                 } else {
+                                    $relation = $relation_key;
                                     $field_name = implode('_', array_filter([$relation_key, $function, $column]));
                                 }
                                 // dump($field_name);
