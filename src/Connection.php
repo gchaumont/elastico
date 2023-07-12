@@ -157,7 +157,7 @@ class Connection extends BaseConnection implements ConnectionInterface
             return $this->performQuery($query['method'], $query['payload']);
 
             if ($r['errors'] ?? false) {
-                throw new BulkException(json_encode($r->asArray()));
+                throw new BulkException(mb_substr(json_encode($r->asArray()), 0, 500));
             }
 
             // return $r;
@@ -240,9 +240,9 @@ class Connection extends BaseConnection implements ConnectionInterface
                 if ($response['error'] ?? false) {
                     throw new QueryException(
                         $this->getDriverName(),
-                        json_encode($query),
+                         mb_substr(json_encode($query), 0, 500)
                         $this->prepareBindings($bindings),
-                        new Exception(substr(json_encode($response['error']), 0, 100)) // new Exception(($response['error']['reason'] ?? substr(json_encode($response['error']), 0, 100)) . ': ' . ($response['error']['root_cause'][0]['reason'] ?? ''))
+                        new Exception(mb_substr(json_encode($response['error']), 0, 500)) // new Exception(($response['error']['reason'] ?? substr(json_encode($response['error']), 0, 100)) . ': ' . ($response['error']['root_cause'][0]['reason'] ?? ''))
                     );
                 }
             }
@@ -610,7 +610,7 @@ class Connection extends BaseConnection implements ConnectionInterface
 
             throw new QueryException(
                 $this->getDriverName(),
-                json_encode($query),
+                mb_substr(json_encode($query), 0, 500),
                 $this->prepareBindings($bindings),
                 $e
             );

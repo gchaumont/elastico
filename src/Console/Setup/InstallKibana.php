@@ -43,9 +43,9 @@ class InstallKibana extends Command
     {
         $this->createSSH(
             ip: $this->argument('ip'),
-            user : $this->option('user'),
-            port : $this->option('port'),
-            privateKey : $this->option('private-key') // '/Users/gchaumont/.ssh/id_ed25519'
+            user: $this->option('user'),
+            port: $this->option('port'),
+            privateKey: $this->option('private-key') // '/Users/gchaumont/.ssh/id_ed25519'
         );
 
         $this->installKibana();
@@ -62,7 +62,7 @@ class InstallKibana extends Command
 
     public function copyCertificate()
     {
-        $this->ssh->download('/etc/elasticsearch/certs/http_ca.crt', __DIR__.'/elastic-http-certificate.crt');
+        $this->ssh->download('/etc/elasticsearch/certs/http_ca.crt', __DIR__ . '/elastic-http-certificate.crt');
     }
 
     public function createSSH(
@@ -77,8 +77,7 @@ class InstallKibana extends Command
             port: $port
         )
             ->disableStrictHostKeyChecking()
-            ->onOutput($this->handleOutput())
-        ;
+            ->onOutput($this->handleOutput());
 
         if ($privateKey) {
             $this->ssh->usePrivateKey($privateKey);
@@ -127,12 +126,6 @@ class InstallKibana extends Command
             'echo ">> Installing Elasticsearch"',
             'sudo apt-get update && sudo apt-get install kibana',
             'echo ">> Kibana Installed"',
-
-            // 'echo ">> Adding deb package"',
-            // 'echo "deb https://artifacts.elastic.co/packages/7.x/apt stable main" | sudo tee -a /etc/apt/sources.list.d/elastic-7.x.list',
-
-            // 'echo ">> Installing Java and Elastic Search"',
-            // 'apt -y install default-jre elasticsearch',
         ]);
     }
 

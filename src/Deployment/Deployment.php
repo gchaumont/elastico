@@ -10,6 +10,14 @@ use Elastico\Deployment\Resources\IntegrationServer;
  */
 class Deployment
 {
+    // Create Servers
+
+    // Install Elasticsearch 
+
+    // Install Kibana 
+
+    // Install APM Server
+
     public readonly string $name;
 
     public readonly string $region;
