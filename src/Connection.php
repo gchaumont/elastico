@@ -240,7 +240,7 @@ class Connection extends BaseConnection implements ConnectionInterface
                 if ($response['error'] ?? false) {
                     throw new QueryException(
                         $this->getDriverName(),
-                         mb_substr(json_encode($query), 0, 500)
+                        mb_substr(json_encode($query), 0, 500),
                         $this->prepareBindings($bindings),
                         new Exception(mb_substr(json_encode($response['error']), 0, 500)) // new Exception(($response['error']['reason'] ?? substr(json_encode($response['error']), 0, 100)) . ': ' . ($response['error']['root_cause'][0]['reason'] ?? ''))
                     );
