@@ -61,6 +61,8 @@ class Builder extends BaseBuilder
 
     public $suggest = [];
 
+    public $ranks = [];
+
     /**
      * Explains the query.
      *
@@ -342,7 +344,20 @@ class Builder extends BaseBuilder
 
     public function rank(string $field, int|float $boost = null): self
     {
-        return $this->where($field, 'rank', $boost);
+        $this->ranks[] = [
+            $field, $boost,
+        ];
+
+        return $this;
+    }
+
+    public function reorder($column = null, $direction = 'asc')
+    {
+        parent::reorder($column, $direction);
+
+        $this->ranks = [];
+
+        return $this;
     }
 
     public function collapse(string|array $collapse): self

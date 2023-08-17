@@ -80,6 +80,10 @@ class Grammar extends BaseGrammar
 
         $payload['body']['size'] = $query->limit ?? null;
 
+        foreach ($query->ranks as $rank) {
+            $query->where($rank[0], 'rank', $rank[1]);
+        }
+
         $baseBool = $this->compileWhereComponents($query);
 
         if (!$baseBool->isEmpty()) {
@@ -132,8 +136,6 @@ class Grammar extends BaseGrammar
         // }
 
         // $query->buildSuggests();
-
-        // $query->buildRanks();
 
         return $payload;
     }
