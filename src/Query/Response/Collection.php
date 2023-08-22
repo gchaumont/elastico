@@ -25,7 +25,7 @@ class Collection extends EloquentCollection
     protected BaseCollection $requested_aggregations;
 
     public function __construct(
-        iterable|LazyCollection $items,
+        iterable|LazyCollection $items = [],
         protected null|int $total = null,
         protected array|BaseCollection|LazyCollection $aggregations = [],
         protected null|array $response = null,
