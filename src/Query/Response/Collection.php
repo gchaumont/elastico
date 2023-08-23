@@ -159,16 +159,25 @@ class Collection extends EloquentCollection
 
     public function loadQueries(callable|iterable $queries): static
     {
-        return $this->getBulk($queries)
-            ->map(function (BaseCollection $responses, string $model_id): Model {
-                $model = $this->get($model_id);
+        $data = $this->getBulk($queries);
 
-                $responses->each(function (Collection $response, string $query_key) use ($model) {
-                    $model->addResponse($query_key, $response);
-                });
-
-                return $model;
-            })
+        return $this->map(function (Model $model, string $model_id) use ($data) {
+            $data->get($model_id)->each(function (Collection $response, string $query_key) use ($model) {
+                $model->addResponse($query_key, $response);
+            });
+        })
             ->eloquent();
+
+        // return 
+        //     ->map(function (BaseCollection $responses, string $model_id): Model {
+        //         $model = $this->get($model_id);
+
+        //         $responses->each(function (Collection $response, string $query_key) use ($model) {
+        //             $model->addResponse($query_key, $response);
+        //         });
+
+        //         return $model;
+        //     })
+        //     ->eloquent();
     }
 }
