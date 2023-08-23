@@ -161,12 +161,11 @@ class Collection extends EloquentCollection
     {
         $data = $this->getBulk($queries);
 
-        return $this->map(function (Model $model, string $model_id) use ($data) {
+        return $this->each(function (Model $model, string $model_id) use ($data) {
             $data->get($model_id)->each(function (Collection $response, string $query_key) use ($model) {
                 $model->addResponse($query_key, $response);
             });
-        })
-            ->eloquent();
+        });
 
         // return 
         //     ->map(function (BaseCollection $responses, string $model_id): Model {
