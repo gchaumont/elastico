@@ -163,7 +163,7 @@ class Collection extends EloquentCollection
         $data = $this->getBulk($queries);
 
         return $this->each(function (Model $model, string $model_id) use ($data) {
-            $data->get($model_id)->each(function (Collection $response, string $query_key) use ($model) {
+            $data->get($model_id)?->each(function (Collection $response, string $query_key) use ($model) {
                 $model->addResponse($query_key, $response);
             });
         });
