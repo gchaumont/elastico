@@ -327,4 +327,27 @@ class Builder extends EloquentBuilder
         }
         return $columns;
     }
+
+
+    /**
+     * Add a basic where clause to a relationship query.
+     *
+     * @param  string  $relation
+     * @param  \Closure|string|array|\Illuminate\Contracts\Database\Query\Expression  $column
+     * @param  mixed  $operator
+     * @param  mixed  $value
+     * @return \Illuminate\Database\Eloquent\Builder|static
+     */
+    public function whereRelation($relation, $column, $operator = null, $value = null)
+    {
+        return $this->where($relation . '.' . $column, $operator, $value);
+
+        // return $this->whereHas($relation, function ($query) use ($column, $operator, $value) {
+        //     if ($column instanceof Closure) {
+        //         $column($query);
+        //     } else {
+        //         $query->where($column, $operator, $value);
+        //     }
+        // });
+    }
 }
