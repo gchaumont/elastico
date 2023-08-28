@@ -5,11 +5,12 @@ namespace Elastico\Eloquent;
 
 use Elastico\Models\Features\Mappable;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Contracts\Support\Arrayable;
 use Illuminate\Database\Eloquent\Concerns\HasAttributes;
 use Illuminate\Database\Eloquent\Concerns\HidesAttributes;
 use Illuminate\Contracts\Database\Eloquent\CastsAttributes;
+use Illuminate\Database\Eloquent\MissingAttributeException;
 use Illuminate\Contracts\Database\Eloquent\Castable as CastableContract;
-use Illuminate\Contracts\Support\Arrayable;
 
 /**
  * Serialises Data Objects from and to the Database.
@@ -47,6 +48,55 @@ abstract class DataAccessObject implements CastableContract, Arrayable
     public function __set($key, $value)
     {
         $this->setAttribute($key, $value);
+    }
+
+    /**
+     * Determine if an attribute or relation exists on the model.
+     *
+     * @param  string  $key
+     * @return bool
+     */
+    public function __isset($key)
+    {
+        return $this->offsetExists($key);
+    }
+
+    /**
+     * Unset an attribute on the model.
+     *
+     * @param  string  $key
+     * @return void
+     */
+    public function __unset($key)
+    {
+        $this->offsetUnset($key);
+    }
+
+    /**
+     * Determine if the given attribute exists.
+     *
+     * @param  mixed  $offset
+     * @return bool
+     */
+    public function offsetExists($offset): bool
+    {
+        try {
+            return !is_null($this->getAttribute($offset));
+        } catch (MissingAttributeException) {
+            return false;
+        }
+    }
+
+
+    /**
+     * Unset the value for a given offset.
+     *
+     * @param  mixed  $offset
+     * @return void
+     */
+    public function offsetUnset($offset): void
+    {
+        unset($this->attributes[$offset], $this->relations[$offset]);
     }
 
     /**
