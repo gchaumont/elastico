@@ -102,7 +102,7 @@ class HasOne extends EloquentHasOne implements ElasticRelation
 
             $this->addAggregation(
                 $this->relationName,
-                (new Terms(field: $this->foreignKey, size: 1000))
+                (new Terms(field: $this->foreignKey, size: 10000))
                     ->addAggregation(
                         'hits',
                         new TopHits(
