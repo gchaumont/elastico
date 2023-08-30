@@ -40,7 +40,7 @@ class CreateIndex extends Command
             $model->setConnection($this->option('connection'));
         }
 
-        $config = $class::getIndexConfiguration();
+        $config = $model::getIndexConfiguration();
 
         $model->getConnection()->getClient()->indices()->create($config);
 
