@@ -143,7 +143,7 @@ class HasOne extends EloquentHasOne implements ElasticRelation
                 ->map(static fn (BucketResponse $bucket) => $bucket->aggregation('hits')->hits()->first())
                 ->keyBy(static fn (Model $model) => $model->getKey())
                 ->filter()
-                ->pipe(static fn (BaseCollection $collection) => $collection->first()->newCollection($collection->all()));
+                ->pipe(static fn (BaseCollection $collection) => $collection->first()?->newCollection($collection->all()) ?? new Collection());
         }
 
         return $this->matchOne($models, $results, $relation);
