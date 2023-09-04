@@ -13,9 +13,12 @@ class Wildcard extends Query
 
     protected ?int $boost = null;
 
-    protected string $field;
 
-    protected string $value;
+    public function __construct(
+        protected string $field,
+        protected string $value
+    ) {
+    }
 
     public function getPayload(): array
     {

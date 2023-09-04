@@ -11,9 +11,11 @@ class MatchQuery extends Query
 {
     protected string $type = 'match';
 
-    protected string $field;
-
-    protected string $string;
+    public function __construct(
+        protected string $field,
+        protected string $query
+    ) {
+    }
 
     public function getPayload(): array
     {

@@ -12,11 +12,13 @@ class Terms extends Query
 {
     protected string $type = 'terms';
 
-    protected string $field;
-
-    protected array $values;
-
     protected ?float $boost = null;
+
+    public function __construct(
+        protected string $field,
+        protected array $values
+    ) {
+    }
 
     public function getPayload(): array
     {

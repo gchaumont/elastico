@@ -32,13 +32,13 @@ trait HasPostFilter
         $value = static::formatFilterValue($value);
 
         match ($operator) {
-            '>' => $this->getPostFilter()->filter(Range::make()->field($field)->gt($value)),
-            '>=' => $this->getPostFilter()->filter(Range::make()->field($field)->gte($value)),
-            '<' => $this->getPostFilter()->filter(Range::make()->field($field)->lt($value)),
-            '<=' => $this->getPostFilter()->filter(Range::make()->field($field)->lte($value)),
+            '>' => $this->getPostFilter()->filter((new Range(field: $field))->gt($value)),
+            '>=' => $this->getPostFilter()->filter((new Range(field: $field))->gte($value)),
+            '<' => $this->getPostFilter()->filter((new Range(field: $field))->lt($value)),
+            '<=' => $this->getPostFilter()->filter((new Range(field: $field))->lte($value)),
             '=' => match (is_array($value)) {
-                true => $this->getPostFilter()->filter(Terms::make()->field($field)->values($value)),
-                false => $this->getPostFilter()->filter(Term::make()->field($field)->value($value)),
+                true => $this->getPostFilter()->filter(new Terms(field: $field, values: $value)),
+                false => $this->getPostFilter()->filter(new Term(field: $field, value: $value)),
             },
             default => throw new \InvalidArgumentException('Invalid where opterator')
         };
@@ -57,7 +57,7 @@ trait HasPostFilter
         }
 
         return match (is_object($value)) {
-            false => $value ,
+            false => $value,
             true => match (true) {
                 $value instanceof Model => $value->getKey(),
                 $value instanceof \DateTime => $value->format(\DateTime::ATOM),

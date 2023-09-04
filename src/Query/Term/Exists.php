@@ -13,7 +13,12 @@ class Exists extends Query
 
     protected ?int $boost = null;
 
-    protected string $field;
+
+    public function __construct(
+        protected string $field
+
+    ) {
+    }
 
     public function getPayload(): array
     {

@@ -11,9 +11,11 @@ class MatchPhraseQuery extends Query
 {
     protected string $type = 'match_phrase';
 
-    protected string $field;
-
-    protected string $message;
+    public function __construct(
+        protected string $field,
+        protected string $message
+    ) {
+    }
 
     public function getPayload(): array
     {

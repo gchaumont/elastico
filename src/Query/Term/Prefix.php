@@ -11,11 +11,17 @@ class Prefix extends Query
 {
     protected string $type = 'prefix';
 
-    protected string $field;
-
-    protected $value;
-
     protected ?float $boost = null;
+
+    public function __construct(
+        protected string $field,
+        protected $value,
+        float $boost = null
+    ) {
+        if (!is_null($boost)) {
+            $this->boost($boost);
+        }
+    }
 
     public function getPayload(): array
     {

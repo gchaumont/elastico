@@ -11,9 +11,11 @@ class RankFeature extends Query
 {
     protected string $type = 'rank_feature';
 
-    protected string $field;
-
-    protected int|float|null $boost = null;
+    public function __construct(
+        protected string $field,
+        protected int|float|null $boost = null,
+    ) {
+    }
 
     public function getPayload(): array
     {

@@ -11,10 +11,6 @@ class MultiMatchQuery extends Query
 {
     protected string $type = 'multi_match';
 
-    protected string $query;
-
-    protected array $fields;
-
     protected string $match_type;
 
     protected string $operator;
@@ -25,6 +21,12 @@ class MultiMatchQuery extends Query
 
     protected string $fuzziness;
 
+    public function __construct(
+        protected string $query,
+        protected array $fields,
+    ) {
+    }
+
     public function getPayload(): array
     {
         return array_filter([
@@ -33,7 +35,7 @@ class MultiMatchQuery extends Query
             'type' => $this->match_type ?? null,
             'operator' => $this->operator ?? null,
             'analyzer' => $this->analyser ?? null,
-            'fuzziness' => $this->fuziness ?? null,
+            'fuzziness' => $this->fuzziness ?? null,
         ]);
     }
 

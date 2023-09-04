@@ -11,9 +11,11 @@ class Nested extends Query
 {
     protected string $type = 'nested';
 
-    protected string $path;
-
-    protected Query $query;
+    public function __construct(
+        protected string $path,
+        protected Query $query,
+    ) {
+    }
 
     public function getPayload(): array
     {

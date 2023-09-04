@@ -362,7 +362,7 @@ class Grammar extends BaseGrammar
                 }
 
                 if (in_array($where['type'], ['Null', 'NotNull'])) {
-                    $notNull = (new Exists())->field($where['column']);
+                    $notNull = (new Exists(field: $where['column']));
                     if ('NotNull' == $where['type']) {
                         $groupBool->filter($notNull);
                     } else {
@@ -389,8 +389,8 @@ class Grammar extends BaseGrammar
 
                     $groupBool->{$act}(
                         Boolean::make()
-                            ->filter((new Range())->field($field)->gt($where['values'][0]))
-                            ->filter((new Range())->field($field)->lt($where['values'][1]))
+                            ->filter((new Range(field: $field))->gt($where['values'][0]))
+                            ->filter((new Range(field: $field))->lt($where['values'][1]))
                     );
 
                     continue;
@@ -398,9 +398,10 @@ class Grammar extends BaseGrammar
                 if ('In' == $where['type']) {
                     if (!empty($where['values'])) {
                         $groupBool->filter(
-                            Terms::make()
-                                ->field($where['column'])
-                                ->values(array_values($where['values']))
+                            new Terms(
+                                field: $where['column'],
+                                values: array_values($where['values'])
+                            )
                         );
                     }
 
@@ -414,22 +415,22 @@ class Grammar extends BaseGrammar
                 $value = $where['value'];
 
                 match ($where['operator']) {
-                    '>' => $groupBool->filter(Range::make()->field($field)->gt($value)),
-                    '>=' => $groupBool->filter(Range::make()->field($field)->gte($value)),
-                    '<' => $groupBool->filter(Range::make()->field($field)->lt($value)),
-                    '<=' => $groupBool->filter(Range::make()->field($field)->lte($value)),
+                    '>' => $groupBool->filter((new Range(field: $field))->gt($value)),
+                    '>=' => $groupBool->filter((new Range(field: $field))->gte($value)),
+                    '<' => $groupBool->filter((new Range(field: $field))->lt($value)),
+                    '<=' => $groupBool->filter((new Range(field: $field))->lte($value)),
                     '<>' => $groupBool->filter(
-                        Boolean::make()->mustNot(Term::make()->field($field)->value($value))
+                        Boolean::make()->mustNot(new Term(field: $field, value: $value))
                     ),
                     '=' => match (is_array($value)) {
-                        true => $groupBool->must(Terms::make()->field($field)->values($value)),
-                        false => $groupBool->must(Term::make()->field($field)->value($value)),
+                        true => $groupBool->must(new Terms(field: $field, values: $value)),
+                        false => $groupBool->must(new Term(field: $field, value: $value)),
                     },
                     // 'like' => $groupBool->must(( Term::make())->field($field)->value(trim(strtolower($value), '%'))),
                     // 'like' => $groupBool->must(( Wildcard::make())->field($field)->value(trim(strtolower($value), '%'))),
-                    'like' => $groupBool->must(Prefix::make()->field($field)->value(trim($value, '%'))),
+                    'like' => $groupBool->must(new Prefix(field: $field, value: trim($value, '%'))),
                     // 'like' => $groupBool->must(Term::make()->field($field)->value(trim($value, '%'))),
-                    'rank' => $groupBool->should(RankFeature::make()->field($field)->boost($value)),
+                    'rank' => $groupBool->should(new RankFeature(field: $field, boost: $value)),
                 };
             }
         }

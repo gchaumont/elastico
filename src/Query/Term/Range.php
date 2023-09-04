@@ -11,8 +11,6 @@ class Range extends Query
 {
     protected string $type = 'range';
 
-    protected string $field;
-
     protected $gt;
 
     protected $gte;
@@ -22,6 +20,11 @@ class Range extends Query
     protected $lte;
 
     protected ?float $boost = null;
+
+    public function __construct(
+        protected string $field
+    ) {
+    }
 
     public function getPayload(): array
     {
