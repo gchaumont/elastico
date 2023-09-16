@@ -14,7 +14,8 @@ use Elastico\Query\Term\Wildcard;
 use Illuminate\Database\Query\Builder as BaseBuilder;
 use Illuminate\Database\Query\Grammars\Grammar as BaseGrammar;
 use Illuminate\Support\Arr;
-
+use Enum;
+use BackedEnum;
 /*
  *  Elasticsearch Query Builder
  *  Extension of Larvel Database Query Builder.
@@ -413,6 +414,14 @@ class Grammar extends BaseGrammar
 
                 $operator = $where['operator'];
                 $value = $where['value'];
+
+                # if value is an BackedEnum then we need to get the value, if is Enum then we need to get the key
+                if ($value instanceof BackedEnum) {
+                    $value = $value->value();
+                } elseif ($value instanceof Enum) {
+                    $value = $value->key();
+                }
+
 
                 match ($where['operator']) {
                     '>' => $groupBool->filter((new Range(field: $field))->gt($value)),
