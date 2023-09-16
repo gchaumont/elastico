@@ -415,11 +415,11 @@ class Grammar extends BaseGrammar
                 $operator = $where['operator'];
                 $value = $where['value'];
 
-                # if value is an BackedEnum then we need to get the value, if is Enum then we need to get the key
+
                 if ($value instanceof BackedEnum) {
-                    $value = $value->value();
-                } elseif ($value instanceof Enum) {
-                    $value = $value->key();
+                    $value = $value->value;
+                } elseif (enum_exists($value)) {
+                    $value = $value->name;
                 }
 
 
