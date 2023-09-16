@@ -14,17 +14,18 @@ class Histogram extends BucketAggregation
     public function __construct(
         public string $field,
         public int|float $interval,
-        public int $min_doc_count,
+        public null|int $min_doc_count = null,
     ) {
         # code...
     }
 
     public function getPayload(): array
     {
-        return [
+        return array_filter([
             'field' => $this->field,
             'interval' => $this->interval,
-        ];
+            'min_doc_count' => $this->min_doc_count,
+        ]);
     }
 
     public function field(string $field): self
