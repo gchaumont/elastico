@@ -13,7 +13,7 @@ class Histogram extends BucketAggregation
 
     public function __construct(
         public string $field,
-        public int $interval,
+        public int|float $interval,
     ) {
         # code...
     }
