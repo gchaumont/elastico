@@ -14,6 +14,7 @@ class Histogram extends BucketAggregation
     public function __construct(
         public string $field,
         public int|float $interval,
+        public int $min_doc_count,
     ) {
         # code...
     }
