@@ -96,13 +96,9 @@ class HasOne extends EloquentHasOne implements ElasticRelation
 
         $columns = array_slice($columns, 0, 1);
         foreach ($columns as $column => $aggregate) {
-            if (!in_array(strtolower($aggregate), ['min', 'max'])) {
-                throw new InvalidArgumentException("Invalid aggregate [{$aggregate}] used within ofMany relation. Available aggregates: MIN, MAX");
-            }
-
             $this->addAggregation(
                 $this->relationName,
-                (new Terms(field: $this->foreignKey, size: 10000))
+                (new Terms(field: $this->foreignKey, size: 60 * 1000))
                     ->addAggregation(
                         'hits',
                         new TopHits(
@@ -111,7 +107,11 @@ class HasOne extends EloquentHasOne implements ElasticRelation
                             model: get_class($this->getmodel()),
                             sort: [[
                                 $column => [
-                                    'order' => $aggregate == 'MAX' ? 'desc' : 'asc',
+                                    'order' => match (strtolower($aggregate)) {
+                                        'min' => 'asc',
+                                        'max' => 'desc',
+                                        default => throw new InvalidArgumentException("Invalid aggregate [{$aggregate}] used within ofMany relation. Available aggregates: MIN, MAX"),
+                                    },
                                 ],
                             ]],
                             _source: $this->query->getQuery()->columns,
@@ -120,9 +120,7 @@ class HasOne extends EloquentHasOne implements ElasticRelation
             );
         }
 
-        $this->take(0);
-
-        return  $this;
+        return $this->take(0);
     }
 
 
