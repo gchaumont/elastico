@@ -408,6 +408,18 @@ class Grammar extends BaseGrammar
 
                     continue;
                 }
+                if ($where['type'] == 'NotIn') {
+                    if (!empty($where['values'])) {
+                        $groupBool->mustNot(
+                            new Terms(
+                                field: $where['column'],
+                                values: array_values($where['values'])
+                            )
+                        );
+                    }
+
+                    continue;
+                }
                 // if (empty($where['operator'])) {
                 //     dd($where);
                 // }
