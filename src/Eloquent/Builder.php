@@ -287,22 +287,29 @@ class Builder extends EloquentBuilder
         if (empty($values)) {
             return 0;
         }
-        $values = collect($values)
+        $insertValues = collect($values)
             ->map(fn ($value) => $value instanceof Model ? ['_id' => $value->getKey(), '_index' => $value->getTable(), ...$value->getAttributes()] : $value)
             ->all();
 
         $response = $this->toBase()->insert(
-            $values
+            $insertValues
         );
 
-        return collect($values)
-            ->each(function (Model $value, int $i) use ($response): void {
-                $value->exists = true;
-                $value->setAttribute($value->getKeyName(), $response['items'][$i]['create']['_id']);
-                $value->_id = $response['items'][$i]['create']['_id'];
-                $value->_index = $response['items'][$i]['create']['_index'];
-            })
-            ->pipe(fn ($values) => $values->first()->newCollection($values));
+        # if values are only models 
+        if (isset($values[0]) && $values[0] instanceof Model) {
+
+
+            return collect($values)
+                ->each(function (Model $value, int $i) use ($response): void {
+                    $value->exists = true;
+                    $value->setAttribute($value->getKeyName(), $response['items'][$i]['create']['_id']);
+                    $value->_id = $response['items'][$i]['create']['_id'];
+                    $value->_index = $response['items'][$i]['create']['_index'];
+                })
+                ->pipe(fn ($values) => $values->first()->newCollection($values));
+        }
+
+        return $response;
     }
 
     /**
