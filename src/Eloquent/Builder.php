@@ -291,9 +291,18 @@ class Builder extends EloquentBuilder
             ->map(fn ($value) => $value instanceof Model ? ['_id' => $value->getKey(), '_index' => $value->getTable(), ...$value->getAttributes()] : $value)
             ->all();
 
-        return $this->toBase()->insert(
+        $response = $this->toBase()->insert(
             $values
         );
+
+        return collect($values)
+            ->each(function (Model $value, int $i) use ($response): void {
+                $value->exists = true;
+                $value->setAttribute($value->getKeyName(), $response['items'][$i]['create']['_id']);
+                $value->_id = $response['items'][$i]['create']['_id'];
+                $value->_index = $response['items'][$i]['create']['_index'];
+            })
+            ->pipe(fn ($values) => $values->first()->newCollection($values));
     }
 
     /**
