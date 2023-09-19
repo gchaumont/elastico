@@ -306,7 +306,7 @@ class Builder extends EloquentBuilder
                     $value->_id = $response['items'][$i]['create']['_id'];
                     $value->_index = $response['items'][$i]['create']['_index'];
                 })
-                ->pipe(fn ($values) => $values->first()->newCollection($values));
+                ->pipe(fn ($values) => $values->first()->newCollection($values->all()));
         }
 
         return $response;
