@@ -186,12 +186,12 @@ trait LoadsAggregates
 
                                 $value = match ($function) {
                                     'count' => $model->getAggregations($relation)->get($function)->doc_count(),
+                                    "exists" => $model->getAggregations($relation)->get($function)->doc_count() > 0,
                                     'cardinality',
                                     'sum',
                                     'avg',
                                     'max',
                                     'min' => $model->getAggregations($relation)->get($function)->value(),
-                                    "exists" => $model->getAggregations($relation)->get($function)->value() > 0,
                                     default => throw new InvalidArgumentException('Invalid aggregate function: ' . $function),
                                 };
                                 return [$field_name => $value];
