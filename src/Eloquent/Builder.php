@@ -9,6 +9,7 @@ use Illuminate\Contracts\Support\Arrayable;
 use Elastico\Eloquent\Concerns\LoadsAggregates;
 use Elastico\Eloquent\Concerns\QueriesRelationships;
 use Illuminate\Database\Eloquent\Builder as EloquentBuilder;
+use Illuminate\Support\LazyCollection;
 
 /**
  *  Elasticsearch Query Builder
@@ -237,31 +238,17 @@ class Builder extends EloquentBuilder
         if (empty($this->query->columns) || $this->query->columns === ['*']) {
             $this->select($this->getModel()->getFieldNames());
         }
-        $lazyCollection = $this->applyScopes()->query->cursor(keepAlive: $keepAlive)->map(function ($record) {
-            foreach ($this->query->columns as $column) {
-                $record['_source'][$column] ??= null;
-            }
+        return $this->applyScopes()->query->cursor(keepAlive: $keepAlive)
+            ->map(function ($record): Model {
+                foreach ($this->query->columns as $column) {
+                    $record['_source'][$column] ??= null;
+                }
 
-            return $this->newModelInstance()->newFromBuilder($record);
-        });
-
-        // TODO: eager load relations on the lazy collection
-
-        // if (count($models) > 0) {
-        //     $items = $this->eagerLoadRelations($models->all());
-        //     $models->resetItems($items);
-        // }
-
-        # eager load the relations on the lazy collection 
-
-        // $lazyCollection
-        //     ->chunk(100)
-        //     ->map(function ($models) {
-        //         $this->eagerLoadRelations($models->all());
-        //     });
-
-
-        return $lazyCollection;
+                return $this->newModelInstance()->newFromBuilder($record);
+            })
+            ->chunk($this->limit)
+            ->tapEach(fn (LazyCollection $models): array => $this->eagerLoadRelations($models->all()))
+            ->collapse();
     }
 
     /**
