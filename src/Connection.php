@@ -25,6 +25,8 @@ use Illuminate\Support\LazyCollection;
  */
 class Connection extends BaseConnection implements ConnectionInterface
 {
+    const DEFAULT_CURSOR_SIZE = 1000;
+
     protected $client;
 
     public function __construct($config)
@@ -270,7 +272,7 @@ class Connection extends BaseConnection implements ConnectionInterface
 
             $payload = $query;
             // $payload['scroll'] = $seconds.'s';
-            $payload['body']['size'] ??= 1000;
+            $payload['body']['size'] ??= static::DEFAULT_CURSOR_SIZE;
             $payload['body']['sort'] ??= '_shard_doc';
 
             $pit = $this->performQuery('openPointInTime', [

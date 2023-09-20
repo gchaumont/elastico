@@ -60,6 +60,7 @@ trait LoadsAggregates
             $this->withAggregation(
                 $relations['elastic'],
                 [$function => match ($function) {
+                    "exists",
                     'count' => new Filter(filter: new MatchAll),
                     'sum' => new Sum(field: $column),
                     'avg' => new Avg(field: $column),
@@ -190,6 +191,7 @@ trait LoadsAggregates
                                     'avg',
                                     'max',
                                     'min' => $model->getAggregations($relation)->get($function)->value(),
+                                    "exists" => $model->getAggregations($relation)->get($function)->value() > 0,
                                     default => throw new InvalidArgumentException('Invalid aggregate function: ' . $function),
                                 };
                                 return [$field_name => $value];
