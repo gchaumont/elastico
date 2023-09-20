@@ -23,6 +23,8 @@ class Builder extends EloquentBuilder
     use QueriesRelationships;
     use LoadsAggregates;
 
+    const DEFAULT_CHUNK_SIZE = 1000;
+
     protected $passthru = [
         'aggregate',
         'average',
@@ -245,7 +247,7 @@ class Builder extends EloquentBuilder
 
                 return $this->newModelInstance()->newFromBuilder($record);
             })
-            ->chunk($this->limit)
+            ->chunk($this->query->limit ?? static::DEFAULT_CHUNK_SIZE)
             ->map(fn (LazyCollection $models): array => $models->all())
             ->map(fn (array $models): array => $this->eagerLoadRelations($models))
             ->map(fn (array $models): array => $this->eagerLoadAggregations($models))
