@@ -554,8 +554,14 @@ class Connection extends BaseConnection implements ConnectionInterface
     {
         $this->totalQueryDuration += $time ?? 0.0;
         $bindings = [];
+
+
+        $cleanedQuery = static::cleanQuery(json_decode($query, true));
+
+
+
         $this->event(new QueryExecuted(
-            mb_substr(json_encode($query), 0, 1000),
+            mb_substr(json_encode($cleanedQuery), 0, 1000),
             $bindings,
             $time,
             $this
@@ -564,6 +570,25 @@ class Connection extends BaseConnection implements ConnectionInterface
         if ($this->loggingQueries) {
             $this->queryLog[] = compact('query', 'bindings', 'time');
         }
+    }
+
+    private static function cleanQuery(array $query): array
+    {
+        # cleanup query by recursively reducing all arrays to max 20 items
+        # and all strings to max 1000 chars
+        $cleanedQuery = [];
+        foreach ($query as $key => $value) {
+            if (is_array($value)) {
+                $cleanedQuery[$key] = static::cleanQuery($value);
+                $cleanedQuery[$key] = array_slice($cleanedQuery[$key], 0, 20) + ['...'];
+            } elseif (is_string($value)) {
+                $cleanedQuery[$key] = mb_substr($value, 0, 1000);
+            } else {
+                $cleanedQuery[$key] = $value;
+            }
+        }
+
+        return $cleanedQuery;
     }
 
     public function getClient(): Client
