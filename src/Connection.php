@@ -546,7 +546,7 @@ class Connection extends BaseConnection implements ConnectionInterface
     /**
      * Log a query in the connection's query log.
      *
-     * @param string     $query
+     * @param string|array     $query
      * @param array      $bindings
      * @param null|float $time
      */
@@ -556,7 +556,7 @@ class Connection extends BaseConnection implements ConnectionInterface
         $bindings = [];
 
 
-        $cleanedQuery = static::cleanQuery(json_decode($query, true));
+        $cleanedQuery = static::cleanQuery($query);
 
 
 
