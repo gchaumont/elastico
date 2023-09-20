@@ -2,21 +2,22 @@
 
 namespace Elastico\Query;
 
-use Elastic\Elasticsearch\Response\Elasticsearch;
+use Elastico\Connection;
+use Elastico\Query\Grammar;
+use Illuminate\Support\Arr;
+use Elastico\Query\Processor;
+use Elastico\Query\Builder\HasKnn;
+use Illuminate\Pagination\Paginator;
 use Elastico\Aggregations\Metric\Avg;
 use Elastico\Aggregations\Metric\Max;
 use Elastico\Aggregations\Metric\Min;
 use Elastico\Aggregations\Metric\Sum;
-use Elastico\Connection;
 use Elastico\Exceptions\BulkException;
-use Elastico\Query\Builder\HasAggregations;
-use Elastico\Query\Builder\HasKnn;
-use Elastico\Query\Builder\HasPostFilter;
-use Elastico\Query\Compound\Boolean;
-use Illuminate\Database\Query\Builder as BaseBuilder;
-use Illuminate\Pagination\Paginator;
-use Illuminate\Support\Arr;
 use Illuminate\Support\LazyCollection;
+use Elastico\Query\Builder\HasPostFilter;
+use Elastico\Query\Builder\HasAggregations;
+use Elastic\Elasticsearch\Response\Elasticsearch;
+use Illuminate\Database\Query\Builder as BaseBuilder;
 
 /**
  *  Elasticsearch Query Builder
@@ -29,7 +30,28 @@ class Builder extends BaseBuilder
     use HasPostFilter;
     use HasKnn;
 
+    /**
+     * The database connection instance.
+     *
+     * @var Connection
+     */
+    public $connection;
+
+    /**
+     * The database query grammar instance.
+     *
+     * @var Grammar
+     */
+    public $grammar;
     // TODO: Update all functions referring to "Grammar"
+
+    /**
+     * The database query post processor instance.
+     *
+     * @var Processor
+     */
+    public $processor;
+
 
     /**
      * All of the available clause operators.

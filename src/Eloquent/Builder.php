@@ -58,6 +58,13 @@ class Builder extends EloquentBuilder
         'deleteMany'
     ];
 
+    /**
+     * The base query builder instance.
+     *
+     * @var BaseBuilder $query
+     */
+    protected $query;
+
     public function __construct(BaseBuilder $query)
     {
         $this->query = $query;
