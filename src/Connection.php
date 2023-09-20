@@ -558,8 +558,6 @@ class Connection extends BaseConnection implements ConnectionInterface
 
         $cleanedQuery = static::cleanQuery($query);
 
-
-
         $this->event(new QueryExecuted(
             mb_substr(json_encode($cleanedQuery), 0, 1000),
             $bindings,
@@ -574,13 +572,16 @@ class Connection extends BaseConnection implements ConnectionInterface
 
     private static function cleanQuery(array $query): array
     {
-        # cleanup query by recursively reducing all arrays to max 20 items
+        # cleanup query by recursively reducing all arrays to max 20 items and add ... 
         # and all strings to max 1000 chars
         $cleanedQuery = [];
         foreach ($query as $key => $value) {
             if (is_array($value)) {
                 $cleanedQuery[$key] = static::cleanQuery($value);
-                $cleanedQuery[$key] = array_slice($cleanedQuery[$key], 0, 20) + ['...'];
+                if (count($cleanedQuery[$key]) > 20) {
+                    $cleanedQuery[$key] = array_slice($cleanedQuery[$key], 0, 20);
+                    $cleanedQuery[$key][] = '...';
+                }
             } elseif (is_string($value)) {
                 $cleanedQuery[$key] = mb_substr($value, 0, 1000);
             } else {
