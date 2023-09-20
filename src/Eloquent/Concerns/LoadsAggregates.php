@@ -107,9 +107,9 @@ trait LoadsAggregates
             ->keyBy(fn (Model $item) => $item->getKey());
 
         return $items
-            ->getBulk(function (Model $item) use ($aggregations): BaseCollection {
+            ->getBulk(static function (Model $item) use ($aggregations): BaseCollection {
                 return collect($aggregations)
-                    ->map(function (array $aggregation, string $aggregation_key) use ($item): BaseCollection {
+                    ->map(static function (array $aggregation, string $aggregation_key) use ($item): BaseCollection {
                         [$relations, $aggregation] = $aggregation;
 
                         $relations = $item
@@ -117,10 +117,10 @@ trait LoadsAggregates
                             ->parseRelationArray(!is_array($relations) ? [$relations] : $relations);
 
                         return collect($relations)
-                            ->keyBy(fn ($relation, string $relation_key): string => Str::after($relation_key, ' as '))
-                            ->keyBy(fn ($relation, string $relation_key): string  => implode(static::AGGREGATION_SEPARATOR, [$relation_key, $aggregation_key]))
-                            ->map(fn (Closure $relation): Builder|Relation  => $relation($item))
-                            ->each(function (Relation|Builder $relation) use ($aggregation, $item): void {
+                            ->keyBy(static fn ($relation, string $relation_key): string => Str::after($relation_key, ' as '))
+                            ->keyBy(static fn ($relation, string $relation_key): string  => implode(static::AGGREGATION_SEPARATOR, [$relation_key, $aggregation_key]))
+                            ->map(static fn (Closure $relation): Builder|Relation  => $relation($item))
+                            ->each(static function (Relation|Builder $relation) use ($aggregation, $item): void {
                                 collect(is_iterable($aggregation) ? $aggregation : [$aggregation])
                                     ->each(function (Aggregation|Closure $aggregation, string $name)   use ($item, $relation): void {
                                         if ($aggregation instanceof Aggregation) {
@@ -148,9 +148,9 @@ trait LoadsAggregates
             //     preserveKeys: true
             // )
             // ->map(fn (Collection $group, string $item_id): Collection => $group->keyBy(fn ($r, string $key) => explode(static::AGGREGATION_SEPARATOR, $key, 2)[1] . static::AGGREGATION_SEPARATOR . explode(static::AGGREGATION_SEPARATOR, $key, 3)[2]))
-            ->map(fn (BaseCollection $group, string $item_id): BaseCollection => $group
-                ->each(fn (Collection $response, string $response_key) => $items->get($item_id)->addAggregations(explode(static::AGGREGATION_SEPARATOR, $response_key, 2)[0], $response->aggregations())))
-            ->pipe(fn (BaseCollection $c): BaseCollection => $items)
+            ->map(static fn (BaseCollection $group, string $item_id): BaseCollection => $group
+                ->each(static fn (Collection $response, string $response_key) => $items->get($item_id)->addAggregations(explode(static::AGGREGATION_SEPARATOR, $response_key, 2)[0], $response->aggregations())))
+            ->pipe(static fn (BaseCollection $c): BaseCollection => $items)
             ->pipe(fn (BaseCollection $items): array => $this->resolveAggregates($items->all()));
     }
 
@@ -170,7 +170,7 @@ trait LoadsAggregates
                         $relations = $this->parseRelationArray($relations);
 
                         return collect($relations)
-                            ->mapWithKeys(function (Closure $rel, string $relation_key) use ($model, $function, $column): array {
+                            ->mapWithKeys(static function (Closure $rel, string $relation_key) use ($model, $function, $column): array {
                                 if ($column === '*' || $column === ['*']) {
                                     $column = null;
                                 }
@@ -221,7 +221,7 @@ trait LoadsAggregates
 
         return collect($relations)
             // ->pipe(fn(Collection $relations) => )
-            ->mapWithKeys(function (string|array|Closure $relation, string $key) {
+            ->mapWithKeys(static function (string|array|Closure $relation, string $key) {
 
                 if (is_numeric($key) && is_string($relation)) {
                     $name = $relation;
@@ -247,7 +247,7 @@ trait LoadsAggregates
                     [$key, $relation] =  [$name, $name];
                 }
 
-                return [$name => function (Model $model) use ($relation, $constraints): EloquentBuilder|Relation {
+                return [$name => static function (Model $model) use ($relation, $constraints): EloquentBuilder|Relation {
                     return is_string($relation)
                         ? $constraints($model->{$relation}(), $model)
                         : $constraints($relation[1]($model->{$relation}()), $model);
