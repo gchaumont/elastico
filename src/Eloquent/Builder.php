@@ -8,6 +8,7 @@ use Elastico\Query\Builder as BaseBuilder;
 use Illuminate\Contracts\Support\Arrayable;
 use Elastico\Eloquent\Concerns\LoadsAggregates;
 use Elastico\Eloquent\Concerns\QueriesRelationships;
+use Elastico\Query\Response\Collection;
 use Illuminate\Database\Eloquent\Builder as EloquentBuilder;
 use Illuminate\Support\LazyCollection;
 
@@ -141,8 +142,6 @@ class Builder extends EloquentBuilder
 
         if (count($models) > 0 && count($this->withAggregations) > 0) {
             $models = $this->eagerLoadAggregations($models);
-
-            $models = $this->resolveAggregates($models);
         }
 
         return $response->resetItems($models);
@@ -247,7 +246,8 @@ class Builder extends EloquentBuilder
                 return $this->newModelInstance()->newFromBuilder($record);
             })
             ->chunk($this->limit)
-            ->tapEach(fn (LazyCollection $models): array => $this->eagerLoadRelations($models->all()))
+            ->map(fn (LazyCollection $models): array => $this->getModel()->newCollection($this->eagerLoadRelations($models)))
+            ->map(fn (Collection $models): array => $this->
             ->collapse();
     }
 
