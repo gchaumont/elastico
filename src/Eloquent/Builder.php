@@ -246,8 +246,9 @@ class Builder extends EloquentBuilder
                 return $this->newModelInstance()->newFromBuilder($record);
             })
             ->chunk($this->limit)
-            ->map(fn (LazyCollection $models): array => $this->getModel()->newCollection($this->eagerLoadRelations($models)))
-            ->map(fn (Collection $models): array => $this->
+            ->map(fn (LazyCollection $models): array => $models->all())
+            ->map(fn (array $models): array => $this->eagerLoadRelations($models))
+            ->map(fn (array $models): array => $this->eagerLoadAggregations($models))
             ->collapse();
     }
 
