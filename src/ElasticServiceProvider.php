@@ -27,25 +27,26 @@ class ElasticServiceProvider extends ServiceProvider
 
 
         BaseCollection::macro('getBulk', function (iterable|callable $queries) {
-            return $this->flatMap(function (mixed $model, string $model_key) use ($queries): BaseCollection {
-                $queries = $queries instanceof Closure ? $queries($model) : collect($queries)->map(fn ($query) => $query($model));
+            return $this
+                ->flatMap(static function (mixed $model, string $model_key) use ($queries): BaseCollection {
+                    $queries = $queries instanceof Closure ? $queries($model) : collect($queries)->map(fn ($query) => $query($model));
 
-                return collect($queries)
-                    ->keyBy(fn ($query, $query_key): string => implode('::', [$model_key, $query_key]));
-            })
-                ->groupBy(fn (Builder|ElasticEloquentBuilder|Relation $query): string => $query->getConnection()->getName(), preserveKeys: true)
-                ->map(fn (BaseCollection $queries, string $connection): array => DB::connection($connection)->query()->getMany($queries->all()))
+                    return collect($queries)
+                        ->keyBy(fn ($query, $query_key): string => implode('::', [$model_key, $query_key]));
+                })
+                ->groupBy(static fn (Builder|ElasticEloquentBuilder|Relation $query): string => $query->getConnection()->getName(), preserveKeys: true)
+                ->map(static fn (BaseCollection $queries, string $connection): array => DB::connection($connection)->query()->getMany($queries->all()))
                 ->collapse()
-                ->groupBy(fn (BaseCollection $response, string $query_key): string => explode('::', $query_key, 2)[0], preserveKeys: true)
-                ->map(fn (BaseCollection $responses, string $model_id): BaseCollection => $responses->keyBy(fn (Collection $response, $response_key) => explode('::', $response_key, 2)[1]));
+                ->groupBy(static fn (BaseCollection $response, string $query_key): string => explode('::', $query_key, 2)[0], preserveKeys: true)
+                ->map(static fn (BaseCollection $responses, string $model_id): BaseCollection => $responses->keyBy(fn (Collection $response, $response_key) => explode('::', $response_key, 2)[1]));
         });
     }
 
     public function register()
     {
         // Add Eloquent Database driver.
-        $this->app->resolving('db', function ($db) {
-            $db->extend('elastic', function ($config, $name) {
+        $this->app->resolving('db', static function ($db) {
+            $db->extend('elastic', static function ($config, $name) {
                 $config['name'] = $name;
 
                 return new Connection($config);

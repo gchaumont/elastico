@@ -558,8 +558,14 @@ class Connection extends BaseConnection implements ConnectionInterface
 
         $cleanedQuery = static::cleanQuery($query);
 
+        $queryString = json_encode($cleanedQuery);
+
+        if (!app()->isLocal()) {
+            $queryString = mb_substr($queryString, 0, 1000);
+        }
+
         $this->event(new QueryExecuted(
-            mb_substr(json_encode($cleanedQuery), 0, 1000),
+            $queryString,
             $bindings,
             $time,
             $this

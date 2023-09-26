@@ -2,15 +2,22 @@
 
 namespace Elastico\Eloquent\Relations;
 
+use Elastico\Query\Query;
+use Illuminate\Support\Arr;
+use Elastico\Query\Term\Term;
+use Elastico\Query\Term\Terms;
+use Elastico\Query\Compound\Boolean;
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Collection;
-use Illuminate\Database\Eloquent\Model;
+use Elastico\Eloquent\Concerns\MatchesAttributes;
+use Elastico\Query\MatchNone;
 use Illuminate\Database\Eloquent\Model as EloquentModel;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany as EloquentBelongsToMany;
-use Illuminate\Support\Arr;
 
 class BelongsToMany extends EloquentBelongsToMany implements ElasticRelation
 {
+    use MatchesAttributes;
     /**
      * Get the key for comparing against the parent key in "has" query.
      *
@@ -35,8 +42,62 @@ class BelongsToMany extends EloquentBelongsToMany implements ElasticRelation
     public function addConstraints()
     {
         if (static::$constraints) {
-            $this->setWhere();
+            $this->whereRaw($this->buildConstraint($this->parent));
+            // $this->setWhere();
         }
+    }
+
+    public function buildConstraint(Model $parent): Query
+    {
+        $keys = Arr::get($parent, $this->parentKey);
+
+        if (empty($keys)) {
+            return new MatchNone;
+        }
+
+        $query = new Terms(field: $this->getQualifiedForeignPivotKeyName(), values: $keys);
+
+        if ($this->hasAttributeMatches()) {
+            $query = $this->getAttributeMatchesQuery($parent)->filter($query);
+        }
+
+        return $query;
+    }
+
+
+    /**
+     * Set the constraints for an eager load of the relation.
+     *
+     * @param  array  $models
+     * @return void
+     */
+    public function addEagerConstraints(array $models)
+    {
+        if ($this->hasAttributeMatches()) {
+            $hasConstraints = false;
+            $this->where(fn ($builder) => collect($models)->each(function ($model) use ($builder, &$hasConstraints) {
+                $constraints = $this->buildConstraint($model);
+                if ($constraints) {
+                    $hasConstraints = true;
+                    $builder->orWhereRaw($constraints);
+                }
+            }));
+
+            if (!$hasConstraints) {
+                $this->eagerKeysWereEmpty = true;
+            }
+
+            return;
+        }
+
+
+        $whereIn = $this->whereInMethod($this->parent, $this->parentKey);
+
+        $this->whereInEager(
+            $whereIn,
+            $this->getQualifiedForeignPivotKeyName(),
+            $this->getKeys($models, $this->parentKey)
+        );
     }
 
     /**
@@ -284,19 +345,20 @@ class BelongsToMany extends EloquentBelongsToMany implements ElasticRelation
         return $columns;
     }
 
-    /**
-     * Set the where clause for the relation query.
-     *
-     * @return $this
-     */
-    protected function setWhere()
-    {
-        $foreign = $this->getForeignKey();
+    // /**
+    //  * Set the where clause for the relation query.
+    //  *
+    //  * @return $this
+    //  */
+    // protected function setWhere()
+    // {
 
-        $this->query->where($foreign, '=', $this->parent->getKey());
+    //     $foreign = $this->getForeignKey();
 
-        return $this;
-    }
+    //     $this->query->where($foreign, '=', $this->parent->getKey());
+
+    //     return $this;
+    // }
 
     /**
      * {@inheritdoc}
@@ -311,12 +373,43 @@ class BelongsToMany extends EloquentBelongsToMany implements ElasticRelation
         $dictionary = [];
 
         foreach ($results as $result) {
-            foreach ($result->{$foreign} as $item) {
-                $dictionary[$item][] = $result;
-            }
+            $dictionary[$result->{$foreign}][] = $result;
+            // foreach ($result->{$foreign} as $item) {
+            // }
         }
 
         return $dictionary;
+    }
+
+    /**
+     * Match the eagerly loaded results to their parents.
+     *
+     * @param  array  $models
+     * @param  \Illuminate\Database\Eloquent\Collection  $results
+     * @param  string  $relation
+     * @return array
+     */
+    public function match(array $models, Collection $results, $relation)
+    {
+        $dictionary = $this->buildDictionary($results);
+
+        // Once we have an array dictionary of child objects we can easily match the
+        // children back to their parent using the dictionary and the keys on the
+        // parent models. Then we should return these hydrated models back out.
+        foreach ($models as $model) {
+            $relationCollection = $this->related->newCollection();
+
+            foreach ($model->{$this->parentKey} as $key) {
+                $key = $this->getDictionaryKey($key);
+
+                if (isset($dictionary[$key])) {
+                    $relationCollection->add($dictionary[$key]);
+                }
+            }
+            $model->setRelation($relation, $relationCollection);
+        }
+
+        return $models;
     }
 
     /**
@@ -350,5 +443,21 @@ class BelongsToMany extends EloquentBelongsToMany implements ElasticRelation
     protected function whereInMethod(EloquentModel $model, $key)
     {
         return 'whereIn';
+    }
+
+
+    protected function getKeys(array $models, $key = null)
+    {
+        return collect($models)->map(function ($value) use ($key) {
+            return $key ? Arr::get($value, $key) : $value->getKey();
+            // return $key ? $value->getAttribute($key) : $value->getKey();
+        })
+            ->collapse()
+            ->values()
+            ->unique(null, true)
+            ->filter()
+            ->sort()
+            ->values()
+            ->all();
     }
 }

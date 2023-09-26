@@ -2,12 +2,13 @@
 
 namespace Elastico\Eloquent;
 
+use Elastico\Connection;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Str;
 use Elastico\Query\Response\Collection;
+use Elastico\Eloquent\Concerns\HasIndexConfig;
 use Elastico\Eloquent\Concerns\HasAggregations;
 use Elastico\Eloquent\Concerns\HybridRelations;
-use Elastico\Eloquent\Concerns\IndexConfiguration;
 use Illuminate\Contracts\Database\Eloquent\Castable;
 use Illuminate\Database\Eloquent\Model as BaseModel;
 use Illuminate\Database\Eloquent\Relations\Relation;
@@ -18,9 +19,9 @@ use Illuminate\Database\Eloquent\Builder as EloquentBuilder;
  * Model.
  * @method static \Elastico\Eloquent\Builder whereIn()
  */
-class Model extends BaseModel implements Castable
+abstract class Model extends BaseModel implements Castable
 {
-    use IndexConfiguration;
+    use HasIndexConfig;
     use HybridRelations;
     use HasAggregations;
     // use EmbedsRelations;
@@ -50,6 +51,7 @@ class Model extends BaseModel implements Castable
      * @var Relation
      */
     protected $parentRelation;
+
 
     /**
      * Create a new Eloquent query builder for the model.
@@ -99,7 +101,7 @@ class Model extends BaseModel implements Castable
     /**
      * Get the database connection for the model.
      *
-     * @return \Illuminate\Database\Connection
+     * @return Connection
      */
     public function getConnection()
     {
@@ -180,7 +182,9 @@ class Model extends BaseModel implements Castable
 
         // Dot notation support.
         if (Str::contains($key, '.') && Arr::has($this->attributes, $key)) {
-            return $this->getAttributeValue($key);
+            $value = $this->getAttributeValue(Str::before($key, '.'));
+
+            return  Arr::get($value, Str::after($key, '.'));
         }
 
         // This checks for embedded relation support.

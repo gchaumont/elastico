@@ -13,6 +13,8 @@ abstract class DataStream extends Model
 {
     public string|Policy $ilm_policy;
 
+    public $primaryKey = '_id';
+
     public function getILMPolicy(): Policy
     {
         if (!isset($this->ilm_policy)) {

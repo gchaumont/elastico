@@ -48,6 +48,6 @@ trait HasAggregations
 
     public function getResponse(string $key): Collection
     {
-        return $this->responses->get($key);
+        return $this->responses->get($key) ?? throw new \Exception("No response found for {$key}");
     }
 }

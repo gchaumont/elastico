@@ -5,9 +5,10 @@ namespace Elastico\Mapping;
 use Attribute;
 use Elastico\Models\DataAccessObject;
 use Elastico\Models\Model;
+use Illuminate\Contracts\Support\Arrayable;
 
 #[\Attribute]
-class Field
+class Field implements Arrayable
 {
     public readonly \ReflectionProperty $property;
 
@@ -22,6 +23,8 @@ class Field
     public string $analyzer;
 
     public string $element_type;
+
+    public array $properties;
 
     public \Closure $propertyCallback;
 
@@ -118,6 +121,13 @@ class Field
         return $this;
     }
 
+    public function properties(Field ...$properties): static
+    {
+        $this->properties = array_merge($this->properties ?? [], $properties);
+
+        return $this;
+    }
+
     public function toArray(): array
     {
         $config['type'] = $this->type->name;
@@ -139,13 +149,18 @@ class Field
         if (isset($this->element_type)) {
             $config['element_type'] = $this->element_type;
         }
+        if (isset($this->properties)) {
+            $config['properties'] = collect($this->properties)
+                ->keyBy(fn ($prop) => $prop->getName())
+                ->map(fn ($prop) => $prop->toArray())
+                ->all();
+        }
         if (isset($this->object)) {
             $config['properties'] = collect($this->object::indexProperties())
                 ->keyBy(fn ($prop) => $prop->getName())
                 ->map(fn ($prop) => isset($this->propertyCallback) ? call_user_func($this->propertyCallback, $prop) : $prop)
                 ->map(fn ($prop) => $prop->toArray())
-                ->all()
-            ;
+                ->all();
         }
         if (isset($this->copy_to)) {
             $config['copy_to'] = $this->copy_to;
@@ -272,63 +287,62 @@ class Field
         if (isset($this->object)) {
             return collect($this->object::indexProperties())
                 ->map(fn ($prop) => $prop->propCount())
-                ->sum()
-            ;
+                ->sum();
         }
 
         return 1;
     }
 
-    public function configuration(): array
-    {
-        $property = [];
-        $property['type'] = $this->type->name;
-        if (in_array($this->type, [FieldType::object, FieldType::nested])) {
-            if (class_exists($this->propertyType())
-            && is_subclass_of($this->propertyType(), Model::class)) {
-                if (!empty($this->properties)) {
-                    $property['properties'] = array_filter(
-                        $this->propertyType()::getIndexProperties(),
-                        fn ($prop) => in_array($prop, $this->properties),
-                        ARRAY_FILTER_USE_KEY
-                    );
-                } else {
-                    $property['properties'] = $this->propertyType()::getIndexProperties(true);
-                }
-            } elseif (class_exists($this->propertyType())
-            && is_subclass_of($this->propertyType(), DataAccessObject::class)) {
-                $property['properties'] = $this->propertyType()::getIndexProperties();
-            }
-            if (FieldType::nested == $this->type) {
-                $property['dynamic'] = 'strict';
-            }
-        } elseif (FieldType::scaled_float == $this->type) {
-            $property = [
-                'scaling_factor' => $this->scaling_factor,
-            ];
-        } else {
-            if (isset($this->fields)) {
-                $property['fields'] = $this->fields;
-            }
-        }
+    // public function configuration(): array
+    // {
+    //     $property = [];
+    //     $property['type'] = $this->type->name;
+    //     if (in_array($this->type, [FieldType::object, FieldType::nested])) {
+    //         if (
+    //             class_exists($this->propertyType())
+    //             && is_subclass_of($this->propertyType(), Model::class)
+    //         ) {
+    //             if (!empty($this->properties)) {
+    //                 $property['properties'] = array_filter(
+    //                     $this->propertyType()::getIndexProperties(),
+    //                     fn ($prop) => in_array($prop, $this->properties),
+    //                     ARRAY_FILTER_USE_KEY
+    //                 );
+    //             } else {
+    //                 $property['properties'] = $this->propertyType()::getIndexProperties(true);
+    //             }
+    //         } elseif (
+    //             class_exists($this->propertyType())
+    //             && is_subclass_of($this->propertyType(), DataAccessObject::class)
+    //         ) {
+    //             $property['properties'] = $this->propertyType()::getIndexProperties();
+    //         }
+    //         if (FieldType::nested == $this->type) {
+    //             $property['dynamic'] = 'strict';
+    //         }
+    //     } elseif (FieldType::scaled_float == $this->type) {
+    //         $property = [
+    //             'scaling_factor' => $this->scaling_factor,
+    //         ];
+    //     } else {
+    //         if (isset($this->fields)) {
+    //             $property['fields'] = $this->fields;
+    //         }
+    //     }
 
-        if (false === $this->index) {
-            $property['index'] = false;
-        }
-        if (false === $this->enabled) {
-            $property['enabled'] = false;
-        }
-        if (!empty($this->copy_to)) {
-            $property['copy_to'] = $this->copy_to;
-        }
-        if (!empty($this->analyzer)) {
-            $property['analyzer'] = $this->analyzer;
-        }
+    //     if (false === $this->index) {
+    //         $property['index'] = false;
+    //     }
+    //     if (false === $this->enabled) {
+    //         $property['enabled'] = false;
+    //     }
+    //     if (!empty($this->copy_to)) {
+    //         $property['copy_to'] = $this->copy_to;
+    //     }
+    //     if (!empty($this->analyzer)) {
+    //         $property['analyzer'] = $this->analyzer;
+    //     }
 
-        if (!empty($this->rawProperties)) {
-            $property['properties'] = $this->rawProperties;
-        }
-
-        return $property;
-    }
+    //     return $property;
+    // }
 }

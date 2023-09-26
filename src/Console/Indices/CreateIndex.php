@@ -2,6 +2,7 @@
 
 namespace Elastico\Console\Indices;
 
+use Elastico\Eloquent\Model;
 use Illuminate\Console\Command;
 use Elastico\Eloquent\DataStream;
 
@@ -30,6 +31,7 @@ class CreateIndex extends Command
     {
         $class = $this->argument('index');
 
+        /** @var Model $model */
         $model = new $class();
 
         if ($model instanceof DataStream) {
@@ -40,9 +42,9 @@ class CreateIndex extends Command
             $model->setConnection($this->option('connection'));
         }
 
-        $config = $model::getIndexConfiguration();
+        $config = $model::getIndexConfig();
 
-        $model->getConnection()->getClient()->indices()->create($config);
+        $model->getConnection()->getClient()->indices()->create($config->toArray());
 
         return $this->info("{$class} Index Created");
     }

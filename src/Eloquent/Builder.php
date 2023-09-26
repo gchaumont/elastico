@@ -119,6 +119,7 @@ class Builder extends EloquentBuilder
         // also it's just useful to have eagerloading on findMany
         if (count($models) > 0) {
             $items = $this->eagerLoadRelations($models->all());
+            $items = $this->eagerLoadAggregations($items);
             $models->resetItems($items);
         }
 
@@ -147,11 +148,9 @@ class Builder extends EloquentBuilder
         // n+1 query issue for the developers to avoid running a lot of queries.
         if (count($models) > 0) {
             $models = $builder->eagerLoadRelations($models);
+            $models = $builder->eagerLoadAggregations($models);
         }
 
-        if (count($models) > 0 && count($this->withAggregations) > 0) {
-            $models = $this->eagerLoadAggregations($models);
-        }
 
         return $response->resetItems($models);
     }
@@ -194,9 +193,13 @@ class Builder extends EloquentBuilder
         }
 
         $values = collect($values)
-            ->map(fn ($value) => $value instanceof Model ? ['_id' => $value->getKey(), '_index' => $value->getTable(), ...$value->getAttributes()] : $value)
+            ->reject(fn ($value) => $value instanceof Model && !$value->isDirty())
+            ->map(fn ($value) => $value instanceof Model ? ['_id' => $value->getKey(), '_index' => $value->getTable(), ...$value->getDirty()] : $value)
             ->all();
 
+        if (empty($values)) {
+            return 0;
+        }
         // if (!is_array(reset($values))) {
         //     $values = collect($values)
         //     ;
@@ -285,7 +288,11 @@ class Builder extends EloquentBuilder
             return 0;
         }
         $insertValues = collect($values)
-            ->map(fn ($value) => $value instanceof Model ? ['_id' => $value->getKey(), '_index' => $value->getTable(), ...$value->getAttributes()] : $value)
+            ->map(fn ($value) => $value instanceof Model ? [
+                '_id' => $value->getKey(),
+                '_index' => $value->getTable(),
+                ...$value->getAttributes()
+            ] : $value)
             ->all();
 
         $response = $this->toBase()->insert(
@@ -294,7 +301,6 @@ class Builder extends EloquentBuilder
 
         # if values are only models 
         if (isset($values[0]) && $values[0] instanceof Model) {
-
 
             return collect($values)
                 ->each(function (Model $value, int $i) use ($response): void {

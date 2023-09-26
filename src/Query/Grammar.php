@@ -36,6 +36,7 @@ class Grammar extends BaseGrammar
             $compiled['body']['aggregations'],
             $compiled['body']['aggs'],
             $compiled['body']['select'],
+            $compiled['body']['_source'],
             $compiled['body']['size'],
             $compiled['body']['knn'],
             $compiled['body']['from'],
@@ -109,6 +110,10 @@ class Grammar extends BaseGrammar
 
         if (!empty($query->columns)) {
             $payload['body']['_source']['includes'] = $query->columns;
+        }
+
+        if (!empty($query->exclude_columns)) {
+            $payload['body']['_source']['excludes'] = $query->exclude_columns;
         }
 
         $payload['body']['aggs'] = $query->getAggregations()

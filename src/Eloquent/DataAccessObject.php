@@ -2,7 +2,7 @@
 
 namespace Elastico\Eloquent;
 
-
+use ArrayAccess;
 use Elastico\Models\Features\Mappable;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Contracts\Support\Arrayable;
@@ -15,7 +15,7 @@ use Illuminate\Contracts\Database\Eloquent\Castable as CastableContract;
 /**
  * Serialises Data Objects from and to the Database.
  */
-abstract class DataAccessObject implements CastableContract, Arrayable
+abstract class DataAccessObject implements CastableContract, Arrayable, ArrayAccess
 {
     use HasAttributes;
     use HidesAttributes;
@@ -71,6 +71,30 @@ abstract class DataAccessObject implements CastableContract, Arrayable
     {
         $this->offsetUnset($key);
     }
+
+    /**
+     * Get the value for a given offset.
+     *
+     * @param  mixed  $offset
+     * @return mixed
+     */
+    public function offsetGet($offset): mixed
+    {
+        return $this->getAttribute($offset);
+    }
+
+    /**
+     * Set the value for a given offset.
+     *
+     * @param  mixed  $offset
+     * @param  mixed  $value
+     * @return void
+     */
+    public function offsetSet($offset, $value): void
+    {
+        $this->setAttribute($offset, $value);
+    }
+
 
     /**
      * Determine if the given attribute exists.

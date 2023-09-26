@@ -17,6 +17,7 @@ use Illuminate\Support\LazyCollection;
 use Elastico\Query\Builder\HasPostFilter;
 use Elastico\Query\Builder\HasAggregations;
 use Elastic\Elasticsearch\Response\Elasticsearch;
+use Elastico\Query\Builder\ExcludesColumns;
 use Illuminate\Database\Query\Builder as BaseBuilder;
 
 /**
@@ -28,6 +29,7 @@ class Builder extends BaseBuilder
 {
     use HasAggregations;
     use HasPostFilter;
+    use ExcludesColumns;
     use HasKnn;
 
     /**
@@ -445,7 +447,6 @@ class Builder extends BaseBuilder
         );
 
         if ($response['errors'] ?? false) {
-
             throw new BulkException('Error inserting documents ' . json_encode($response->asArray()));
         }
 

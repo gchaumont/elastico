@@ -15,6 +15,9 @@ use Illuminate\Database\Eloquent\Collection as EloquentCollection;
 
 /**
  * Elastic Base Response.
+ * 
+ * @template TKey of array-key
+ * @template TModel of Model
  */
 class Collection extends EloquentCollection
 {
@@ -94,21 +97,28 @@ class Collection extends EloquentCollection
         dd($this);
     }
 
-    public function loadAggregation(string|iterable $relations, iterable|Aggregation|Closure $aggregations = []): static
-    {
+    public function loadAggregation(
+        string|iterable $relations,
+        iterable|Aggregation|Closure $aggregations = [],
+        bool $separate_queries = false
+    ): static {
         return $this->loadAggregations([
             [$relations, $aggregations]
         ]);
     }
 
-    public function loadAggregations(iterable $aggregations): static
+    public function loadAggregations(iterable $aggregations, bool $separate_queries = false): static
     {
         if ($this->isNotEmpty()) {
             if (empty($aggregations)) {
                 return $this;
             }
 
-            $query = $this->first()->newQueryWithoutRelationships()->withAggregations($aggregations)->take(0);
+            $query = $this
+                ->first()
+                ->newQueryWithoutRelationships()
+                ->withAggregations($aggregations, $separate_queries)
+                ->take(0);
 
             $this->items = $query->eagerLoadAggregations($this->items);
         }
@@ -139,11 +149,12 @@ class Collection extends EloquentCollection
 
         if (count($relations['elastic'])) {
 
-            $query = $this->first()->newQueryWithoutRelationships()->withAggregate($relations['elastic'], $column, $function)->take(0);
+            $query = $this->first()
+                ->newQueryWithoutRelationships()
+                ->withAggregate($relations['elastic'], $column, $function)
+                ->take(0);
 
             $this->items = $query->eagerLoadAggregations($this->items);
-
-            $this->items = $query->resolveAggregates($this->items);
         }
 
 

@@ -42,6 +42,52 @@ class Boolean extends Query
             $payload['boost'] = $this->boost;
         }
 
+
+
+        if (
+            empty($payload['should'])
+            && empty($payload['must'])
+            &&  empty($payload['must_not'])
+            && empty($payload['filter'])
+        ) {
+            return [];
+        }
+
+        if (
+            empty($payload['should'])
+            && empty($payload['must'])
+            &&  empty($payload['must_not'])
+            && !empty($payload['filter'])
+            && count($payload['filter']) === 1
+            && isset($payload['filter'][0]['bool'])
+        ) {
+            return $payload['filter'][0]['bool'];
+        }
+
+        if (
+            empty($payload['should'])
+            && empty($payload['must_not'])
+            && empty($payload['filter'])
+            && empty($payload['boost'])
+            && !empty($payload['must'])
+            && count($payload['must']) === 1
+            && isset($payload['must'][0]['bool'])
+        ) {
+            return $payload['must'][0]['bool'];
+        }
+
+        if (
+            empty($payload['must'])
+            && empty($payload['filter'])
+            && empty($payload['must_not'])
+            && empty($payload['boost'])
+            && !empty($payload['should'])
+            && count($payload['should']) === 1
+            && isset($payload['should'][0]['bool'])
+        ) {
+            return $payload['should'][0]['bool'];
+        }
+
         return $payload;
     }
 

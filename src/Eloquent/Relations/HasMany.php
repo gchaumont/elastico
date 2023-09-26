@@ -2,13 +2,21 @@
 
 namespace Elastico\Eloquent\Relations;
 
+use Elastico\Query\Query;
+use Illuminate\Support\Arr;
+use Elastico\Eloquent\Model;
+use Elastico\Query\MatchNone;
+use Elastico\Query\Term\Term;
+use Elastico\Query\Compound\Boolean;
 use Elastico\Eloquent\Relations\HasOne;
 use Illuminate\Database\Eloquent\Builder;
+use Elastico\Eloquent\Concerns\MatchesAttributes;
 use Illuminate\Database\Eloquent\Model as EloquentModel;
 use Illuminate\Database\Eloquent\Relations\HasMany as EloquentHasMany;
 
 class HasMany extends EloquentHasMany implements ElasticRelation
 {
+    use MatchesAttributes;
 
     public function one()
     {
@@ -51,8 +59,53 @@ class HasMany extends EloquentHasMany implements ElasticRelation
         if (static::$constraints) {
             $query = $this->getRelationQuery();
 
-            $query->where($this->foreignKey, '=', $this->getParentKey());
+            // $query->where($this->foreignKey, '=', $this->getParentKey());
+            $query->whereRaw($this->buildConstraint($this->parent));
         }
+    }
+
+    public function buildConstraint(Model $model): Query
+    {
+        $key = $model->getKey();
+
+        if (empty($key)) {
+            return new MatchNone();
+        }
+
+        $query = new Term(field: $this->foreignKey, value: $key);
+
+        if ($this->hasAttributeMatches()) {
+            $query = $this->getAttributeMatchesQuery($model)->filter($query);
+        }
+
+        return $query;
+    }
+
+    /**
+     * Set the constraints for an eager load of the relation.
+     *
+     * @param  array  $models
+     * @return void
+     */
+    public function addEagerConstraints(array $models)
+    {
+        if ($this->hasAttributeMatches()) {
+            collect($models)
+                ->each(function ($model) {
+                    $this->whereRaw($this->buildConstraint($model));
+                });
+            return;
+        }
+
+        $whereIn = $this->whereInMethod($this->parent, $this->localKey);
+
+        // TODO: use buildConstraint when necessary
+        $this->whereInEager(
+            $whereIn,
+            $this->foreignKey,
+            $this->getKeys($models, $this->localKey),
+            $this->getRelationQuery()
+        );
     }
 
     /**

@@ -44,14 +44,15 @@ class CreateDataStream extends Command
             'body' => $policy->toArray()
         ]);
 
-        $config = $model::getIndexConfiguration();
+        $config = $model::getIndexConfig()->toArray();
 
         $template = [];
         $template['body']['index_patterns'] = [$model->getTable() . '*'];
         $template['body']['data_stream'] = new \stdClass();
         $template['body']['priority'] = '300'; // higher than 200 avoid collision with builtin templates
         $template['body']['template'] = $config['body'];
-        if ($template['body']['template']['settings'] == new stdClass) {
+
+        if (($template['body']['template']['settings'] ?? null) == new stdClass) {
             unset($template['body']['template']['settings']);
         }
         $template['body']['template']['settings']['index']['lifecycle']['name'] = $policy->getName();

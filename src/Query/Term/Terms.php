@@ -18,6 +18,9 @@ class Terms extends Query
         protected string $field,
         protected array $values
     ) {
+        if (empty($values)) {
+            throw new RuntimeException('Empty Values passed to Terms Query');
+        }
     }
 
     public function getPayload(): array
