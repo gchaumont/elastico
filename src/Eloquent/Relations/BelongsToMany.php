@@ -10,7 +10,7 @@ use Elastico\Query\Compound\Boolean;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Collection;
-use Elastico\Eloquent\Concerns\MatchesAttributes;
+use Elastico\Eloquent\Relations\Concerns\MatchesAttributes;
 use Elastico\Query\MatchNone;
 use Illuminate\Database\Eloquent\Model as EloquentModel;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany as EloquentBelongsToMany;
@@ -373,7 +373,7 @@ class BelongsToMany extends EloquentBelongsToMany implements ElasticRelation
         $dictionary = [];
 
         foreach ($results as $result) {
-            $dictionary[$result->{$foreign}][] = $result;
+            $dictionary[$result->getAttribute($foreign)][] = $result;
             // foreach ($result->{$foreign} as $item) {
             // }
         }
@@ -406,6 +406,14 @@ class BelongsToMany extends EloquentBelongsToMany implements ElasticRelation
                     $relationCollection->add($dictionary[$key]);
                 }
             }
+
+
+            if ($this->hasAttributeMatches()) {
+                $relationCollection = $relationCollection->filter(function ($item) use ($model) {
+                    return $this->matchesAttributes(model: $model, related: $item);
+                });
+            }
+
             $model->setRelation($relation, $relationCollection);
         }
 

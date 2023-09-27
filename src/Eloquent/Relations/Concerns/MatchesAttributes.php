@@ -1,6 +1,6 @@
 <?php
 
-namespace Elastico\Eloquent\Concerns;
+namespace Elastico\Eloquent\Relations\Concerns;
 
 use Elastico\Query\Query;
 use Illuminate\Support\Arr;
@@ -32,6 +32,30 @@ trait MatchesAttributes
     public function hasAttributeMatches(): bool
     {
         return !empty($this->attribute_matches);
+    }
+
+    public function matchesAttributes(Model $model, Model $related): bool
+    {
+        $matches = $this->getAttributeMatches();
+
+        if ($matches->isEmpty()) {
+            return true;
+        }
+
+        return $matches->every(static function (array $match) use ($model, $related) {
+            $localKey = Arr::get($model, $match['localKey']);
+            $foreignKey = Arr::get($related, $match['foreignKey']);
+
+            if (empty($localKey) || empty($foreignKey)) {
+                return false;
+            }
+
+            if (is_array($localKey)) {
+                return in_array($foreignKey, $localKey);
+            }
+
+            return $localKey === $foreignKey;
+        });
     }
 
     public function getAttributeMatches(): BaseCollection
