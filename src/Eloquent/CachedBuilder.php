@@ -22,7 +22,7 @@ class CachedBuilder extends Builder
      */
     public function find($id, $columns = ['*'])
     {
-        $columns = $this->getColumnNames($columns);
+        $columns = $this->passColumnNamesToQuery($columns);
 
         if (is_array($id) || $id instanceof Arrayable) {
             return $this->findMany($id, $columns);
@@ -45,7 +45,7 @@ class CachedBuilder extends Builder
      */
     public function findMany($ids, $columns = ['*'])
     {
-        $columns = $this->getColumnNames($columns);
+        $columns = $this->passColumnNamesToQuery($columns);
 
         $ids = $ids instanceof Arrayable ? $ids->toArray() : $ids;
 

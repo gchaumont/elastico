@@ -80,7 +80,7 @@ class Builder extends EloquentBuilder
      */
     public function find($id, $columns = ['*'])
     {
-        $columns = $this->getColumnNames($columns);
+        $this->passColumnNamesToQuery($columns);
 
         if (is_array($id) || $id instanceof Arrayable) {
             return $this->findMany($id, $columns);
@@ -103,7 +103,7 @@ class Builder extends EloquentBuilder
      */
     public function findMany($ids, $columns = ['*'])
     {
-        $columns = $this->getColumnNames($columns);
+        $this->passColumnNamesToQuery($columns);
 
         $ids = $ids instanceof Arrayable ? $ids->toArray() : $ids;
 
@@ -137,7 +137,7 @@ class Builder extends EloquentBuilder
     {
         $builder = $this->applyScopes();
 
-        $columns = $this->getColumnNames($columns);
+        $this->passColumnNamesToQuery($columns);
 
         $response = $this->query->get($columns);
 
@@ -168,7 +168,7 @@ class Builder extends EloquentBuilder
 
     public function getModels($columns = ['*'])
     {
-        $columns = $this->getColumnNames($columns);
+        $this->passColumnNamesToQuery($columns);
 
         return $this->model->hydrate(
             $this->query->get($columns)->all()
@@ -221,7 +221,7 @@ class Builder extends EloquentBuilder
 
         $total = $this->toBase()->getCountForPagination();
 
-        $columns = $this->getColumnNames($columns);
+        $this->passColumnNamesToQuery($columns);
 
         $perPage = ($perPage instanceof \Closure
             ? $perPage($total)
@@ -337,14 +337,14 @@ class Builder extends EloquentBuilder
         );
     }
 
-    protected function getColumnNames(string|array $columns): array
+    protected function passColumnNamesToQuery(string|array $columns): void
     {
+        // return $columns;
         // return Arr::wrap($columns);
         $columns = Arr::wrap($columns);
         if (empty($columns) || count($columns) === 1 && $columns[0] === '*') {
-            return $this->getModel()->getFieldNames();
+            $this->getQuery()->setRequestedColumns($this->getModel()->getFieldNames());
         }
-        return $columns;
     }
 
 

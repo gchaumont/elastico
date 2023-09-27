@@ -18,6 +18,7 @@ use Elastico\Query\Builder\HasPostFilter;
 use Elastico\Query\Builder\HasAggregations;
 use Elastic\Elasticsearch\Response\Elasticsearch;
 use Elastico\Query\Builder\ExcludesColumns;
+use Elastico\Query\Builder\RequestsColumns;
 use Illuminate\Database\Query\Builder as BaseBuilder;
 
 /**
@@ -31,6 +32,7 @@ class Builder extends BaseBuilder
     use HasPostFilter;
     use ExcludesColumns;
     use HasKnn;
+    use RequestsColumns;
 
     /**
      * The database connection instance.

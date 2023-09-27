@@ -29,7 +29,7 @@ class Processor extends BaseProcessor
         $results = $this->resolvePromise($results);
 
         foreach ($results['hits']['hits'] ?? [] as $key => $hit) {
-            foreach ($query->columns ?? [] as $column) {
+            foreach ($query->getRequestedColumns() as $column) {
                 $results['hits']['hits'][$key]['_source'][$column] ??= null;
             }
         }
@@ -68,7 +68,7 @@ class Processor extends BaseProcessor
     {
         $results = $this->resolvePromise($results);
 
-        foreach ($query->columns ?? [] as $column) {
+        foreach ($query->getRequestedColumns() as $column) {
             $results['_source'][$column] ??= null;
         }
 
@@ -104,7 +104,7 @@ class Processor extends BaseProcessor
         $results = $this->resolvePromise($results);
 
         foreach ($results['docs'] ?? [] as $key => $hit) {
-            foreach ($query->columns ?? [] as $column) {
+            foreach ($query->getRequestedColumns() as $column) {
                 $results['docs'][$key]['_source'][$column] ??= null;
             }
         }
