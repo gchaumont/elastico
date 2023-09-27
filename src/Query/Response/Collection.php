@@ -178,17 +178,5 @@ class Collection extends EloquentCollection
                 $model->addResponse($query_key, $response);
             });
         });
-
-        // return 
-        //     ->map(function (BaseCollection $responses, string $model_id): Model {
-        //         $model = $this->get($model_id);
-
-        //         $responses->each(function (Collection $response, string $query_key) use ($model) {
-        //             $model->addResponse($query_key, $response);
-        //         });
-
-        //         return $model;
-        //     })
-        //     ->eloquent();
     }
 }

@@ -3,6 +3,7 @@
 namespace Elastico\Query;
 
 use Illuminate\Support\Traits\Conditionable;
+use stdClass;
 
 /**
  * Elastic Base Query.
@@ -17,8 +18,10 @@ abstract class Query
 
     final public function compile(): array
     {
+        $payload = $this->getPayload();
+
         return [
-            $this->type => $this->getPayload() ?: new \stdClass(), // ?: new \stdClass,
+            $this->type => $this->getPayload() ?: new \stdClass(),
         ];
     }
 

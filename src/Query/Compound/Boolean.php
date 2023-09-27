@@ -12,6 +12,13 @@ class Boolean extends Query
 {
     use HasWhere;
 
+    const FILTER_TYPES = [
+        'must',
+        'should',
+        'filter',
+        'must_not',
+    ];
+
     protected string $type = 'bool';
 
     protected array $must = [];
@@ -29,9 +36,9 @@ class Boolean extends Query
     public function getPayload(): array
     {
         $payload = [];
-        foreach (['must', 'should', 'filter', 'must_not'] as $type) {
+        foreach (static::FILTER_TYPES as $type) {
             foreach ($this->{$type} as $query) {
-                $payload[$type][] = $query->compile();
+                $payload[$type][] = $query;
             }
         }
         if (!is_null($this->minimum_should_match)) {
@@ -43,49 +50,38 @@ class Boolean extends Query
         }
 
 
+        if (count($payload) == 1) {
+            if (
+                !empty($payload['filter'][0])
+                && count($payload['filter']) === 1
+                && $payload['filter'][0] instanceof self
+            ) {
+                return $payload['filter'][0]->getPayload();
+            }
 
-        if (
-            empty($payload['should'])
-            && empty($payload['must'])
-            &&  empty($payload['must_not'])
-            && empty($payload['filter'])
-        ) {
-            return [];
+            if (
+                !empty($payload['must'][0])
+                && count($payload['must']) === 1
+                && $payload['must'][0] instanceof self
+            ) {
+                return $payload['must'][0]->getPayload();
+            }
+
+            if (
+                !empty($payload['should'][0])
+                && count($payload['should']) === 1
+                && $payload['should'][0] instanceof self
+            ) {
+                return $payload['should'][0]->getPayload();
+            }
         }
 
-        if (
-            empty($payload['should'])
-            && empty($payload['must'])
-            &&  empty($payload['must_not'])
-            && !empty($payload['filter'])
-            && count($payload['filter']) === 1
-            && isset($payload['filter'][0]['bool'])
-        ) {
-            return $payload['filter'][0]['bool'];
-        }
-
-        if (
-            empty($payload['should'])
-            && empty($payload['must_not'])
-            && empty($payload['filter'])
-            && empty($payload['boost'])
-            && !empty($payload['must'])
-            && count($payload['must']) === 1
-            && isset($payload['must'][0]['bool'])
-        ) {
-            return $payload['must'][0]['bool'];
-        }
-
-        if (
-            empty($payload['must'])
-            && empty($payload['filter'])
-            && empty($payload['must_not'])
-            && empty($payload['boost'])
-            && !empty($payload['should'])
-            && count($payload['should']) === 1
-            && isset($payload['should'][0]['bool'])
-        ) {
-            return $payload['should'][0]['bool'];
+        foreach (static::FILTER_TYPES as $type) {
+            if (!empty($payload[$type])) {
+                $payload[$type] = collect($payload[$type])
+                    ->map(fn ($query) => $query->compile())
+                    ->all();
+            }
         }
 
         return $payload;

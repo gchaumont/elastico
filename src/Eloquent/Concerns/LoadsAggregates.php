@@ -25,6 +25,7 @@ use Elastico\Eloquent\Concerns\ParsesRelationships;
 use Illuminate\Database\Eloquent\Relations\Relation;
 use Illuminate\Support\Collection as BaseCollection;
 use Elastico\Query\Response\Aggregation\AggregationResponse;
+use Elastico\Query\Term\Term;
 use Illuminate\Database\Eloquent\Builder as EloquentBuilder;
 
 /**
@@ -100,6 +101,7 @@ trait LoadsAggregates
     public function withAggregations(array $aggregations, bool $separate_queries = false): static
     {
         foreach ($aggregations as [$relations, $aggregation]) {
+            // TODO: check if the aggregation itself has a separate_queries property
             $this->withAggregation(
                 relations: $relations,
                 aggregations: $aggregation,
@@ -118,6 +120,7 @@ trait LoadsAggregates
             return $models;
         }
 
+
         $models = $this->loadAggregationsGrouped(
             models: $models,
             aggregations: $aggregations->filter(static fn (array $aggregation): bool => $aggregation['separate_queries'] === false)->all()
@@ -125,7 +128,7 @@ trait LoadsAggregates
 
         $models = $this->loadAggregationsSeparate(
             models: $models,
-            aggregations: $aggregations->filter(static fn (array $aggregation): bool => $aggregation['separate_queries'] === false)->all()
+            aggregations: $aggregations->filter(static fn (array $aggregation): bool => $aggregation['separate_queries'] === true)->all()
         );
 
         return $models;
