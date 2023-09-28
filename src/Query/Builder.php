@@ -6,19 +6,21 @@ use Elastico\Connection;
 use Elastico\Query\Grammar;
 use Illuminate\Support\Arr;
 use Elastico\Query\Processor;
+use Elastico\Scripting\Script;
+use Elastico\Scripting\Increment;
 use Elastico\Query\Builder\HasKnn;
 use Illuminate\Pagination\Paginator;
 use Elastico\Aggregations\Metric\Avg;
 use Elastico\Aggregations\Metric\Max;
 use Elastico\Aggregations\Metric\Min;
 use Elastico\Aggregations\Metric\Sum;
-use Elastico\Exceptions\BulkException;
 use Illuminate\Support\LazyCollection;
 use Elastico\Query\Builder\HasPostFilter;
-use Elastico\Query\Builder\HasAggregations;
-use Elastic\Elasticsearch\Response\Elasticsearch;
 use Elastico\Query\Builder\ExcludesColumns;
+use Elastico\Query\Builder\HasAggregations;
 use Elastico\Query\Builder\RequestsColumns;
+use Elastic\Elasticsearch\Response\Elasticsearch;
+use Elastico\Scripting\UpdateParams;
 use Illuminate\Database\Query\Builder as BaseBuilder;
 
 /**
@@ -82,6 +84,7 @@ class Builder extends BaseBuilder
     ];
 
     public $model_id;
+    public $index_id;
 
     public $collapse;
 
@@ -443,16 +446,10 @@ class Builder extends BaseBuilder
         // Finally, we will run this query against the database connection and return
         // the results. We will need to also flatten these bindings before running
         // the query so they are all in one huge, flattened array for execution.
-        $response =  $this->connection->bulk(
+        return  $this->connection->bulk(
             $this->grammar->compileInsert($this, $values),
             $this->cleanBindings(Arr::flatten($values, 1))
         );
-
-        if ($response['errors'] ?? false) {
-            throw new BulkException('Error inserting documents ' . json_encode($response->asArray()));
-        }
-
-        return $response;
     }
 
     /**
@@ -525,14 +522,22 @@ class Builder extends BaseBuilder
      *
      * @return int
      */
-    public function update(array $values)
+    public function update(array|Script $values)
     {
         $this->applyBeforeQueryCallbacks();
 
-        if (!empty($values['_id'])) {
+        // Handle Update by ID
+        if (isset($this->index_id) && isset($this->model_id)) {
             return $this->connection->update(
                 $this->grammar->compileUpdate($this, $values),
             );
+        }
+
+        // Handle Update by Query
+
+        if (is_array($values)) {
+            $values = (new UpdateParams())
+                ->withModel($values);
         }
 
         return $this->connection->updateByQuery(
@@ -556,11 +561,11 @@ class Builder extends BaseBuilder
             throw new InvalidArgumentException('Non-numeric value passed to increment method.');
         }
 
-        $wrapped = $this->grammar->wrap($column);
-
-        $columns = array_merge([$column => $this->raw("{$wrapped} + {$amount}")], $extra);
-
-        return $this->update($columns);
+        return $this->update(new Increment(
+            field: $column,
+            amount: $amount,
+            extra: $extra,
+        ));
     }
 
     /**
@@ -579,11 +584,11 @@ class Builder extends BaseBuilder
             throw new InvalidArgumentException('Non-numeric value passed to decrement method.');
         }
 
-        $wrapped = $this->grammar->wrap($column);
-
-        $columns = array_merge([$column => $this->raw("{$wrapped} - {$amount}")], $extra);
-
-        return $this->update($columns);
+        return $this->update(new Increment(
+            field: $column,
+            amount: -$amount,
+            extra: $extra,
+        ));
     }
 
     /**
@@ -615,10 +620,6 @@ class Builder extends BaseBuilder
         $response = $this->connection->bulk(
             $this->grammar->compileDeleteMany($this, $ids),
         );
-
-        if ($response['errors'] ?? false) {
-            throw new BulkException('Error inserting documents ' . json_encode($response->asArray()));
-        }
 
         return collect($response['items'])
             ->filter(fn ($item) => $item['delete']['result'] == 'deleted')
@@ -664,30 +665,15 @@ class Builder extends BaseBuilder
             }
         }
 
-        if (is_null($update)) {
-            $update = array_keys(reset($values));
-        }
+        // if (is_null($update)) {
+        //     $update = array_keys(reset($values));
+        // }
 
         $this->applyBeforeQueryCallbacks();
 
-        // $bindings = $this->cleanBindings(array_merge(
-        //     Arr::flatten($values, 1),
-        //     collect($update)->reject(function ($value, $key) {
-        //         return is_int($key);
-        //     })->all()
-        // ));
-
-        $response = $this->connection->bulk(
-            $this->grammar->compileUpsert($this, $values, (array) $uniqueBy, $update),
-            []
+        return $this->connection->bulk(
+            $this->grammar->compileUpsert($this, $values, (array) $uniqueBy, $update)
         );
-
-        if ($response['errors'] ?? false) {
-
-            throw new BulkException('Error inserting documents ' . json_encode($response->asArray()));
-        }
-
-        return $response;
     }
 
     /**

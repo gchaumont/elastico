@@ -7,6 +7,7 @@ use Elastic\Elasticsearch\ClientBuilder;
 use Elastic\Elasticsearch\Response\Elasticsearch;
 use Elastico\Eloquent\Model;
 use Elastico\Exceptions\BulkException;
+use Elastico\Exceptions\IndexNotFoundException;
 use Elastico\Query\Builder;
 use Elastico\Query\Response\Collection;
 use Exception;
@@ -156,13 +157,13 @@ class Connection extends BaseConnection implements ConnectionInterface
         ];
 
         return $this->run($query, [], function ($query, $bindings) {
-            return $this->performQuery($query['method'], $query['payload']);
+            $response = $this->performQuery($query['method'], $query['payload']);
 
-            if ($r['errors'] ?? false) {
-                throw new BulkException(mb_substr(json_encode($r->asArray()), 0, 500));
+            if ($response['errors'] ?? false) {
+                throw new BulkException(json_encode($response->asArray()));
             }
 
-            // return $r;
+            return $response;
         });
     }
 
@@ -637,6 +638,15 @@ class Connection extends BaseConnection implements ConnectionInterface
         // message to include the bindings with SQL, which will make this exception a
         // lot more helpful to the developer instead of just the database's errors.
         catch (\Exception $e) {
+            if (str_contains($e->getMessage(), 'index_not_found_exception')) {
+                if (preg_match('/no such index \[(.*?)\]/', $e->getMessage(), $matches)) {
+                    $index_name = $matches[1];
+                } else {
+                    $index_name = 'unknown';
+                }
+
+                throw new IndexNotFoundException(index: $index_name);
+            }
             if (str_starts_with($e->getMessage(), '404 Not Found')) {
 
                 throw new ModelNotFoundException();

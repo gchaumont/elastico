@@ -5,10 +5,12 @@ namespace Elastico\Eloquent;
 use Elastico\Connection;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Str;
+use Elastico\Scripting\Script;
 use Elastico\Query\Response\Collection;
 use Elastico\Eloquent\Concerns\HasIndexConfig;
 use Elastico\Eloquent\Concerns\HasAggregations;
 use Elastico\Eloquent\Concerns\HybridRelations;
+use Elastico\Eloquent\Concerns\PerformsScriptUpdates;
 use Illuminate\Contracts\Database\Eloquent\Castable;
 use Illuminate\Database\Eloquent\Model as BaseModel;
 use Illuminate\Database\Eloquent\Relations\Relation;
@@ -24,6 +26,7 @@ abstract class Model extends BaseModel implements Castable
     use HasIndexConfig;
     use HybridRelations;
     use HasAggregations;
+    use PerformsScriptUpdates;
     // use EmbedsRelations;
 
     public $incrementing = false;
@@ -88,12 +91,13 @@ abstract class Model extends BaseModel implements Castable
         $hit = $attributes;
 
         $attributes = $hit['_source'];
-        $attributes['_id'] = $hit['_id'];
-        $attributes['_index'] = $hit['_index'];
 
         $new = parent::newFromBuilder($attributes, $connection);
 
         $new->_score = $hit['_score'] ?? null;
+        $new->setAttribute($new->getKeyName(), $hit['_id']);
+        $new->setAttribute('_id',  $hit['_id']);
+        $new->setAttribute('_index',  $hit['_index']);
 
         return $new;
     }
@@ -230,7 +234,7 @@ abstract class Model extends BaseModel implements Castable
     {
         $attributes = $this->getAttributes();
         $attributes['_id'] = $this->getKey();
-        $attributes['_index'] = $this->getTable();
+        $attributes['_index'] ??= $this->getTable();
 
         return $attributes;
     }
@@ -266,6 +270,7 @@ abstract class Model extends BaseModel implements Castable
     protected function setKeysForSaveQuery($query)
     {
         $query->getQuery()->model_id = $this->getKeyForSaveQuery();
+        $query->getQuery()->index_id  = $this->_index ?? $this->getTable();
         // $query->where($this->getKeyName(), '=', $this->getKeyForSaveQuery());
 
         return $query;
@@ -281,50 +286,23 @@ abstract class Model extends BaseModel implements Castable
         return (new static)->newQuery();
     }
 
-    /**
-     * Perform a model update operation.
-     *
-     * @return bool
-     */
-    protected function performUpdate(EloquentBuilder $query)
+    public function update(array|Script $attributes = [], array $options = [])
     {
-        // If the updating event returns false, we will cancel the update operation so
-        // developers can hook Validation systems into their models and cancel this
-        // operation if the model does not pass validation. Otherwise, we update.
-        if (false === $this->fireModelEvent('updating')) {
+        if (!$this->exists) {
             return false;
         }
 
-        // First we need to create a fresh query instance and touch the creation and
-        // update timestamp on the model which are maintained by us for developer
-        // convenience. Then we will just continue saving the model instances.
-        if ($this->usesTimestamps()) {
-            $this->updateTimestamps();
+        if ($attributes instanceof Script) {
+            $query = $this->newModelQuery();
+            $this->setKeysForSaveQuery($query);
+
+            return $this->performScriptedUpdate($query, $attributes);
         }
 
-        // Once we have run the update operation, we will fire the "updated" event for
-        // this model instance. This will allow developers to hook into these after
-        // models are updated, giving them a chance to do any special processing.
-        $dirty = $this->getDirty();
-
-        if (count($dirty) > 0) {
-            $dirty = array_merge(
-                [
-                    '_id' => $this->getKey(),
-                    '_index' => $this->getTable(),
-                ],
-                $dirty,
-            );
-
-            $query->update($dirty);
-
-            $this->syncChanges();
-
-            $this->fireModelEvent('updated', false);
-        }
-
-        return true;
+        return $this->fill($attributes)->save($options);
     }
+
+
 
 
     /**

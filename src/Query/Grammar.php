@@ -2,20 +2,22 @@
 
 namespace Elastico\Query;
 
+use Enum;
+use stdClass;
+use BackedEnum;
+use Illuminate\Support\Arr;
+use Elastico\Query\Term\Term;
+use Elastico\Query\Term\Range;
+use Elastico\Query\Term\Terms;
+use Elastico\Scripting\Script;
+use Elastico\Query\Term\Exists;
+use Elastico\Query\Term\Prefix;
+use Elastico\Query\Term\Wildcard;
 use Elastico\Query\Compound\Boolean;
 use Elastico\Query\Compound\FunctionScore;
 use Elastico\Query\Specialized\RankFeature;
-use Elastico\Query\Term\Exists;
-use Elastico\Query\Term\Prefix;
-use Elastico\Query\Term\Range;
-use Elastico\Query\Term\Term;
-use Elastico\Query\Term\Terms;
-use Elastico\Query\Term\Wildcard;
 use Illuminate\Database\Query\Builder as BaseBuilder;
 use Illuminate\Database\Query\Grammars\Grammar as BaseGrammar;
-use Illuminate\Support\Arr;
-use Enum;
-use BackedEnum;
 /*
  *  Elasticsearch Query Builder
  *  Extension of Larvel Database Query Builder.
@@ -56,19 +58,13 @@ class Grammar extends BaseGrammar
     {
         return [
             'body' => collect($ids)
-                ->flatMap(fn ($val) => [
+                ->flatMap(static fn ($val): array => [
                     [
                         'delete' => [
                             '_id' => $val,
                             '_index' => $query->from,
                         ],
                     ],
-                    // [
-                    //     // 'update' => [
-                    //     // 'doc' => $val,
-                    //     // 'doc_as_upsert' => true,
-                    //     // ],
-                    // ],
                 ])
                 ->all(),
         ];
@@ -200,40 +196,33 @@ class Grammar extends BaseGrammar
      *
      * @return string
      */
-    public function compileUpdate(BaseBuilder $query, array $values)
+    public function compileUpdate(BaseBuilder $query, array|Script $values)
     {
-        $index = $values['_index'] ?? $query->from;
-
-        $id = $values['_id'] ?? $query->model_id ?? throw new \Exception('No ID found for update statement');
-        unset($values['_index'], $values['_id']);
-
         return [
-            'index' => $index,
-            'id' => $id,
+            'index' => $query->index_id,
+            'id' => $query->model_id,
             // 'refresh' => $refresh,
-            'body' => array_filter([
-                'doc_as_upsert' => true,
-                'doc' => $values,
-                // '_source' => $source,
-            ]),
+            'body' => match (true) {
+                $values instanceof Script => array_filter([
+                    'script' => $values->compile(),
+                    '_source' => $query->columns,
+                ]),
+                is_array($values) => array_filter([
+                    'doc_as_upsert' => true,
+                    'doc' => Arr::except($values, ['_id', '_index']),
+                    // '_source' => $query->columns
+                ]),
+            }
         ];
     }
 
-    public function compileUpdateByQuery(BaseBuilder $query, array $values)
+    public function compileUpdateByQuery(BaseBuilder $query, Script $script)
     {
-        $index = $values['_index'] ?? $query->from;
-
-        unset($values['_index']);
-
         return [
-            'index' => $index,
+            'index' => $query->from,
             'body' => array_filter([
                 // 'max_docs' => 10000,
-                'script' => [
-                    'source' => $this->buildPainlessScriptSource('', $values),
-                    'lang' => 'painless',
-                    'params' => $values,
-                ],
+                'script' => $script->compile(),
                 'query' => $this->compileWhereComponents($query)->compile(),
             ]),
         ];
@@ -249,17 +238,25 @@ class Grammar extends BaseGrammar
         // Essentially we will force every insert to be treated as a batch insert which
         // simply makes creating the SQL easier for us since we can utilize the same
         // basic routine regardless of an amount of records given to us to insert.
+
         return [
             'body' => collect($values)
-                ->flatMap(static fn (array $doc): array => [
-                    [
-                        !empty($doc['_id']) ? 'index' : 'create' => array_filter([
-                            '_id' => Arr::pull($doc, '_id'),
-                            '_index' => Arr::pull($doc, '_index'),
-                        ]),
-                    ],
-                    $doc,
-                ])
+                ->flatMap(static function (array $doc): array {
+                    $index = Arr::pull($doc, '_index');
+                    $id = Arr::pull($doc, '_id');
+
+                    $method = empty($id) ? 'create' : 'index';
+
+                    return [
+                        [
+                            $method => array_filter([
+                                '_id' => $id,
+                                '_index' => $index,
+                            ]),
+                        ],
+                        $doc,
+                    ];
+                })
                 ->all(),
         ];
     }
@@ -466,40 +463,40 @@ class Grammar extends BaseGrammar
         return $bool;
     }
 
-    public function compileUpsert(BaseBuilder $query, array $values, array $uniqueBy, array $update)
+    public function compileUpsert(BaseBuilder $query, array $values, array $uniqueBy, array|null $update)
     {
+
         return [
             'body' => collect($values)
-                ->flatMap(fn ($val) => [
-                    [
+                ->flatMap(static function (array $val, int $i) use ($update): array {
+                    $id = Arr::pull($val, '_id');
+                    if (empty($id)) {
+                        throw new \Exception('All upserts must have an _id');
+                    }
+
+                    $header = [
                         'update' => [
-                            '_id' => Arr::pull($val, '_id'),
+                            '_id' => $id,
                             '_index' => Arr::pull($val, '_index'),
                         ],
-                    ],
-                    [
-                        // 'update' => [
-                        'doc' => $val,
-                        'doc_as_upsert' => true,
-                        // ],
-                    ],
-                ])
+                    ];
+
+                    $body = match (true) {
+                        empty($update) => [
+                            'doc' => empty($val) ? new stdClass() : $val,
+                            'doc_as_upsert' => true,
+                        ],
+                        $update[$i] instanceof Script => [
+                            'scripted_upsert' => true,
+                            'script' => $update[$i]->compile(),
+                            'upsert' => $val,
+                        ],
+                        default => throw new \Exception('TODO'),
+                    };
+
+                    return [$header, $body];
+                })
                 ->all(),
         ];
-    }
-
-    private function buildPainlessScriptSource(string $prefix, array $fields): string
-    {
-        $source = '';
-
-        foreach ($fields as $field => $value) {
-            if (is_array($value)) {
-                $source .= $this->buildPainlessScriptSource($prefix . $field . '.', $value);
-            } else {
-                $source .= 'ctx._source.' . $prefix . $field . ' = params.' . $prefix . $field . ";\n";
-            }
-        }
-
-        return $source;
     }
 }

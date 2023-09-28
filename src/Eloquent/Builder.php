@@ -3,20 +3,24 @@
 namespace Elastico\Eloquent;
 
 use Illuminate\Support\Arr;
+use Elastico\Scripting\Script;
+use Elastico\Scripting\UpdateParams;
 use Illuminate\Pagination\Paginator;
+use Illuminate\Support\LazyCollection;
+use Elastico\Query\Response\Collection;
+use Elastico\Aggregations\Bucket\Filter;
 use Elastico\Query\Builder as BaseBuilder;
 use Illuminate\Contracts\Support\Arrayable;
 use Elastico\Eloquent\Concerns\LoadsAggregates;
 use Elastico\Eloquent\Concerns\QueriesRelationships;
-use Elastico\Query\Response\Collection;
 use Illuminate\Database\Eloquent\Builder as EloquentBuilder;
-use Illuminate\Support\LazyCollection;
 
 /**
  *  Elasticsearch Query Builder
  *  Extension of Larvel Database Eloquent Builder.
  * 
  * @mixin \Elastico\Query\Builder
+ * @method static \Elastico\Eloquent\Builder where()
  */
 class Builder extends EloquentBuilder
 {
@@ -68,6 +72,16 @@ class Builder extends EloquentBuilder
     public function __construct(BaseBuilder $query)
     {
         $this->query = $query;
+    }
+
+    /**
+     * Get a base query builder instance.
+     *
+     * @return \Elastico\Query\Builder
+     */
+    public function toBase()
+    {
+        return parent::toBase();
     }
 
     /**
@@ -176,10 +190,25 @@ class Builder extends EloquentBuilder
     }
 
     /**
+     * Update records in the database.
+     *
+     * @param  array  $values
+     * @return int
+     */
+    public function update(array|Script $values)
+    {
+        if ($values instanceof Script) {
+            return $this->toBase()->update($values);
+        }
+
+        return $this->toBase()->update($this->addUpdatedAtColumn($values));
+    }
+
+    /**
      * Insert new records or update the existing ones.
      *
      * @param array|string $uniqueBy
-     * @param null|array   $update
+     * @param null|array|Script   $update
      *
      * @return int
      */
@@ -188,30 +217,55 @@ class Builder extends EloquentBuilder
         if (empty($values)) {
             return 0;
         }
+
         if ('_id' !== $uniqueBy) {
             throw new \InvalidArgumentException('Elastic only supports upserts by _id');
         }
 
         $values = collect($values)
-            ->reject(fn ($value) => $value instanceof Model && !$value->isDirty())
-            ->map(fn ($value) => $value instanceof Model ? ['_id' => $value->getKey(), '_index' => $value->getTable(), ...$value->getDirty()] : $value)
+            ->map(fn (array|Model $value): array => match (true) {
+                $value instanceof Model => [
+                    '_id' => $value->getKey(),
+                    '_index' => $value->getTable(),
+                    ...$value->getDirty()
+                ],
+                is_array($value) => [
+                    '_id' => Arr::get($value, $this->model->getKeyName()),
+                    '_index' => $this->model->getTable(),
+                    ...$value
+                ],
+            })
+            ->values()
             ->all();
 
         if (empty($values)) {
             return 0;
         }
-        // if (!is_array(reset($values))) {
-        //     $values = collect($values)
-        //     ;
-        // }
+
         if (is_null($update)) {
-            $update = array_keys(reset($values));
+            // $update = array_keys(reset($values));
+        } elseif ($update instanceof Script) {
+            $update = collect($values)
+                ->map(static fn (array|Model $value) => clone $update->withModel($value))
+                ->values()
+                ->all();
+        } elseif (is_array($update) && is_string(reset($update))) {
+            $update = collect($values)
+                ->map(static fn (array|Model $value) => (new UpdateParams(params: $update))->withModel($value))
+                ->values()
+                ->dd()
+                ->all();
+        } else {
+            $update = collect($update)->values()->all();
         }
+
+
 
         return $this->toBase()->upsert(
             $this->addTimestampsToUpsertValues($values),
             $uniqueBy,
-            $this->addUpdatedAtToUpsertColumns($update)
+            $update
+            // $this->addUpdatedAtToUpsertColumns($update)
         );
     }
 
@@ -287,12 +341,24 @@ class Builder extends EloquentBuilder
         if (empty($values)) {
             return 0;
         }
+
+        if (!is_array(reset($values)) && !is_object(reset($values))) {
+            $values = [$values];
+        }
+
         $insertValues = collect($values)
-            ->map(fn ($value) => $value instanceof Model ? [
-                '_id' => $value->getKey(),
-                '_index' => $value->getTable(),
-                ...$value->getAttributes()
-            ] : $value)
+            ->map(fn (array|Model $value): array => match (true) {
+                $value instanceof Model => [
+                    '_id' => $value->getKey(),
+                    '_index' => $value->getTable(),
+                    ...$value->getDirty()
+                ],
+                is_array($value) => [
+                    '_id' => Arr::get($value, $this->model->getKeyName()),
+                    '_index' => $this->model->getTable(),
+                    ...$value
+                ],
+            })
             ->all();
 
         $response = $this->toBase()->insert(
@@ -306,8 +372,9 @@ class Builder extends EloquentBuilder
                 ->each(function (Model $value, int $i) use ($response): void {
                     $value->exists = true;
                     $value->setAttribute($value->getKeyName(), $response['items'][$i]['create']['_id']);
-                    $value->_id = $response['items'][$i]['create']['_id'];
-                    $value->_index = $response['items'][$i]['create']['_index'];
+                    $value->setAttribute('_id', $response['items'][$i]['create']['_id']);
+                    $value->setAttribute('_index', $response['items'][$i]['create']['_index']);
+                    // $value->setTable($response['items'][$i]['create']['_index']);
                 })
                 ->pipe(fn ($values) => $values->first()->newCollection($values->all()));
         }
