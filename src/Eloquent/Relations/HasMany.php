@@ -93,13 +93,24 @@ class HasMany extends EloquentHasMany implements ElasticRelation
     public function addEagerConstraints(array $models)
     {
         if ($this->hasAttributeMatches()) {
-            collect($models)
-                ->each(function ($model) {
-                    $this->whereRaw($this->buildConstraint($model));
+            $hasConstraints = (bool) false;
+
+            $this->where(function ($builder) use ($models, &$hasConstraints) {
+                collect($models)->each(function ($model) use ($builder, &$hasConstraints) {
+                    $constraints = $this->buildConstraint($model);
+                    if ($constraints) {
+                        $hasConstraints = true;
+                        $builder->orWhereRaw($constraints);
+                    }
                 });
+            });
+
+
+            if (!$hasConstraints) {
+                $this->eagerKeysWereEmpty = true;
+            }
             return;
         }
-
         $whereIn = $this->whereInMethod($this->parent, $this->localKey);
 
         // TODO: use buildConstraint when necessary

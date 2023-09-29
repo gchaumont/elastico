@@ -61,6 +61,8 @@ class BelongsToMany extends EloquentBelongsToMany implements ElasticRelation
             $query = $this->getAttributeMatchesQuery($parent)->filter($query);
         }
 
+
+
         return $query;
     }
 
@@ -75,13 +77,16 @@ class BelongsToMany extends EloquentBelongsToMany implements ElasticRelation
     {
         if ($this->hasAttributeMatches()) {
             $hasConstraints = false;
-            $this->where(fn ($builder) => collect($models)->each(function ($model) use ($builder, &$hasConstraints) {
-                $constraints = $this->buildConstraint($model);
-                if ($constraints) {
-                    $hasConstraints = true;
-                    $builder->orWhereRaw($constraints);
-                }
-            }));
+
+            $this->where(function ($builder) use ($models, &$hasConstraints) {
+                collect($models)->each(function ($model) use ($builder, &$hasConstraints) {
+                    $constraints = $this->buildConstraint($model);
+                    if ($constraints) {
+                        $hasConstraints = true;
+                        $builder->orWhereRaw($constraints);
+                    }
+                });
+            });
 
             if (!$hasConstraints) {
                 $this->eagerKeysWereEmpty = true;
@@ -403,7 +408,7 @@ class BelongsToMany extends EloquentBelongsToMany implements ElasticRelation
                 $key = $this->getDictionaryKey($key);
 
                 if (isset($dictionary[$key])) {
-                    $relationCollection->add($dictionary[$key]);
+                    $relationCollection->push(...$dictionary[$key]);
                 }
             }
 
