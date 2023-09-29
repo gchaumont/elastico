@@ -15,9 +15,6 @@ class UpdateIndex extends Command
      */
     protected $signature = 'elastic:index:update {index} {--connection= : Elasticsearch connection}';
 
-    protected ElasticsearchClient $client;
-
-    protected Filesystem $files;
 
     /**
      * The console command description.
@@ -35,14 +32,22 @@ class UpdateIndex extends Command
     {
         $class = $this->argument('index');
 
-        $config = $class::getIndexConfiguration();
-
+        /** @var Model $model */
         $model = new $class();
+
+        if ($model instanceof DataStream) {
+            return $this->call('elastic:datastream:update',  [
+                'index' => $model::class,
+                '--connection' => $this->option('connection'),
+                '--fresh' => $this->option('fresh'),
+            ]);
+        }
 
         if ($this->option('connection')) {
             $model->setConnection($this->option('connection'));
         }
-        // dd($config['body']['mappings']);
+
+        $config = $model::getIndexConfig();
 
         // $model->getConnection()->getClient()->indices()->putSettings([
         //     'index' => $config['index'],
@@ -54,6 +59,6 @@ class UpdateIndex extends Command
             'body' => $config['body']['mappings'],
         ]);
 
-        $this->info("{$class} Index Updated");
+        return $this->info("{$class} Index Updated");
     }
 }
