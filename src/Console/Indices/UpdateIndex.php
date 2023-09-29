@@ -47,7 +47,7 @@ class UpdateIndex extends Command
             $model->setConnection($this->option('connection'));
         }
 
-        $config = $model::getIndexConfig();
+        $config = $model::getIndexConfig()->toArray();
 
         // $model->getConnection()->getClient()->indices()->putSettings([
         //     'index' => $config['index'],
