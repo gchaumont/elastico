@@ -67,7 +67,7 @@ class HasMany extends EloquentHasMany implements ElasticRelation
         }
     }
 
-    public function buildConstraint(Model $model): Query
+    public function buildConstraint(EloquentModel $model): Query
     {
         $key = $model->getAttribute($this->localKey);
 

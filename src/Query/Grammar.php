@@ -4,6 +4,7 @@ namespace Elastico\Query;
 
 use Enum;
 use stdClass;
+use Exception;
 use BackedEnum;
 use Illuminate\Support\Arr;
 use Elastico\Query\Term\Term;
@@ -497,6 +498,62 @@ class Grammar extends BaseGrammar
                     return [$header, $body];
                 })
                 ->all(),
+        ];
+    }
+
+
+    public function compileBulkOperation(
+        BaseBuilder $query,
+        iterable $models,
+        string $operation,
+        null|array $scripts = null,
+        bool $doc_as_upsert = false,
+        bool $scripted_upsert = false
+    ): array {
+        if (!in_array($operation, ['create', 'index', 'update', 'delete'])) {
+            throw new Exception("Invalid Elastic operation [$operation]");
+        }
+        if ($scripts) {
+            if (($operation !== 'update')) {
+                throw new Exception('Script can only be used with update operation');
+            }
+            if (count($scripts) !== count($models)) {
+                throw new Exception('There must be a script for each model');
+            }
+        }
+
+
+        return [
+            'body' => collect($models)
+                ->flatMap(static function (object $model, $i) use ($query, $operation, $scripts, $doc_as_upsert, $scripted_upsert): array {
+                    $id = is_string($model) ? $model : $model['_id'];
+
+                    $document = Arr::except($model, ['_id', '_index']) ?: new stdClass();
+
+                    $header = [
+                        $operation => [
+                            '_id' => $id,
+                            '_index' => $model['_index'] ?? $query->from,
+                        ],
+                    ];
+                    if ($operation === 'delete') {
+                        return [$header];
+                    }
+
+                    if (!empty($scripts)) {
+                        return [$header, [
+                            'scripted_upsert' => $scripted_upsert,
+                            'script' => $scripts[$i]->compile(),
+                            'upsert' => $document,
+                        ]];
+                    }
+
+                    return [$header, [
+                        'doc_as_upsert' => $doc_as_upsert,
+                        'doc' => $document,
+                    ]];
+                })
+                ->all()
         ];
     }
 }

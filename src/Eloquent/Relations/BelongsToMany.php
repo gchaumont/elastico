@@ -47,7 +47,7 @@ class BelongsToMany extends EloquentBelongsToMany implements ElasticRelation
         }
     }
 
-    public function buildConstraint(Model $parent): Query
+    public function buildConstraint(EloquentModel $parent): Query
     {
         $keys = Arr::get($parent, $this->parentKey);
 

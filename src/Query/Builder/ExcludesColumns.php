@@ -2,14 +2,7 @@
 
 namespace Elastico\Query\Builder;
 
-use Elastico\Eloquent\Model;
-use Elastico\Query\Compound\Boolean;
-use Elastico\Query\Query;
-use Elastico\Query\Term\Range;
-use Elastico\Query\Term\Term;
-use Elastico\Query\Term\Terms;
 use Illuminate\Support\Arr;
-use Illuminate\Support\Collection;
 
 trait ExcludesColumns
 {
