@@ -14,7 +14,10 @@ class DeleteIndex extends Command
      *
      * @var string
      */
-    protected $signature = 'elastic:index:delete {index} {--raw}';
+    protected $signature = 'elastic:index:delete {index : The index class or name} 
+                                {--connection= : Elasticsearch connection}
+                                {--force : Skip confirmation}
+                                ';
 
     protected ElasticsearchClient $client;
 
@@ -32,25 +35,29 @@ class DeleteIndex extends Command
      */
     public function handle()
     {
-        if (!$this->option('raw')) {
-            $class = $this->argument('index');
+        $class = $this->argument('index');
+
+        if (class_exists($class)) {
             $indexName = (new $class())->getTable();
+
+            if ((new $class) instanceof DataStream) {
+                return $this->call('elastic:datastream:delete',  [
+                    'index' => $class,
+                    '--connection' => $this->option('connection'),
+                    '--force' => $this->option('force'),
+                ]);
+            }
         } else {
             $indexName = $this->argument('index');
         }
 
-        if ((new $class) instanceof DataStream) {
-            return $this->call('elastic:datastream:delete',  ['index' => $class]);
-        }
+        if ($this->option('force') || $this->confirm('Are you sure you want to delete this index?')) {
 
-        if (empty($indexName)) {
-            return;
-        }
-
-        try {
-            $r = (new $class())->getConnection()->getClient()->indices()->delete(['index' => $indexName]);
-        } catch (IndexNotFoundException) {
-            dump('Index not found');
+            try {
+                $r = (new $class())->getConnection()->getClient()->indices()->delete(['index' => $indexName]);
+            } catch (IndexNotFoundException) {
+                $this->error('Index not found');
+            }
         }
     }
 }

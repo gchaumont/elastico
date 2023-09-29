@@ -13,7 +13,10 @@ class DeleteDataStream extends Command
      *
      * @var string
      */
-    protected $signature = 'elastic:datastream:delete {index}';
+    protected $signature = 'elastic:datastream:delete {index}
+                                {--connection= : Elasticsearch connection}
+                                {--force : Skip confirmation}
+        ';
 
     /**
      * The console command description.
@@ -37,11 +40,13 @@ class DeleteDataStream extends Command
             return $this->error("{$class} is not a DataStream");
         }
 
+        if ($this->option('force') || $this->confirm('Are you sure you want to delete this DataStream?')) {
 
-        $model->getConnection()->getClient()->indices()->deleteDataStream([
-            'name' => $model->getTable()
-        ]);
+            $model->getConnection()->getClient()->indices()->deleteDataStream([
+                'name' => $model->getTable()
+            ]);
 
-        return $this->info("{$class} DataStream Created");
+            return $this->info("{$class} DataStream Created");
+        }
     }
 }

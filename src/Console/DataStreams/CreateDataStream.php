@@ -13,7 +13,10 @@ class CreateDataStream extends Command
      *
      * @var string
      */
-    protected $signature = 'elastic:datastream:create {index}';
+    protected $signature = 'elastic:datastream:create {index}
+                                {--connection= : Elasticsearch connection}
+                                {--fresh= : Delete index if it exists}
+                                ';
 
     /**
      * The console command description.
@@ -36,6 +39,15 @@ class CreateDataStream extends Command
         if (!$model instanceof DataStream) {
             return $this->error("{$class} is not a DataStream");
         }
+
+        if ($this->option('fresh')) {
+            $this->call('elastic:datastream:delete',  [
+                'index' => $model::class,
+                '--connection' => $this->option('connection'),
+                '--force' => true,
+            ]);
+        }
+
 
         $policy = $model->getILMPolicy();
 
