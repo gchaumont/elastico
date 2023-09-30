@@ -48,7 +48,10 @@ class CreateIndex extends Command
         }
 
         if ($this->option('fresh')) {
-            $this->call('elastic:index:delete',  ['index' => $model::class]);
+            $this->call('elastic:index:delete',  [
+                'index' => $model::class,
+                '--force' => true,
+            ]);
         }
 
         if ($this->option('connection')) {

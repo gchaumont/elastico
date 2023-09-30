@@ -6,6 +6,7 @@ use Illuminate\Console\Command;
 use Elastico\Eloquent\DataStream;
 use Elastico\Exceptions\IndexNotFoundException;
 use App\Support\Elasticsearch\Client\ElasticsearchClient;
+use Elastic\Elasticsearch\Exception\ClientResponseException;
 
 class DeleteIndex extends Command
 {
@@ -57,6 +58,13 @@ class DeleteIndex extends Command
                 $r = (new $class())->getConnection()->getClient()->indices()->delete(['index' => $indexName]);
             } catch (IndexNotFoundException) {
                 $this->error('Index not found');
+            } catch (ClientResponseException $e) {
+                if (str_contains($e->getMessage(), 'index_not_found_exception')) {
+                    $this->error('Index not found');
+                } else {
+
+                    throw $e;
+                }
             }
         }
     }

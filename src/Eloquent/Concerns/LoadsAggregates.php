@@ -7,6 +7,7 @@ use Illuminate\Support\Arr;
 use Illuminate\Support\Str;
 use Elastico\Eloquent\Model;
 use Elastico\Query\MatchAll;
+use Elastico\Query\Term\Term;
 use InvalidArgumentException;
 use Elastico\Eloquent\Builder;
 use Illuminate\Support\Facades\DB;
@@ -24,8 +25,8 @@ use Elastico\Eloquent\Relations\ElasticRelation;
 use Elastico\Eloquent\Concerns\ParsesRelationships;
 use Illuminate\Database\Eloquent\Relations\Relation;
 use Illuminate\Support\Collection as BaseCollection;
+use Illuminate\Support\Collection as SupportCollection;
 use Elastico\Query\Response\Aggregation\AggregationResponse;
-use Elastico\Query\Term\Term;
 use Illuminate\Database\Eloquent\Builder as EloquentBuilder;
 
 /**
@@ -166,7 +167,7 @@ trait LoadsAggregates
 
                         foreach ($models as $model) {
                             $relation->addAggregation('model:' . $model->getKey(), (new Filter(filter: $relation->buildConstraint($model)))
-                                ->addAggregations($aggregation['aggregations']));
+                                ->addAggregations(static::makeAggregationsForModel($aggregation['aggregations'], $model)));
                         }
 
 
@@ -224,8 +225,8 @@ trait LoadsAggregates
         $responses = $items
             ->getBulk(static function (Model $item) use ($aggregations): BaseCollection {
                 return collect($aggregations)
-                    ->map(static function (array $aggregation, string $aggregation_key) use ($item): BaseCollection {
-                        ['relations' => $relations, 'aggregations' => $aggregation] = $aggregation;
+                    ->map(static function (array $aggregations, string $aggregation_key) use ($item): BaseCollection {
+                        ['relations' => $relations, 'aggregations' => $aggregations] = $aggregations;
 
                         return $item
                             ->newQueryWithoutRelationships()
@@ -233,17 +234,8 @@ trait LoadsAggregates
                             ->keyBy(static fn ($relation, string $relation_key): string => Str::after($relation_key, ' as '))
                             ->keyBy(static fn ($relation, string $relation_key): string  => implode(static::AGGREGATION_SEPARATOR, [$relation_key, $aggregation_key]))
                             ->map(static fn (Closure $relation): Builder|Relation  => $relation($item))
-                            ->each(static function (Relation|Builder $relation) use ($aggregation, $item): void {
-                                collect(is_iterable($aggregation) ? $aggregation : [$aggregation])
-                                    ->each(function (Aggregation|Closure $aggregation, string $name)   use ($item, $relation): void {
-                                        if ($aggregation instanceof Aggregation) {
-                                            $relation->take(0)->addAggregation($name, $aggregation);
-                                        } else if ($aggregation instanceof Closure) {
-                                            $aggregation($relation, $item);
-                                        } else {
-                                            throw new InvalidArgumentException('Invalid aggregation: ' . $aggregation);
-                                        }
-                                    });
+                            ->each(static function (Relation|Builder $relation) use ($aggregations, $item): void {
+                                $relation->take(0)->addAggregations(static::makeAggregationsForModel($aggregations, $item));
                             });
                     })
                     ->collapse();
@@ -312,6 +304,19 @@ trait LoadsAggregates
                 ;
             })
             ->all();
+    }
+
+
+
+    protected static function makeAggregationsForModel(array|Closure $aggregations, Model $model): SupportCollection
+    {
+
+        if ($aggregations instanceof Closure) {
+            $aggregations = $aggregations($model);
+        }
+
+        return collect($aggregations)
+            ->map(static fn (Aggregation|Closure $aggregation, string $name): Aggregation => $aggregation instanceof Closure ? $aggregation($model) : $aggregation);
     }
 
 

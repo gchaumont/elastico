@@ -2,9 +2,11 @@
 
 namespace Elastico\Console\DataStreams;
 
-use Elastico\Eloquent\DataStream;
-use Illuminate\Console\Command;
 use stdClass;
+use Illuminate\Console\Command;
+use Elastico\Eloquent\DataStream;
+use Elastico\Exceptions\IndexNotFoundException;
+use Elastic\Elasticsearch\Exception\ClientResponseException;
 
 class DeleteDataStream extends Command
 {
@@ -42,11 +44,23 @@ class DeleteDataStream extends Command
 
         if ($this->option('force') || $this->confirm('Are you sure you want to delete this DataStream?')) {
 
-            $model->getConnection()->getClient()->indices()->deleteDataStream([
-                'name' => $model->getTable()
-            ]);
+            try {
 
-            return $this->info("{$class} DataStream Created");
+                $model->getConnection()->getClient()->indices()->deleteDataStream([
+                    'name' => $model->getTable()
+                ]);
+            } catch (IndexNotFoundException) {
+                $this->error('Index not found');
+            } catch (ClientResponseException $e) {
+                if (str_contains($e->getMessage(), 'index_not_found_exception')) {
+                    $this->error('Index not found');
+                } else {
+
+                    throw $e;
+                }
+            }
+
+            return $this->info("{$class} DataStream deleted");
         }
     }
 }
