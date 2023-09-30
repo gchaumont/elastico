@@ -431,10 +431,12 @@ class Grammar extends BaseGrammar
                 $value = $where['value'];
 
 
-                if ($value instanceof BackedEnum) {
-                    $value = $value->value;
-                } elseif (enum_exists($value)) {
-                    $value = $value->name;
+                if (is_object($value)) {
+                    if ($value instanceof BackedEnum) {
+                        $value = $value->value;
+                    } elseif (enum_exists($value)) {
+                        $value = $value->name;
+                    }
                 }
 
 
