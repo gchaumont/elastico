@@ -5,7 +5,6 @@ namespace Elastico\Eloquent\Concerns;
 use Closure;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Str;
-use Elastico\Eloquent\Model;
 use Elastico\Query\MatchAll;
 use Elastico\Query\Term\Term;
 use InvalidArgumentException;
@@ -26,7 +25,7 @@ use Elastico\Eloquent\Concerns\ParsesRelationships;
 use Illuminate\Database\Eloquent\Relations\Relation;
 use Illuminate\Support\Collection as BaseCollection;
 use Illuminate\Support\Collection as SupportCollection;
-use Illuminate\Database\Eloquent\Model as EloquentModel;
+use Illuminate\Database\Eloquent\Model;
 use Elastico\Query\Response\Aggregation\AggregationResponse;
 use Illuminate\Database\Eloquent\Builder as EloquentBuilder;
 
@@ -309,7 +308,7 @@ trait LoadsAggregates
 
 
 
-    protected static function makeAggregationsForModel(array|Closure $aggregations, EloquentModel $model): SupportCollection
+    protected static function makeAggregationsForModel(array|Closure $aggregations, Model $model): SupportCollection
     {
 
         if ($aggregations instanceof Closure) {
