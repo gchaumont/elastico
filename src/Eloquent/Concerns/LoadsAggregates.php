@@ -26,6 +26,7 @@ use Elastico\Eloquent\Concerns\ParsesRelationships;
 use Illuminate\Database\Eloquent\Relations\Relation;
 use Illuminate\Support\Collection as BaseCollection;
 use Illuminate\Support\Collection as SupportCollection;
+use Illuminate\Database\Eloquent\Model as EloquentModel;
 use Elastico\Query\Response\Aggregation\AggregationResponse;
 use Illuminate\Database\Eloquent\Builder as EloquentBuilder;
 
@@ -308,7 +309,7 @@ trait LoadsAggregates
 
 
 
-    protected static function makeAggregationsForModel(array|Closure $aggregations, Model $model): SupportCollection
+    protected static function makeAggregationsForModel(array|Closure $aggregations, EloquentModel $model): SupportCollection
     {
 
         if ($aggregations instanceof Closure) {
