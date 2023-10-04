@@ -203,9 +203,14 @@ trait LoadsAggregates
         return $items->each(function (Model $item) use ($results, $aggregations, $relation_hash): void {
             $aggregations->each(function (array $aggregation) use ($item, $results, $relation_hash): void {
                 $aggregation['eager_loads']->each(function (Relation $relation, string $relation_name) use ($item, $results, $relation_hash): void {
+                    $actual_relation_name = Str::after(Str::after($relation_name, '::'), ' as ');
+                    $aggregations = $results->get($relation_hash($relation_name, $relation))->aggregation('model:' . $item->getKey())->aggregations();
+
+                    $aggregations = $aggregations->put('_total', $results->get($relation_hash($relation_name, $relation))->aggregation('model:' . $item->getKey())->doc_count());
+
                     $item->addAggregations(
-                        relation: Str::after(Str::after($relation_name, '::'), ' as '),
-                        aggregations: $results->get($relation_hash($relation_name, $relation))->aggregation('model:' . $item->getKey())->aggregations()
+                        relation: $actual_relation_name,
+                        aggregations: $aggregations,
                     );
                 });
             });
@@ -245,7 +250,11 @@ trait LoadsAggregates
             ->each(static fn (Model $item, int $index) => $responses
                 ->get($index)
                 ?->each(static fn (Collection $response, string $response_key) => $item
-                    ->addAggregations(Str::before($response_key, static::AGGREGATION_SEPARATOR), $response->aggregations())))
+                    ->addAggregations(
+                        Str::before($response_key, static::AGGREGATION_SEPARATOR),
+                        $response->aggregations()
+                            ->put('_total', $response->total()),
+                    )))
             ->tap(fn (BaseCollection $items): array => $this->resolveAggregates($items->all()))
             ->all();
     }
