@@ -160,6 +160,16 @@ class Connection extends BaseConnection implements ConnectionInterface
             $response = $this->performQuery($query['method'], $query['payload']);
 
             if ($response['errors'] ?? false) {
+                if ($query['options']['ignore_conflicts']) {
+                    $hasOtherErrors = collect($response['items'])
+                        ->filter(fn (array $item): bool => !empty(collect($item)->first()['error']))
+                        ->filter(fn (array $item): bool => collect($item)->first()['error']['type'] != 'version_conflict_engine_exception')
+                        ->isEmpty();
+
+                    if (!$hasOtherErrors) {
+                        return $response;
+                    }
+                }
                 throw new BulkException(json_encode($response->asArray()));
             }
 

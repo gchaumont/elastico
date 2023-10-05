@@ -73,7 +73,13 @@ class Grammar extends BaseGrammar
 
     public function buildPayload(BaseBuilder $query): array
     {
+        /** @var Builder $query */
+
         $payload['index'] = $query->from;
+
+        $payload['options'] = [
+            'ignore_conflicts' => $query->ignore_conflicts,
+        ];
 
         $payload['body']['from'] = $query->offset ?? null;
 

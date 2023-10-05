@@ -88,6 +88,8 @@ class Builder extends BaseBuilder
 
     public $collapse;
 
+    public $ignore_conflicts = false;
+
     public $suggest = [];
 
     public $ranks = [];
@@ -1029,5 +1031,12 @@ class Builder extends BaseBuilder
         }
 
         return $parameter;
+    }
+
+    public function ignoreConflicts(bool $ignore = true): self
+    {
+        $this->ignore_conflicts = $ignore;
+
+        return $this;
     }
 }
