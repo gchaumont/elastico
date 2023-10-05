@@ -57,7 +57,12 @@ class Grammar extends BaseGrammar
 
     public function compileDeleteMany(BaseBuilder $query, iterable $ids)
     {
+        /** @var Builder $query */
+
         return [
+            'options' => [
+                'ignore_conflicts' => $query->ignore_conflicts,
+            ],
             'body' => collect($ids)
                 ->flatMap(static fn ($val): array => [
                     [
