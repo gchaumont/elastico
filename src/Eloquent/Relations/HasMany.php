@@ -123,6 +123,20 @@ class HasMany extends EloquentHasMany implements ElasticRelation
     }
 
     /**
+     * Get all of the primary keys for an array of models.
+     *
+     * @param  array  $models
+     * @param  string|null  $key
+     * @return array
+     */
+    protected function getKeys(array $models, $key = null)
+    {
+        return collect($models)->map(function ($value) use ($key) {
+            return $key ? Arr::get($value, $key) : $value->getKey();
+        })->values()->unique(null, true)->sort()->all();
+    }
+
+    /**
      * {@inheritdoc}
      */
     public function getRelationExistenceQuery(Builder $query, Builder $parentQuery, $columns = ['*'])
