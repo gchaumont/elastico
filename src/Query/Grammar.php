@@ -68,6 +68,7 @@ class Grammar extends BaseGrammar
                     ],
                 ])
                 ->all(),
+
         ];
     }
 
@@ -205,6 +206,8 @@ class Grammar extends BaseGrammar
      */
     public function compileUpdate(BaseBuilder $query, array|Script $values)
     {
+        /** @var Builder $query */
+
         return [
             'index' => $query->index_id,
             'id' => $query->model_id,
@@ -475,7 +478,12 @@ class Grammar extends BaseGrammar
     public function compileUpsert(BaseBuilder $query, array $values, array $uniqueBy, array|null $update)
     {
 
+        /** @var Builder $query */
+
         return [
+            'options' => [
+                'ignore_conflicts' => $query->ignore_conflicts,
+            ],
             'body' => collect($values)
                 ->flatMap(static function (array $val, int $i) use ($update): array {
                     $id = Arr::pull($val, '_id');
@@ -518,6 +526,8 @@ class Grammar extends BaseGrammar
         bool $doc_as_upsert = false,
         bool $scripted_upsert = false
     ): array {
+        /** @var Builder $query */
+
         if (!in_array($operation, ['create', 'index', 'update', 'delete'])) {
             throw new Exception("Invalid Elastic operation [$operation]");
         }
@@ -532,6 +542,9 @@ class Grammar extends BaseGrammar
 
 
         return [
+            'options' => [
+                'ignore_conflicts' => $query->ignore_conflicts,
+            ],
             'body' => collect($models)
                 ->flatMap(static function (object $model, $i) use ($query, $operation, $scripts, $doc_as_upsert, $scripted_upsert): array {
                     $id = is_string($model) ? $model : $model['_id'];

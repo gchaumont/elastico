@@ -154,7 +154,10 @@ class Connection extends BaseConnection implements ConnectionInterface
         $query = [
             'method' => 'bulk',
             'payload' => $query,
+            'options' => $query['options']
         ];
+
+        unset($query['payload']['options']);
 
         return $this->run($query, [], function ($query, $bindings) {
             $response = $this->performQuery($query['method'], $query['payload']);

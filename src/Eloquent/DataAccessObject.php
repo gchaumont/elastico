@@ -147,6 +147,9 @@ abstract class DataAccessObject implements CastableContract, Arrayable, ArrayAcc
                 }
 
                 if (is_subclass_of($class, DataAccessObject::class) && !empty($value)) {
+                    if ($value instanceof Arrayable) {
+                        $value = $value->toArray();
+                    }
                     return (new $class())->setRawAttributes($value);
                 }
 
