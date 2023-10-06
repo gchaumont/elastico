@@ -254,7 +254,11 @@ class Grammar extends BaseGrammar
         // simply makes creating the SQL easier for us since we can utilize the same
         // basic routine regardless of an amount of records given to us to insert.
 
+        /**  @var Builder $query*/
         return [
+            'options' => [
+                'ignore_conflicts' => $query->ignore_conflicts,
+            ],
             'body' => collect($values)
                 ->flatMap(static function (array $doc): array {
                     $index = Arr::pull($doc, '_index');

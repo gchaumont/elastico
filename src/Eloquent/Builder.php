@@ -208,7 +208,7 @@ class Builder extends EloquentBuilder
      * Insert new records or update the existing ones.
      *
      * @param array|string $uniqueBy
-     * @param null|array|Script   $update
+     * @param null|array<string>|array<Script>   $update
      *
      * @return int
      */
@@ -229,7 +229,7 @@ class Builder extends EloquentBuilder
                     '_index' => $value->getTable(),
                     ...$value->getDirty()
                 ],
-                is_array($value) => [
+                is_array($value) || $value instanceof Arrayable => [
                     '_id' => Arr::get($value, $this->model->getKeyName()),
                     '_index' => $this->model->getTable(),
                     ...$value
