@@ -12,7 +12,10 @@ class Reindex extends Command
      *
      * @var string
      */
-    protected $signature = 'elastic:docs:reindex {source} {destination} {--connection= : Elasticsearch connection}';
+    protected $signature = 'elastic:docs:reindex {source} {destination} 
+            {--connection= : Elasticsearch connection}
+            {--_source=* : Source fields to include in the reindex}
+            ';
 
     /**
      * The console command description.
@@ -33,6 +36,7 @@ class Reindex extends Command
         $connection->getClient()->reindex(['body' => [
             'source' => [
                 'index' => $this->argument('source'),
+                '_source' => $this->option('_source') ?? '*',
             ],
             'dest' => [
                 'index' => $this->argument('destination'),
