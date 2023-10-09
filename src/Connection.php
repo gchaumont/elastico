@@ -167,7 +167,7 @@ class Connection extends BaseConnection implements ConnectionInterface
                     $hasOtherErrors = collect($response['items'])
                         ->filter(fn (array $item): bool => !empty(collect($item)->first()['error']))
                         ->filter(fn (array $item): bool => collect($item)->first()['error']['type'] != 'version_conflict_engine_exception')
-                        ->isEmpty();
+                        ->isNotEmpty();
 
                     if (!$hasOtherErrors) {
                         return $response;

@@ -957,7 +957,8 @@ class Builder extends BaseBuilder
                 }
 
                 $builder->where(function (self $builder) use ($addCursorConditions, $cursor, $orders, $i, $unionBuilders) {
-                    ['column' => $column, 'direction' => $direction] = $orders[$i];
+                    ['ü
+                    column' => $column, 'direction' => $direction] = $orders[$i];
 
                     $originalColumn = $this->getOriginalColumnNameForCursorPagination($this, $column);
 
@@ -1033,7 +1034,7 @@ class Builder extends BaseBuilder
         return $parameter;
     }
 
-    public function ignoreConflicts(bool $ignore = true): self
+    public function ignoreConflicts(bool $ignore = true): static
     {
         $this->ignore_conflicts = $ignore;
 

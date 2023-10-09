@@ -204,6 +204,7 @@ trait LoadsAggregates
             $aggregations->each(function (array $aggregation) use ($item, $results, $relation_hash): void {
                 $aggregation['eager_loads']->each(function (Relation $relation, string $relation_name) use ($item, $results, $relation_hash): void {
                     $actual_relation_name = Str::after(Str::after($relation_name, '::'), ' as ');
+
                     $aggregations = $results->get($relation_hash($relation_name, $relation))->aggregation('model:' . $item->getKey())->aggregations();
 
                     $aggregations = $aggregations->put('_total', $results->get($relation_hash($relation_name, $relation))->aggregation('model:' . $item->getKey())->doc_count());
