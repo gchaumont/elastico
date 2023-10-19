@@ -10,7 +10,7 @@
         }
     ],
     "require": {
-        "php": "^8.1",
+        "php": "^8.2",
         "illuminate/collections": "^10.0",
         "illuminate/support": "^10.0",
         "php-http/guzzle7-adapter": "^1.0",

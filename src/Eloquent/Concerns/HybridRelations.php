@@ -310,6 +310,7 @@ trait HybridRelations
      */
     public function newEloquentBuilder($query)
     {
+
         if (is_subclass_of($this, Model::class)) {
             return new Builder($query);
         }

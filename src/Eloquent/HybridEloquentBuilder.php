@@ -2,8 +2,10 @@
 
 namespace Elastico\Eloquent;
 
-use Elastico\Eloquent\Concerns\LoadsAggregates;
+use Closure;
 use Elastico\Query\Builder\HasAggregations;
+use Illuminate\Support\Traits\ForwardsCalls;
+use Elastico\Eloquent\Concerns\LoadsAggregates;
 use Illuminate\Database\Eloquent\Builder as EloquentBuilder;
 
 /**

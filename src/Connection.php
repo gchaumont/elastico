@@ -223,16 +223,6 @@ class Connection extends BaseConnection implements ConnectionInterface
             }
 
             return $this->performQuery($query['method'], $query['payload']);
-            // For select statements, we'll simply execute the query and return an array
-            // of the database result set. Each element in the array will be a single
-            // row from the database table, and will either be an array or objects.
-            $statement = $this->prepared(
-                $this->getPdoForSelect($useReadPdo)->prepare($query)
-            );
-
-            $statement->execute();
-
-            return $statement->fetchAll();
         });
     }
 
@@ -377,6 +367,7 @@ class Connection extends BaseConnection implements ConnectionInterface
      */
     public function insert($query, $bindings = [])
     {
+
         $r =  $this->statement($query, $bindings);
 
         return $r;
@@ -666,7 +657,7 @@ class Connection extends BaseConnection implements ConnectionInterface
             }
 
             throw new QueryException(
-                $this->getDriverName(),
+                $this->getConfig('name'),
                 mb_substr(json_encode($query), 0, 500),
                 $this->prepareBindings($bindings),
                 $e
