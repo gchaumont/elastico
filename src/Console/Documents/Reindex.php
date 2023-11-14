@@ -15,6 +15,7 @@ class Reindex extends Command
     protected $signature = 'elastic:docs:reindex {source} {destination} 
             {--connection= : Elasticsearch connection}
             {--_source=* : Source fields to include in the reindex}
+            {--max= : Maximum number of documents to reindex}
             ';
 
     /**
@@ -33,15 +34,24 @@ class Reindex extends Command
     {
         $connection = DB::connection($this->option('connection') ?? 'elastic');
 
-        $connection->getClient()->reindex(['body' => [
-            'source' => [
-                'index' => $this->argument('source'),
-                '_source' => $this->option('_source') ?? '*',
-            ],
-            'dest' => [
-                'index' => $this->argument('destination'),
-            ],
-        ]]);
+        $params = [
+
+            'body' => [
+                'source' => [
+                    'index' => $this->argument('source'),
+                    '_source' => $this->option('_source') ?? '*',
+                ],
+                'dest' => [
+                    'index' => $this->argument('destination'),
+                ],
+            ]
+        ];
+
+        if ($this->option('max')) {
+            $params['max_docs'] = $this->option('max');
+        }
+
+        $connection->getClient()->reindex($params);
 
         return $this->info('Documents Reindexed');
     }

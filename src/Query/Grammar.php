@@ -17,6 +17,7 @@ use Elastico\Query\Term\Wildcard;
 use Elastico\Query\Compound\Boolean;
 use Elastico\Query\Compound\FunctionScore;
 use Elastico\Query\Specialized\RankFeature;
+use Illuminate\Database\Eloquent\Relations\Relation;
 use Illuminate\Database\Query\Builder as BaseBuilder;
 use Illuminate\Database\Query\Grammars\Grammar as BaseGrammar;
 /*
@@ -196,9 +197,12 @@ class Grammar extends BaseGrammar
     {
         return [
             'body' => collect($queries)
-                ->flatMap(fn ($query) => [
+                ->flatMap(fn (BaseBuilder|Relation $query) => [
                     ['index' => $query->from ?? $query->getQuery()->from],
-                    $query->toSql()['body'],
+                    match (true) {
+                        $query instanceof BaseBuilder => $query->toSql()['body'],
+                        $query instanceof Relation => $query->getBaseQuery()->toSql()['body'],
+                    },
                 ])
                 ->all(),
         ];

@@ -45,7 +45,6 @@ trait LoadsAggregates
     protected array $withAggregations = [];
 
 
-
     /**
      * Add subselect queries to include an aggregate value for a relationship.
      *
@@ -193,7 +192,8 @@ trait LoadsAggregates
             ->groupBy(static fn (Relation $relation, $key) => $relation_hash($key, $relation), preserveKeys: true)
             ->map(static fn (BaseCollection $relations): Relation => $relations
                 ->reduce(static fn (null|Relation $carry, Relation $relation): Relation => $carry ? $carry->mergeAggregations($relation) : $relation))
-            ->groupBy(static fn (Relation $relation): string => $relation->getConnection()->getName(), preserveKeys: true)
+            // ->each(static fn (Relation $relation) => dump($relation->getBaseQuery()->getConnection()))
+            ->groupBy(static fn (Relation $relation): string => $relation->getBaseQuery()->getConnection()->getName(), preserveKeys: true)
             // ->each(static fn (BaseCollection $queries, string $connection) => dd($queries->first()->toSql()))
             ->map(static fn (BaseCollection $queries, string $connection): array => DB::connection($connection)->query()->getMany($queries->all()))
             ->collapse();
