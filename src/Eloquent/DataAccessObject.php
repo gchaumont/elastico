@@ -28,10 +28,13 @@ abstract class DataAccessObject implements CastableContract, Arrayable, ArrayAcc
 
     public function __construct($attributes = [])
     {
-        if ($attributes) {
-            $this->attributes = $attributes;
-        }
         $this->dateFormat = \DateTime::ATOM;
+        if ($attributes) {
+            // $this->attributes = $attributes;
+            foreach ($attributes as $key => $value) {
+                $this->setAttribute($key, $value);
+            }
+        }
     }
 
     public function __get($key)
