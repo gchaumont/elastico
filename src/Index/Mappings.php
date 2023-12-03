@@ -12,7 +12,7 @@ class Mappings
         public array $properties = [],
         public array $dynamic_templates = [],
         public null|bool|string $dynamic = 'strict',
-
+        public null|array $_source = null,
         // // Metadata Fields 
         // public array $_meta = [],
         // public array $_routing = [],
@@ -30,7 +30,7 @@ class Mappings
 
     public function toArray(): array
     {
-        return [
+        return array_filter([
             'properties' => collect($this->properties)
                 ->keyBy(fn (Field $prop) => $prop->getName())
                 ->toArray(),
@@ -38,8 +38,8 @@ class Mappings
             'dynamic' => $this->dynamic,
             // '_meta' => $this->_meta,
             // '_routing' => $this->_routing,
-            // '_source' => $this->_source,
+            '_source' => $this->_source,
             // '_index' => $this->_index,
-        ];
+        ]);
     }
 }

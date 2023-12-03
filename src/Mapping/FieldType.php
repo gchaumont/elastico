@@ -40,11 +40,12 @@ enum FieldType: string
     case geo_shape = 'geo_shape';
     case point = 'point';
     case shape = 'shape';
+    case composite = 'composite'; // Runtime field
 
     public function isTextSearchable(): bool
     {
         return match ($this) {
-            static::keyword ,
+            static::keyword,
             static::text => true,
             default => false
         };

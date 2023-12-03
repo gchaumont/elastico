@@ -6,6 +6,7 @@ use Enum;
 use stdClass;
 use Exception;
 use BackedEnum;
+use Elastico\Mapping\RuntimeField;
 use Illuminate\Support\Arr;
 use Elastico\Query\Term\Term;
 use Elastico\Query\Term\Range;
@@ -116,6 +117,10 @@ class Grammar extends BaseGrammar
 
         if ($query->suggest) {
             $payload['body']['suggest'] = $this->compileSuggestComponents($query);
+        }
+
+        if ($query->getRuntimeFields()) {
+            $payload['body']['runtime_mappings'] = $query->getRuntimeFields()->map(static fn (RuntimeField $field) => $field->toArray())->all();
         }
 
         if (!empty($query->columns)) {

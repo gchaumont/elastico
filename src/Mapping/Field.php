@@ -31,10 +31,12 @@ class Field implements Arrayable
     public string|array $copy_to;
 
     public function __construct(
-        protected FieldType $type,
+        protected string|FieldType $type,
         protected string $name,
     ) {
-        // code...
+        if (is_string($type)) {
+            $this->type = FieldType::from($type);
+        }
     }
 
     public static function make(string|FieldType $type, string $name): static
@@ -131,6 +133,7 @@ class Field implements Arrayable
     public function toArray(): array
     {
         $config['type'] = $this->type->name;
+
         if (isset($this->index)) {
             $config['index'] = $this->index;
         }

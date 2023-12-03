@@ -20,6 +20,7 @@ use Elastico\Query\Builder\ExcludesColumns;
 use Elastico\Query\Builder\HasAggregations;
 use Elastico\Query\Builder\RequestsColumns;
 use Elastic\Elasticsearch\Response\Elasticsearch;
+use Elastico\Query\Builder\HasRuntimeFields;
 use Elastico\Scripting\UpdateParams;
 use Illuminate\Database\Query\Builder as BaseBuilder;
 
@@ -35,6 +36,7 @@ class Builder extends BaseBuilder
     use ExcludesColumns;
     use HasKnn;
     use RequestsColumns;
+    use HasRuntimeFields;
 
     /**
      * The database connection instance.
