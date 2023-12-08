@@ -9,7 +9,7 @@ use Elastico\Mapping\Field;
 trait HasIndexConfig
 {
 
-    static array $indexConfigurators = [];
+    protected static array $indexConfigurators = [];
 
     abstract protected static function indexConfig(): Config;
 
@@ -43,7 +43,7 @@ trait HasIndexConfig
         return $cache[static::class] = $config;
     }
 
-    public function configureIndexUsing(callable $callback): void
+    public static function configureIndexUsing(callable $callback): void
     {
         static::$indexConfigurators[static::class][] = $callback;
     }
