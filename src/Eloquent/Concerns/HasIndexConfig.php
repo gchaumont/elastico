@@ -36,7 +36,7 @@ trait HasIndexConfig
 
     public static function getFieldNames(): array
     {
-        return collect(static::getIndexConfig()->mappings->properties)
+        return collect(static::getIndexConfig()->mappings?->properties)
             ->map(fn (Field $field) => $field->getName())
             ->all();
     }
