@@ -42,6 +42,17 @@ class Config
         return $this;
     }
 
+    public function mapping(Mappings|callable $mappings): static
+    {
+        if ($mappings instanceof Mappings) {
+            $this->mappings = $mappings;
+        } else {
+            $this->mappings = $mappings($this->getMappings());
+        }
+
+        return $this;
+    }
+
     public function getMappings(): Mappings
     {
         return $this->mappings ??= new Mappings();
