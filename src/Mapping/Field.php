@@ -26,6 +26,10 @@ class Field implements Arrayable
 
     public array $properties;
 
+    public int $dims;
+
+    public string $similarity;
+
     public \Closure $propertyCallback;
 
     public string|array $copy_to;
