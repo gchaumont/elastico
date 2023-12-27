@@ -304,7 +304,7 @@ class Grammar extends BaseGrammar
         return $payload;
     }
 
-    public function compileSuggestComponents(Builder $query): array
+    public function compileSuggestComponents(BaseBuilder $query): array
     {
         $suggest = [];
         if (!empty($query->suggest)) {
@@ -325,7 +325,7 @@ class Grammar extends BaseGrammar
         return $suggest;
     }
 
-    public function compileOrderComponents(Builder $query): array
+    public function compileOrderComponents(BaseBuilder $query): array
     {
         $sorts = [];
         if (!empty($query->orders)) {
