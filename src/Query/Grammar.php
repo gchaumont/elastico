@@ -206,6 +206,7 @@ class Grammar extends BaseGrammar
                 ->flatMap(fn (BaseBuilder|Relation|Builder $query) => [
                     ['index' => $query->from ?? $query->getQuery()->from],
                     match (true) {
+                        $query instanceof Builder => $query->toBase()->toSql()['body'],
                         $query instanceof BaseBuilder => $query->toSql()['body'],
                         $query instanceof Relation => $query->getBaseQuery()->toSql()['body'],
                     },
