@@ -353,7 +353,7 @@ class Grammar extends BaseGrammar
         return $sorts;
     }
 
-    public function compileWhereComponents(Builder $query): Query
+    public function compileWhereComponents(BaseBuilder $query): Query
     {
         $bool = Boolean::make();
         // dd($this->wheres);
