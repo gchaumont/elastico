@@ -14,17 +14,14 @@ use Elastico\Eloquent\Model;
  */
 trait Timestamps
 {
-    public function initialiseTimestamps(): void
+    public function initializeTimestamps(): void
     {
         $this->casts['created_at'] = 'datetime';
         $this->casts['updated_at'] = 'datetime';
-    }
 
-    public static function configTimestamps(Config $config): void
-    {
-        $config->properties(
+        $this->configureIndexUsing(fn (Config $config) =>  $config->properties(
             Field::make(name: 'created_at', type: 'date'),
             Field::make(name: 'updated_at', type: 'date')
-        );
+        ));
     }
 }

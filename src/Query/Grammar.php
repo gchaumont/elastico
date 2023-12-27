@@ -6,6 +6,7 @@ use Enum;
 use stdClass;
 use Exception;
 use BackedEnum;
+use Elastico\Eloquent\Builder;
 use Elastico\Mapping\RuntimeField;
 use Illuminate\Support\Arr;
 use Elastico\Query\Term\Term;
@@ -202,7 +203,7 @@ class Grammar extends BaseGrammar
     {
         return [
             'body' => collect($queries)
-                ->flatMap(fn (BaseBuilder|Relation $query) => [
+                ->flatMap(fn (BaseBuilder|Relation|Builder $query) => [
                     ['index' => $query->from ?? $query->getQuery()->from],
                     match (true) {
                         $query instanceof BaseBuilder => $query->toSql()['body'],
