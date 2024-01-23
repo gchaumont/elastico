@@ -26,6 +26,8 @@ abstract class DataAccessObject implements CastableContract, Arrayable, ArrayAcc
 
     protected $exists = false;
 
+    protected static $objectsShouldPreventAccessingMissingAttributes = true;
+
     public function __construct($attributes = [])
     {
         $this->dateFormat = \DateTime::ATOM;
@@ -213,5 +215,10 @@ abstract class DataAccessObject implements CastableContract, Arrayable, ArrayAcc
         return is_subclass_of($enumClass, \BackedEnum::class)
             ? $enumClass::tryFrom($value)
             : constant($enumClass . '::' . $value);
+    }
+
+    public static function preventsAccessingMissingAttributes()
+    {
+        return static::$objectsShouldPreventAccessingMissingAttributes;
     }
 }
