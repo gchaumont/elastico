@@ -104,8 +104,12 @@ class Processor extends BaseProcessor
         $results = $this->resolvePromise($results);
 
         foreach ($results['docs'] ?? [] as $key => $hit) {
-            foreach ($query->getRequestedColumns() as $column) {
-                $results['docs'][$key]['_source'][$column] ??= null;
+            if ($hit['found'] ?? false) {
+                foreach ($query->getRequestedColumns() as $column) {
+                    $results['docs'][$key]['_source'][$column] ??= null;
+                }
+            } else {
+                unset($results['docs'][$key]);
             }
         }
 
