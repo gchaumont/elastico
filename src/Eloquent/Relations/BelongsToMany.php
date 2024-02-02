@@ -98,6 +98,7 @@ class BelongsToMany extends EloquentBelongsToMany implements ElasticRelation
 
         $whereIn = $this->whereInMethod($this->parent, $this->parentKey);
 
+        $this->take(collect($models)->pluck($this->parentKey)->flatten()->unique()->count());
         $this->whereInEager(
             $whereIn,
             $this->getQualifiedForeignPivotKeyName(),
