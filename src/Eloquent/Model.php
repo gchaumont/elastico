@@ -254,6 +254,16 @@ abstract class Model extends BaseModel implements Castable
             : constant($enumClass . '::' . $value);
     }
 
+    public function getForeignKey()
+    {
+        $key = $this->getKeyName();
+        if ($key === '_id') {
+            $key = 'id';
+        }
+
+        return Str::snake(class_basename($this)) . '_' . $key;
+    }
+
     /**
      * {@inheritdoc}
      */
