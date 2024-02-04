@@ -86,6 +86,8 @@ class Grammar extends BaseGrammar
 
         $payload['index'] = $query->from;
 
+        $payload['seq_no_primary_term'] = true;
+
         $payload['options'] = [
             'ignore_conflicts' => $query->ignore_conflicts,
         ];
@@ -235,7 +237,7 @@ class Grammar extends BaseGrammar
                 ]),
                 is_array($values) => array_filter([
                     'doc_as_upsert' => true,
-                    'doc' => Arr::except($values, ['_id', '_index']),
+                    'doc' => Arr::except($values, ['_id', '_index', '_seq_no', '_primary_term']),
                     // '_source' => $query->columns
                 ]),
             }
@@ -512,22 +514,29 @@ class Grammar extends BaseGrammar
                     }
 
                     $header = [
-                        'update' => [
+                        'update' => collect([
                             '_id' => $id,
                             '_index' => Arr::pull($val, '_index'),
-                        ],
+                            'if_seq_no' => Arr::pull($val, '_seq_no'),
+                            'if_primary_term' => Arr::pull($val, '_primary_term'),
+                        ])
+                            ->filter(fn ($v) => !is_null($v))
+                            ->all(),
                     ];
+
 
                     $body = match (true) {
                         empty($update) => [
                             'doc' => empty($val) ? new stdClass() : $val,
-                            'doc_as_upsert' => true,
+                            'doc_as_upsert' => is_null($header['update']['if_seq_no'] ?? null),
                         ],
-                        $update[$i] instanceof Script => [
-                            'scripted_upsert' => true,
+                        $update[$i] instanceof Script => collect([
+                            'scripted_upsert' => is_null($header['update']['if_seq_no'] ?? null),
                             'script' => $update[$i]->compile(),
-                            'upsert' => $val,
-                        ],
+                            'upsert' =>  is_null($header['update']['if_seq_no'] ?? null) ? $val : null,
+                        ])
+                            ->filter(fn ($v) => !is_null($v))
+                            ->all(),
                         default => throw new \Exception('TODO'),
                     };
 
@@ -569,13 +578,17 @@ class Grammar extends BaseGrammar
                 ->flatMap(static function (object $model, $i) use ($query, $operation, $scripts, $doc_as_upsert, $scripted_upsert): array {
                     $id = is_string($model) ? $model : $model['_id'];
 
-                    $document = Arr::except($model, ['_id', '_index']) ?: new stdClass();
+                    $document = Arr::except($model, ['_id', '_index', '_seq_no', '_primary_term']) ?: new stdClass();
 
                     $header = [
-                        $operation => [
+                        $operation => collect([
                             '_id' => $id,
                             '_index' => $model['_index'] ?? $query->from,
-                        ],
+                            '_seq_no' => $model['_seq_no'] ?? null,
+                            '_primary_term' => $model['_primary_term'] ?? null,
+                        ])
+                            ->filter(fn ($v) => !is_null($v))
+                            ->all(),
                     ];
                     if ($operation === 'delete') {
                         return [$header];
@@ -583,14 +596,14 @@ class Grammar extends BaseGrammar
 
                     if (!empty($scripts)) {
                         return [$header, [
-                            'scripted_upsert' => $scripted_upsert,
+                            'scripted_upsert' => $scripted_upsert && is_null($model['_seq_no'] ?? null),
                             'script' => $scripts[$i]->compile(),
                             'upsert' => $document,
                         ]];
                     }
 
                     return [$header, [
-                        'doc_as_upsert' => $doc_as_upsert,
+                        'doc_as_upsert' => $doc_as_upsert && is_null($model['_seq_no'] ?? null),
                         'doc' => $document,
                     ]];
                 })

@@ -98,6 +98,11 @@ abstract class Model extends BaseModel implements Castable
         $new->setAttribute($new->getKeyName(), $hit['_id']);
         $new->setAttribute('_id',  $hit['_id']);
         $new->setAttribute('_index',  $hit['_index']);
+        if (isset($hit['_seq_no']) && isset($hit['_primary_term'])) {
+            $new->setAttribute('_seq_no',  $hit['_seq_no']);
+            $new->setAttribute('_primary_term',  $hit['_primary_term']);
+        }
+        // $new->syncOriginal();
 
         return $new;
     }
