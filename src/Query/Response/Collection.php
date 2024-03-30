@@ -66,7 +66,6 @@ class Collection extends EloquentCollection
                 ->requested_aggregations
                 ->map(fn (Aggregation $agg, string $name): AggregationResponse => $agg->toResponse(response: $this->aggregations[$name]));
         } catch (\Throwable $th) {
-            dump($this);
             throw $th;
         }
 
