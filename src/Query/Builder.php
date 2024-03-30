@@ -831,11 +831,11 @@ class Builder extends BaseBuilder
         return $this;
     }
 
-    public function paginate($perPage = 15, $columns = ['*'], $pageName = 'page', $page = null)
+    public function paginate($perPage = 15, $columns = ['*'], $pageName = 'page', $page = null, $total = null)
     {
         $page = $page ?: Paginator::resolveCurrentPage($pageName);
 
-        $total = $this->getCountForPagination();
+        $total = value($total) ?? $this->getCountForPagination();
 
         $perPage = $perPage instanceof \Closure ? $perPage($total) : $perPage;
 
