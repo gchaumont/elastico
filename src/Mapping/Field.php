@@ -16,7 +16,7 @@ class Field implements Arrayable
 
     public bool $enabled;
 
-    public string $dynamic;
+    public bool|string $dynamic;
 
     public string $object;
 
@@ -68,7 +68,7 @@ class Field implements Arrayable
         return $this;
     }
 
-    public function dynamic(string $dynamic): static
+    public function dynamic(bool|string $dynamic): static
     {
         $this->dynamic = $dynamic;
 
