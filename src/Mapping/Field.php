@@ -16,6 +16,8 @@ class Field implements Arrayable
 
     public bool $enabled;
 
+    public string $dynamic;
+
     public string $object;
 
     public array $fields;
@@ -62,6 +64,13 @@ class Field implements Arrayable
     public function enabled(bool $enabled = true): static
     {
         $this->enabled = $enabled;
+
+        return $this;
+    }
+
+    public function dynamic(string $dynamic): static
+    {
+        $this->dynamic = $dynamic;
 
         return $this;
     }
@@ -143,6 +152,9 @@ class Field implements Arrayable
         }
         if (isset($this->enabled)) {
             $config['enabled'] = $this->enabled;
+        }
+        if (isset($this->dynamic)) {
+            $config['dynamic'] = $this->dynamic;
         }
         if (isset($this->analyzer)) {
             $config['analyzer'] = $this->analyzer;
