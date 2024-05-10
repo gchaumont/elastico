@@ -52,7 +52,7 @@ class DeleteDataStream extends Command
             } catch (IndexNotFoundException) {
                 $this->error('Index not found');
             } catch (ClientResponseException $e) {
-                if (str_contains($e->getMessage(), 'index_not_found_exception')) {
+                if (str_contains($e->getMessage(), 'index_not_found_exception') || str_contains($e->getMessage(), 'resource_not_found_exception')) {
                     $this->error('Index not found');
                 } else {
 
