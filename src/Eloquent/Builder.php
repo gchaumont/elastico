@@ -260,12 +260,10 @@ class Builder extends EloquentBuilder
         }
 
 
-
         return $this->toBase()->upsert(
-            $this->addTimestampsToUpsertValues($values),
+            $values, // INSTEAD OF $this->addTimestampsToUpsertValues($this->addUniqueIdsToUpsertValues($values)),
             $uniqueBy,
-            $update
-            // $this->addUpdatedAtToUpsertColumns($update)
+            $update // INSTEAD OF $this->addUpdatedAtToUpsertColumns($update)
         );
     }
 
