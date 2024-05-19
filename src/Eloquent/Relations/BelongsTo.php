@@ -46,7 +46,7 @@ class BelongsTo extends EloquentBelongsTo implements ElasticRelation
     {
         // TODO: check if query has aggregations then we can not use FindMany
         if ($this->findKeys) {
-            return $this->query->findMany($this->findKeys);
+            return $this->query->findMany($this->findKeys, $this->query->toBase()->getColumns());
         }
         if ($this->noRelatedKeys) {
             return new Collection();
