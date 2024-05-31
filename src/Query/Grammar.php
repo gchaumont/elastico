@@ -454,6 +454,19 @@ class Grammar extends BaseGrammar
 
                     continue;
                 }
+                if ($where['type'] == 'InRaw') {
+                    if (!empty($where['values'])) {
+                        $groupBool->filter(
+                            new Terms(
+                                field: $where['column'],
+                                values: $where['values']
+                            )
+                        );
+                    }
+
+                    continue;
+                }
+
                 // if (empty($where['operator'])) {
                 //     dd($where);
                 // }
