@@ -16,8 +16,10 @@ trait Timestamps
 {
     public function initializeTimestamps(): void
     {
-        $this->casts['created_at'] = 'datetime';
-        $this->casts['updated_at'] = 'datetime';
+        $this->mergeCasts([
+            'created_at' => 'datetime',
+            'updated_at' => 'datetime',
+        ]);
 
         $this->configureIndexUsing(fn (Config $config) =>  $config->properties(
             Field::make(name: 'created_at', type: 'date'),
