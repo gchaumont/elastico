@@ -193,7 +193,7 @@ class Field implements Arrayable
                 ->all();
         }
         if (!empty($this->object)) {
-            $config['properties'] = collect($this->object::indexProperties())
+            $config['properties'] = collect($this->object::getIndexProperties())
                 ->keyBy(fn ($prop) => $prop->getName())
                 ->map(fn ($prop) => isset($this->propertyCallback) ? call_user_func($this->propertyCallback, $prop) : $prop)
                 ->map(fn ($prop) => $prop->toArray())
