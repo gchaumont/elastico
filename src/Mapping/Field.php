@@ -7,18 +7,18 @@ use Elastico\Models\DataAccessObject;
 use Elastico\Models\Model;
 use Illuminate\Contracts\Support\Arrayable;
 
-#[\Attribute]
+#[Attribute(Attribute::TARGET_CLASS | Attribute::TARGET_PROPERTY | Attribute::IS_REPEATABLE)]
 class Field implements Arrayable
 {
     public readonly \ReflectionProperty $property;
 
     public bool $index;
 
+    public string $name;
+
     public bool $enabled;
 
     public bool|string $dynamic;
-
-    public string $object;
 
     public array $fields;
 
@@ -38,20 +38,38 @@ class Field implements Arrayable
 
     public function __construct(
         protected string|FieldType $type,
-        protected string $name,
+        null|string $name = null,
+        public null|string $object = null,
+        public null|string $cast = null,
+        null|bool $index = null,
+        null|bool $enabled = null,
+
     ) {
+        if ($name) {
+            $this->name = $name;
+        }
+        if (!is_null($index)) {
+            $this->index = $index;
+        }
+
+        if (!is_null($enabled)) {
+            $this->enabled = $enabled;
+        }
+
         if (is_string($type)) {
             $this->type = FieldType::from($type);
         }
     }
 
-    public static function make(string|FieldType $type, string $name): static
+    public static function make(...$args): static
     {
-        if (!$type instanceof FieldType) {
-            $type = FieldType::from($type);
-        }
+        return new static(...$args);
+    }
+    public function name(string $name): static
+    {
+        $this->name = $name;
 
-        return new static(type: $type, name: $name);
+        return $this;
     }
 
     public function index(bool $index = true): static
@@ -174,7 +192,7 @@ class Field implements Arrayable
                 ->map(fn ($prop) => $prop->toArray())
                 ->all();
         }
-        if (isset($this->object)) {
+        if (!empty($this->object)) {
             $config['properties'] = collect($this->object::indexProperties())
                 ->keyBy(fn ($prop) => $prop->getName())
                 ->map(fn ($prop) => isset($this->propertyCallback) ? call_user_func($this->propertyCallback, $prop) : $prop)

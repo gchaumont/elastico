@@ -434,4 +434,15 @@ class Builder extends EloquentBuilder
         //     }
         // });
     }
+
+
+    /**
+     * Get the model instance being queried.
+     *
+     * @return \Elastico\Eloquent\Model|static
+     */
+    public function getModel()
+    {
+        return parent::getModel();
+    }
 }

@@ -4,7 +4,6 @@ namespace Elastico\Index;
 
 use Elastico\Mapping\Field;
 use Elastico\Index\Mappings;
-use Elastico\Index\Settings;
 
 class Config
 {
@@ -19,6 +18,13 @@ class Config
     public static function make(...$args): static
     {
         return new static(...$args);
+    }
+
+    public function index(string $index): static
+    {
+        $this->index = $index;
+
+        return $this;
     }
 
     public function settings(array $settings): static

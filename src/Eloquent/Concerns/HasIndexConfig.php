@@ -8,9 +8,26 @@ use Elastico\Mapping\Field;
 
 trait HasIndexConfig
 {
+    use HasIndexProperties;
+
     protected static array $indexConfigurators = [];
 
     abstract protected static function indexConfig(): Config;
+
+    public function initializeHasIndexConfig(): void
+    {
+        collect(static::getIndexProperties())
+            ->filter(static fn (Field $field) => !empty($field->object))
+            ->tap(fn ($fields) => $this->mergeCasts($fields
+                ->mapWithKeys(fn (Field $field) => [$field->getName() => $field->object])
+                ->all()));
+
+        collect(static::getIndexProperties())
+            ->filter(static fn (Field $field) => !empty($field->cast))
+            ->tap(fn ($fields) => $this->mergeCasts($fields
+                ->mapWithKeys(fn (Field $field) => [$field->getName() => $field->cast])
+                ->all()));
+    }
 
     public static function getIndexConfig(): Config
     {
@@ -22,6 +39,9 @@ trait HasIndexConfig
 
         $config = static::indexConfig();
 
+        $config->properties(...static::getIndexProperties());
+
+        # run configurators 
         foreach (static::$indexConfigurators[static::class] ?? [] as $callback) {
             $callback($config);
         }

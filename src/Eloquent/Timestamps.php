@@ -12,18 +12,8 @@ use Elastico\Eloquent\Model;
  * @property Carbon $created_at
  * @property Carbon $updated_at
  */
+#[Field(name: 'created_at', type: 'date', cast: 'datetime')]
+#[Field(name: 'updated_at', type: 'date', cast: 'datetime')]
 trait Timestamps
 {
-    public function initializeTimestamps(): void
-    {
-        $this->mergeCasts([
-            'created_at' => 'datetime',
-            'updated_at' => 'datetime',
-        ]);
-
-        $this->configureIndexUsing(fn (Config $config) =>  $config->properties(
-            Field::make(name: 'created_at', type: 'date'),
-            Field::make(name: 'updated_at', type: 'date')
-        ));
-    }
 }

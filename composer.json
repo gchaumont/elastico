@@ -15,6 +15,7 @@
         "illuminate/support": "^11.0",
         "php-http/guzzle7-adapter": "^1.0",
         "elasticsearch/elasticsearch": "^8.2",
+        "spatie/laravel-data": "^4.6",
         "spatie/ssh": "^1.7",
         "illuminate/database": "^11.0"
     },
