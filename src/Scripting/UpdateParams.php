@@ -11,7 +11,7 @@ use Elastico\Eloquent\Model;
 class UpdateParams extends Script
 {
     public function __construct(
-        protected array $params = [],
+        public array $params = [],
     ) {}
 
     public function source(): null|string
