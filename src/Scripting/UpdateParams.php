@@ -11,9 +11,8 @@ use Elastico\Eloquent\Model;
 class UpdateParams extends Script
 {
     public function __construct(
-        protected array $params = null,
-    ) {
-    }
+        protected array $params = [],
+    ) {}
 
     public function source(): null|string
     {
@@ -30,7 +29,7 @@ class UpdateParams extends Script
     {
         $values = $this->model instanceof Model ? $this->model->getAttributes() : $this->model;
 
-        if ($this->params === null) {
+        if (empty($this->params)) {
             return $values;
         }
 
