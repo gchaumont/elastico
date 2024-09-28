@@ -2,9 +2,11 @@
 
 namespace Elastico\Console\Setup;
 
+use Exception;
 use Throwable;
 use Spatie\Ssh\Ssh;
 use Illuminate\Console\Command;
+use Illuminate\Support\Facades\DB;
 
 class InstallElasticsearch extends Command
 {
@@ -67,16 +69,17 @@ class InstallElasticsearch extends Command
                 s3_endpoint: $this->option('s3-endpoint'),
             );
 
-            // // return;
             $this->joinCluster(token: $this->option('enrollment-token'));
 
             $this->startElasticsearch();
 
-            // $this->testConnection();
-            $this->copyCertificate();
+            // $this->testConnection("localhost");
+
+
+            $path = $this->copyCertificate();
 
             $this->info('Elastic password: ' . ($this->elastic_password ?? null));
-            $this->info('Certificate File: ' . __DIR__ . '/elastic-http-certificate.crt');
+            $this->info('Certificate File: ' . $path);
         } catch (Throwable $th) {
             $this->error($th->getMessage());
         }
@@ -91,29 +94,24 @@ class InstallElasticsearch extends Command
         // Add any other validation as per your needs
     }
 
-    public function testConnection(): void
+    public function testConnection(string $ip): void
     {
-        // $client = ClientBuilder::create()
-        //     ->setHosts([$this->argument('ip')])
-        //     ->setBasicAuthentication('elastic', ($this->elastic_password ?? 'I9NOUIdPTG2*E3yGrMmK'))
-        //     ->setHttpClient(new GuzzleClient())
-        //     ->setCABundle(__DIR__.'/elastic-http-certificate.crt')
-        //     ->build()
-        // ;
-
-        $this->ssh->execute("curl --cacert /etc/elasticsearch/certs/http_ca.crt -u elastic:{$this->elastic_password} https://localhost:9200/_cluster/health ");
-
-        // dump($client->cluster()->health());
+        $this->ssh->execute("curl --cacert /etc/elasticsearch/certs/http_ca.crt -u elastic:{$this->elastic_password} https://$ip:9200/_cluster/health ");
     }
 
     public function copyCertificate()
     {
-        if (!file_exists(storage_path('elastic'))) {
-            mkdir(storage_path('elastic'));
+        if (!file_exists(storage_path('certificates/elastic'))) {
+            mkdir(storage_path('certificates/elastic'));
         }
 
-        if (!file_exists(storage_path('elastic/elastic-http-certificate.crt'))) {
-            $this->ssh->download('/etc/elasticsearch/certs/http_ca.crt', storage_path('elastic/elastic-http-certificate.crt'));
+        $path = storage_path('certificates/elastic/elastic-http-certificate.crt');
+
+        if (!file_exists($path)) {
+
+            $this->ssh->download('/etc/elasticsearch/certs/http_ca.crt', $path);
+
+            return $path;
         }
     }
 
@@ -229,25 +227,29 @@ class InstallElasticsearch extends Command
             '#network.host: 192.168.0.1' => "network.host: {$host}",
         ];
 
-        // if ($seed_hosts) {
-        //     $config['#discovery.seed_hosts: ["host1", "host2"]'] = 'discovery.seed_hosts: [' . implode(',', $seed_hosts) . ']';
-        // }
-        // if ($master_nodes) {
-        //     $config['#cluster.initial_master_nodes: ["node-1", "node-2"]'] = 'cluster.initial_master_nodes: [' . implode(',', $master_nodes) . ']';
-        // }
-
         foreach ($config as $key => $value) {
             $contents = str_replace($key, $value, $contents);
         }
 
-        # if content does not contain config : http.host: 0.0.0.0 add it 
 
+        if ($seed_hosts) {
+            // delete line that contains discovery.seed_hosts
+            $contents = preg_replace('/discovery.seed_hosts: \[.*\]/', '', $contents);
+
+            $contents .= "\ndiscovery.seed_hosts: [" . implode(',', $seed_hosts) . "]";
+        }
+        if ($master_nodes) {
+            $contents = preg_replace('/cluster.initial_master_nodes: \[.*\]/', '', $contents);
+
+            $contents .= "\ncluster.initial_master_nodes: [" . implode(',', $master_nodes) . "]";
+        }
+
+        # if content does not contain config : http.host: 0.0.0.0 add it 
         if (!str_contains($contents, 'http.host:')) {
             $contents .= "\nhttp.host: 0.0.0.0";
         }
 
         # same with s3.client.spaces.endpoint: fra1.digitaloceanspaces.com
-
         if ($s3_endpoint && !str_contains($contents, 's3.client.spaces.endpoint:')) {
             $contents .= "\ns3.client.spaces.endpoint: $s3_endpoint";
         }
