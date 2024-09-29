@@ -123,12 +123,12 @@ trait LoadsAggregates
 
         $models = $this->loadAggregationsGrouped(
             models: $models,
-            aggregations: $aggregations->filter(static fn (array $aggregation): bool => $aggregation['separate_queries'] === false)->all()
+            aggregations: $aggregations->filter(static fn(array $aggregation): bool => $aggregation['separate_queries'] === false)->all()
         );
 
         $models = $this->loadAggregationsSeparate(
             models: $models,
-            aggregations: $aggregations->filter(static fn (array $aggregation): bool => $aggregation['separate_queries'] === true)->all()
+            aggregations: $aggregations->filter(static fn(array $aggregation): bool => $aggregation['separate_queries'] === true)->all()
         );
 
         return $models;
@@ -173,7 +173,7 @@ trait LoadsAggregates
                         return $relation;
                     })
                     ->filter()
-                    ->keyBy(static fn (Relation $relation, $name): string => $index . '::' . $name);
+                    ->keyBy(static fn(Relation $relation, $name): string => $index . '::' . $name);
 
                 // $aggregation['results'] = $aggregation['eager_loads']->map(static fn (Relation $relation) => match (true) {
                 //     $relation instanceof HasMany => $relation->getEager(),
@@ -184,18 +184,18 @@ trait LoadsAggregates
                 return $aggregation;
             });
 
-        $relation_hash = fn (string $relation, Relation $query) => Str::before(Str::after($relation, '::'), ' as ') . '::' .
+        $relation_hash = fn(string $relation, Relation $query) => Str::before(Str::after($relation, '::'), ' as ') . '::' .
             hash(algo: 'murmur3a', data: json_encode($query->getQuery()->getQuery()->wheres));
 
         $results = $aggregations
-            ->flatMap(static fn (array $aggregation): BaseCollection => $aggregation['eager_loads'])
-            ->groupBy(static fn (Relation $relation, $key) => $relation_hash($key, $relation), preserveKeys: true)
-            ->map(static fn (BaseCollection $relations): Relation => $relations
-                ->reduce(static fn (null|Relation $carry, Relation $relation): Relation => $carry ? $carry->mergeAggregations($relation) : $relation))
+            ->flatMap(static fn(array $aggregation): BaseCollection => $aggregation['eager_loads'])
+            ->groupBy(static fn(Relation $relation, $key) => $relation_hash($key, $relation), preserveKeys: true)
+            ->map(static fn(BaseCollection $relations): Relation => $relations
+                ->reduce(static fn(null|Relation $carry, Relation $relation): Relation => $carry ? $carry->mergeAggregations($relation) : $relation))
             // ->each(static fn (Relation $relation) => dump($relation->getBaseQuery()->getConnection()))
-            ->groupBy(static fn (Relation $relation): string => $relation->getBaseQuery()->getConnection()->getName(), preserveKeys: true)
+            ->groupBy(static fn(Relation $relation): string => $relation->getBaseQuery()->getConnection()->getName(), preserveKeys: true)
             // ->each(static fn (BaseCollection $queries, string $connection) => dd($queries->first()->toSql()))
-            ->map(static fn (BaseCollection $queries, string $connection): array => DB::connection($connection)->query()->getMany($queries->all()))
+            ->map(static fn(BaseCollection $queries, string $connection): array => DB::connection($connection)->query()->getMany($queries->all()))
             ->collapse();
 
 
@@ -216,7 +216,7 @@ trait LoadsAggregates
                 });
             });
         })
-            ->tap(fn (BaseCollection $items): array => $this->resolveAggregates($items->all()))
+            ->tap(fn(BaseCollection $items): array => $this->resolveAggregates($items->all()))
             ->all();
     }
 
@@ -237,9 +237,9 @@ trait LoadsAggregates
                         return $item
                             ->newQueryWithoutRelationships()
                             ->parseRelationArray(!is_array($relations) ? [$relations] : $relations)
-                            ->keyBy(static fn ($relation, string $relation_key): string => Str::after($relation_key, ' as '))
-                            ->keyBy(static fn ($relation, string $relation_key): string  => implode(static::AGGREGATION_SEPARATOR, [$relation_key, $aggregation_key]))
-                            ->map(static fn (Closure $relation): Builder|Relation  => $relation($item))
+                            ->keyBy(static fn($relation, string $relation_key): string => Str::after($relation_key, ' as '))
+                            ->keyBy(static fn($relation, string $relation_key): string  => implode(static::AGGREGATION_SEPARATOR, [$relation_key, $aggregation_key]))
+                            ->map(static fn(Closure $relation): Builder|Relation  => $relation($item))
                             ->each(static function (Relation|Builder $relation) use ($aggregations, $item): void {
                                 $relation->take(0)->addAggregations(static::makeAggregationsForModel($aggregations, $item));
                             });
@@ -248,15 +248,15 @@ trait LoadsAggregates
             });
 
         return $items
-            ->each(static fn (Model $item, int $index) => $responses
+            ->each(static fn(Model $item, int $index) => $responses
                 ->get($index)
-                ?->each(static fn (Collection $response, string $response_key) => $item
+                ?->each(static fn(Collection $response, string $response_key) => $item
                     ->addAggregations(
                         Str::before($response_key, static::AGGREGATION_SEPARATOR),
                         $response->aggregations()
                             ->put('_total', $response->total()),
                     )))
-            ->tap(fn (BaseCollection $items): array => $this->resolveAggregates($items->all()))
+            ->tap(fn(BaseCollection $items): array => $this->resolveAggregates($items->all()))
             ->all();
     }
 
@@ -326,7 +326,7 @@ trait LoadsAggregates
         }
 
         return collect($aggregations)
-            ->map(static fn (Aggregation|Closure $aggregation, string $name): Aggregation => $aggregation instanceof Closure ? $aggregation($model) : $aggregation);
+            ->map(static fn(Aggregation|Closure $aggregation, string $name): Aggregation => $aggregation instanceof Closure ? $aggregation($model) : $aggregation);
     }
 
 
@@ -346,7 +346,7 @@ trait LoadsAggregates
 
                 if (is_numeric($key) && is_string($relation)) {
                     $name = $relation;
-                    $constraints = fn (Relation $query) => $query;
+                    $constraints = fn(Relation $query) => $query;
                 } elseif (is_array($relation) && count($relation) === 1) {
                     $name = array_key_first($relation);
                     $constraints = reset($relation);

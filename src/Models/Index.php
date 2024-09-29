@@ -30,6 +30,24 @@ class Index extends Model
 
     public $incrementing = false;
 
+    public function getSettings()
+    {
+        return DB::connection('elastic')
+            ->getClient()
+            ->indices()
+            ->getSettings(['index' => $this->name])
+            ->asArray();
+    }
+
+    public function getMappings()
+    {
+        return DB::connection('elastic')
+            ->getClient()
+            ->indices()
+            ->getMapping(['index' => $this->name])
+            ->asArray();
+    }
+
 
     public function getRows(): array
     {
@@ -38,7 +56,7 @@ class Index extends Model
             ->indices()
             ->stats()
             ->asArray()['indices'])
-            ->map(fn ($value, $index) => [
+            ->map(fn($value, $index) => [
                 'name' => $index,
                 'cluster' => 'elastic',
                 'total_size' => $value['total']['store']['size_in_bytes'],

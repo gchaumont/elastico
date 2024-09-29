@@ -17,8 +17,11 @@ use Elastico\Models\Index;
 use Filament\Tables\Columns\Summarizers\Sum;
 use Elastico\Filament\IndexResource\Pages\ListIndices;
 use Elastico\Filament\IndexResource\Widgets\IndexStats;
+use Filament\Infolists\Infolist;
+use Filament\Tables\Actions\ViewAction;
 use Illuminate\Support\Number;
 use Illuminate\Database\Eloquent\Model;
+use Filament\Infolists\Components\TextEntry;
 
 class IndexResource extends Resource
 {
@@ -47,6 +50,35 @@ class IndexResource extends Resource
         return parent::getEloquentQuery();
     }
 
+    public static function infolist(Infolist $infolist): Infolist
+    {
+        return $infolist
+            ->schema([
+                TextEntry::make('_id'),
+                TextEntry::make('cluster'),
+                TextEntry::make('name'),
+                TextEntry::make('health'),
+                TextEntry::make('status'),
+                TextEntry::make('docs'),
+                TextEntry::make('primary_size')
+                    ->formatStateUsing(fn($record) => Number::fileSize($record->primary_size, 1)),
+                TextEntry::make('total_size')
+                    ->formatStateUsing(fn($record) => Number::fileSize($record->total_size, 1)),
+                TextEntry::make('shards'),
+                TextEntry::make('deleted_docs'),
+                TextEntry::make('Json')
+                    // ->getStateUsing(fn($record) => '<pre>' . $record->toJson(JSON_PRETTY_PRINT) . '</pre>')
+                    ->getStateUsing(static function ($record): string {
+                        $settings = $record->getSettings();
+                        $mappings = $record->getMappings();
+                        return '<pre>' . json_encode(compact('settings', 'mappings'), JSON_PRETTY_PRINT) . '</pre>';
+
+                        return '<pre>' . $record->toJson(JSON_PRETTY_PRINT) . '</pre>';
+                    })
+                    ->html(),
+            ]);
+    }
+
 
     public static function table(Table $table): Table
     {
@@ -56,7 +88,7 @@ class IndexResource extends Resource
                 TextColumn::make('name')->sortable()->searchable(),
                 TextColumn::make('health')
                     ->badge()
-                    ->color(fn ($record) => match ($record->health) {
+                    ->color(fn($record) => match ($record->health) {
                         'green' => 'success',
                         'yellow' => 'warning',
                         'red' => 'danger',
@@ -64,21 +96,21 @@ class IndexResource extends Resource
                     }),
                 TextColumn::make('status')
                     ->badge()
-                    ->color(fn ($record) => match ($record->status) {
+                    ->color(fn($record) => match ($record->status) {
                         'open' => 'primary',
                         'closed' => 'danger',
                         default => 'danger',
                     }),
                 TextColumn::make('docs')->numeric(locale: app()->getLocale())->alignRight()->sortable(),
                 TextColumn::make('primary_size')->sortable()
-                    ->formatStateUsing(fn ($record) => Number::fileSize($record->primary_size, 1))
+                    ->formatStateUsing(fn($record) => Number::fileSize($record->primary_size, 1))
                     ->alignRight(),
                 TextColumn::make('total_size')
                     ->sortable()
-                    ->formatStateUsing(fn ($record) => Number::fileSize($record->total_size, 1))
+                    ->formatStateUsing(fn($record) => Number::fileSize($record->total_size, 1))
                     ->alignRight(),
                 TextColumn::make('Doc size')
-                    ->getStateUsing(static fn ($record) => Number::fileSize($record->total_size / max(1, $record->docs), 1)),
+                    ->getStateUsing(static fn($record) => Number::fileSize($record->total_size / max(1, $record->docs), 1)),
                 TextColumn::make('shards')->sortable()->numeric(locale: app()->getLocale())->alignRight(),
                 TextColumn::make('deleted_docs')->sortable()->numeric(locale: app()->getLocale())->alignRight(),
             ])
@@ -91,16 +123,20 @@ class IndexResource extends Resource
                     ]),
             ])
             ->actions([
-                // Tables\Actions\EditAction::make(),
+                // see the mappings and settings
+                ViewAction::make()
+                    ->slideOver(),
+
                 Action::make('delete')
-                    ->action(fn ($record) => DB::connection('elastic')->getClient()->indices()->delete(['index' => $record->name]))
+                    ->action(fn($record) => DB::connection('elastic')->getClient()->indices()->delete(['index' => $record->name]))
                     ->requiresConfirmation()
                     ->icon('heroicon-o-trash')
                     ->modalIcon('heroicon-o-trash')
-                    ->modalHeading(static fn (Index $record) => "Delete index?")
-                    ->modalDescription(static fn (Index $record) => "Are you sure you want to delete {$record->name}?")
+                    ->modalHeading(static fn(Index $record) => "Delete index?")
+                    ->modalDescription(static fn(Index $record) => "Are you sure you want to delete {$record->name}?")
                     ->modalSubmitActionLabel('Delete')
                     ->color('danger'),
+                // Tables\Actions\EditAction::make(),
             ])
             ->bulkActions([
                 // Tables\Actions\DeleteBulkAction::make(),
@@ -109,6 +145,7 @@ class IndexResource extends Resource
             ->defaultSort('total_size', 'desc')
             ->poll('5s');
     }
+
 
     public static function getRelations(): array
     {

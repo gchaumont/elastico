@@ -188,15 +188,15 @@ class Field implements Arrayable
         }
         if (isset($this->properties)) {
             $config['properties'] = collect($this->properties)
-                ->keyBy(fn ($prop) => $prop->getName())
-                ->map(fn ($prop) => $prop->toArray())
+                ->keyBy(fn($prop) => $prop->getName())
+                ->map(fn($prop) => $prop->toArray())
                 ->all();
         }
         if (!empty($this->object)) {
             $config['properties'] = collect($this->object::getIndexProperties())
-                ->keyBy(fn ($prop) => $prop->getName())
-                ->map(fn ($prop) => isset($this->propertyCallback) ? call_user_func($this->propertyCallback, $prop) : $prop)
-                ->map(fn ($prop) => $prop->toArray())
+                ->keyBy(fn($prop) => $prop->getName())
+                ->map(fn($prop) => isset($this->propertyCallback) ? call_user_func($this->propertyCallback, $prop) : $prop)
+                ->map(fn($prop) => $prop->toArray())
                 ->all();
         }
         if (isset($this->copy_to)) {
@@ -234,7 +234,7 @@ class Field implements Arrayable
         if ($this->property->getType() instanceof \ReflectionUnionType) {
             $types = explode('|', (string) $this->property->getType());
 
-            $types = array_filter($types, fn ($type) => !in_array($type, ['array', 'null', 'string']));
+            $types = array_filter($types, fn($type) => !in_array($type, ['array', 'null', 'string']));
 
             if (1 == count($types)) {
                 return reset($types);
@@ -323,7 +323,7 @@ class Field implements Arrayable
     {
         if (isset($this->object)) {
             return collect($this->object::indexProperties())
-                ->map(fn ($prop) => $prop->propCount())
+                ->map(fn($prop) => $prop->propCount())
                 ->sum();
         }
 
