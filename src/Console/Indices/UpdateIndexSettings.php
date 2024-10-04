@@ -35,11 +35,12 @@ class UpdateIndexSettings extends Command
     {
         $class = $this->argument('index');
 
-        $config = $class::getIndexConfiguration();
+        $config = $class::getIndexConfig()->toArray();
 
         $model = new $class();
 
         unset($config['body']['settings']['analysis']);
+        unset($config['body']['settings']['index']['number_of_shards']);
 
         $model->getConnection()->getClient()->indices()->putSettings([
             'index' => $config['index'],
