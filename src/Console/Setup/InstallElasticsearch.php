@@ -205,7 +205,7 @@ class InstallElasticsearch extends Command
         ]);
     }
 
-    public function configureNode(string $cluster, string $host, array $seed_hosts, array $master_nodes = [], string $s3_endpoint = null): void
+    public function configureNode(string $cluster, string $host, array $seed_hosts, array $master_nodes = [], null|string $s3_endpoint = null): void
     {
         $temp_file = tmpfile();
 
