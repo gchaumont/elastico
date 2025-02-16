@@ -17,7 +17,7 @@ trait MatchesAttributes
 {
     protected array $attribute_matches = [];
 
-    public function whereMatches(string $localKey, string $foreignKey = null): static
+    public function whereMatches(string $localKey, ?string $foreignKey = null): static
     {
         $foreignKey ??= $localKey;
 
