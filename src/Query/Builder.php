@@ -67,12 +67,39 @@ class Builder extends BaseBuilder
      * @var string[]
      */
     public $operators = [
-        '=', '<', '>', '<=', '>=', '<>', '!=', '<=>',
-        'like', 'like binary', 'not like', 'ilike',
-        '&', '|', '^', '<<', '>>', '&~', 'is', 'is not',
-        'rlike', 'not rlike', 'regexp', 'not regexp',
-        '~', '~*', '!~', '!~*', 'similar to',
-        'not similar to', 'not ilike', '~~*', '!~~*',
+        '=',
+        '<',
+        '>',
+        '<=',
+        '>=',
+        '<>',
+        '!=',
+        '<=>',
+        'like',
+        'like binary',
+        'not like',
+        'ilike',
+        '&',
+        '|',
+        '^',
+        '<<',
+        '>>',
+        '&~',
+        'is',
+        'is not',
+        'rlike',
+        'not rlike',
+        'regexp',
+        'not regexp',
+        '~',
+        '~*',
+        '!~',
+        '!~*',
+        'similar to',
+        'not similar to',
+        'not ilike',
+        '~~*',
+        '!~~*',
         'rank',
     ];
 
@@ -266,7 +293,7 @@ class Builder extends BaseBuilder
 
         $key = $this->stripTableForPluck($key);
 
-        $queryResult = $queryResult->map(fn ($r) => $r['_source']);
+        $queryResult = $queryResult->map(fn($r) => $r['_source']);
 
         return is_array($queryResult->first())
             ? $this->pluckFromArrayColumn($queryResult, $column, $key)
@@ -378,7 +405,8 @@ class Builder extends BaseBuilder
     public function rank(string $field, int|float $boost = null): self
     {
         $this->ranks[] = [
-            $field, $boost,
+            $field,
+            $boost,
         ];
 
         return $this;
@@ -626,7 +654,7 @@ class Builder extends BaseBuilder
         );
 
         return collect($response['items'])
-            ->filter(fn ($item) => $item['delete']['result'] == 'deleted')
+            ->filter(fn($item) => $item['delete']['result'] == 'deleted')
             ->count();
     }
 
@@ -713,7 +741,7 @@ class Builder extends BaseBuilder
                     'min' => new Min(field: $columns[0]),
                     'max' => new Max(field: $columns[0]),
                 })->field($columns[0])])
-                    ->keyBy(static fn () => 'agg')
+                    ->keyBy(static fn() => 'agg')
             )
             ->get()
             ->aggregation('agg')
@@ -793,9 +821,9 @@ class Builder extends BaseBuilder
     public function orderBy(
         $column,
         $direction = 'asc',
-        string $missing = null,
-        string $mode = null,
-        array $nested = null
+        ?string $missing = null,
+        ?string $mode = null,
+        ?array $nested = null
     ) {
         // if ($this->isQueryable($column)) {
         //     [$query, $bindings] = $this->createSub($column);
