@@ -29,7 +29,7 @@ trait HasAggregations
         return $this;
     }
 
-    public function getAggregations(string $relation = null): BaseCollection
+    public function getAggregations(null|string $relation = null): BaseCollection
     {
         if ($relation) {
             return $this->aggregations->get($relation);
