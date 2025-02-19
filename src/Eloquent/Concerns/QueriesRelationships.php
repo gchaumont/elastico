@@ -26,7 +26,7 @@ trait QueriesRelationships
      *
      * @throws \Exception
      */
-    public function has($relation, $operator = '>=', $count = 1, $boolean = 'and', \Closure $callback = null)
+    public function has($relation, $operator = '>=', $count = 1, $boolean = 'and', ?\Closure $callback = null)
     {
         if (is_string($relation)) {
             if (false !== strpos($relation, '.')) {
@@ -81,7 +81,7 @@ trait QueriesRelationships
      *
      * @throws \Exception
      */
-    public function addHybridHas(Relation $relation, $operator = '>=', $count = 1, $boolean = 'and', \Closure $callback = null)
+    public function addHybridHas(Relation $relation, $operator = '>=', $count = 1, $boolean = 'and', ?\Closure $callback = null)
     {
         $hasQuery = $relation->getQuery();
         if ($callback) {
