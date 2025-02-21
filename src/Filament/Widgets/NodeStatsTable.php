@@ -53,6 +53,11 @@ class NodeStatsTable extends TableWidget
                     ->alignRight()
                     ->formatStateUsing(fn($record) => Number::fileSize($record->fs['total']['available_in_bytes']))
                     ->color(fn($record) => $record->fs['total']['available_in_bytes'] < 100_000_000_000 ? 'danger' : 'success'), // 100GB
+
+                TextColumn::make('indices.shard_stats.total_count')
+                    ->label('Shards')
+                    ->sortable()
+                    ->alignRight(),
             ])
             ->actions([]);
     }
