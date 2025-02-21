@@ -27,17 +27,17 @@ class ListIndices extends ListRecords
         ];
     }
 
-    public function getTabs(): array
-    {
-        return [
-            'all' => Tab::make('All Clusters'),
-            ...collect(Index::all())
-                ->pluck('cluster')
-                ->unique()
-                ->mapWithKeys(fn ($cluster) => [$cluster => Tab::make($cluster)])
-                ->all()
-        ];
-    }
+    // public function getTabs(): array
+    // {
+    //     return [
+    //         'all' => Tab::make('All Clusters'),
+    //         ...collect(Index::all())
+    //             ->pluck('cluster')
+    //             ->unique()
+    //             ->mapWithKeys(fn ($cluster) => [$cluster => Tab::make($cluster)])
+    //             ->all()
+    //     ];
+    // }
 
     protected function getHeaderActions(): array
     {

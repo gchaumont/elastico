@@ -34,21 +34,21 @@ class NodeStatsTable extends TableWidget
                 TextColumn::make('cluster'),
 
                 TextColumn::make('os.cpu.percent')
-                    ->label('CPU %')
+                    ->label('CPU Usage')
                     ->sortable()
                     ->alignRight()
                     ->formatStateUsing(fn($record) => Number::percentage($record->os['cpu']['percent']))
                     ->color(fn($record) => $record->os['cpu']['percent'] > 90 ? 'danger' : 'success'),
 
                 TextColumn::make('jvm.mem.heap_used_percent')
-                    ->label('JVM Heap Used %')
+                    ->label('JVM Memory')
                     ->sortable()
                     ->alignRight()
                     ->formatStateUsing(fn($record) => Number::percentage($record->jvm['mem']['heap_used_percent']))
                     ->color(fn($record) => $record->jvm['mem']['heap_used_percent'] > 90 ? 'danger' : 'success'),
 
                 TextColumn::make('fs.total.available_in_bytes')
-                    ->label('FS Available')
+                    ->label('Disk Free Space')
                     ->sortable()
                     ->alignRight()
                     ->formatStateUsing(fn($record) => Number::fileSize($record->fs['total']['available_in_bytes']))

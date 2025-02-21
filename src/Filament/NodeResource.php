@@ -22,6 +22,7 @@ use Filament\Infolists\Infolist;
 use Filament\Infolists\Components\TextEntry;
 use Elastico\Filament\NodeResource\Pages\ViewNode;
 use Filament\Infolists\Components\KeyValueEntry;
+use Filament\Tables\Actions\ViewAction;
 use Illuminate\Support\Number;
 
 class NodeResource extends Resource
@@ -133,11 +134,11 @@ class NodeResource extends Resource
             ])
             ->filters([])
             ->actions([
+                ViewAction::make()
+                    ->slideOver(),
                 // Tables\Actions\EditAction::make(),
             ])
-            ->bulkActions([
-                // Tables\Actions\DeleteBulkAction::make(),
-            ])
+            ->bulkActions([])
             // ->deferLoading()
             ->defaultSort('name', 'asc')
             ->poll('5s');
@@ -159,16 +160,15 @@ class NodeResource extends Resource
     {
         return [
             'index' => ListNodes::route('/'),
-            'view' => ViewNode::route('/{record}'),
-            // 'create' => Pages\CreateHost::route('/create'),
+            // 'view' => ViewNode::route('/{record}'),
         ];
     }
 
-    public static function getNavigationBadge(): ?string
-    {
-        $model = static::getModel();
-        return format_number(
-            (new $model)->count()
-        );
-    }
+    // public static function getNavigationBadge(): ?string
+    // {
+    //     $model = static::getModel();
+    //     return format_number(
+    //         (new $model)->count()
+    //     );
+    // }
 }

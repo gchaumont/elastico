@@ -54,26 +54,43 @@ class IndexResource extends Resource
     {
         return $infolist
             ->schema([
-                TextEntry::make('_id'),
-                TextEntry::make('cluster'),
+                TextEntry::make('uuid'),
                 TextEntry::make('name'),
-                TextEntry::make('health'),
+                TextEntry::make('health')
+                    ->badge()
+                    ->color(fn($record) => match ($record->health) {
+                        'green' => 'success',
+                        'yellow' => 'warning',
+                        'red' => 'danger',
+                        default => 'primary',
+                    }),
                 TextEntry::make('status'),
-                TextEntry::make('docs'),
-                TextEntry::make('primary_size')
-                    ->formatStateUsing(fn($record) => Number::fileSize($record->primary_size, 1)),
-                TextEntry::make('total_size')
-                    ->formatStateUsing(fn($record) => Number::fileSize($record->total_size, 1)),
-                TextEntry::make('shards'),
-                TextEntry::make('deleted_docs'),
-                TextEntry::make('Json')
+                TextEntry::make('primaries')
+                    ->getStateUsing(static function ($record): string {
+                        return '<pre>' . json_encode($record->primaries, JSON_PRETTY_PRINT) . '</pre>';
+                    })
+                    ->columnSpanFull()
+                    ->html(),
+                TextEntry::make('total')
+                    ->getStateUsing(static function ($record): string {
+                        return '<pre>' . json_encode($record->total, JSON_PRETTY_PRINT) . '</pre>';
+                    })
+                    ->columnSpanFull()
+                    ->html(),
+                TextEntry::make('settings')
+                    ->columnSpanFull()
                     // ->getStateUsing(fn($record) => '<pre>' . $record->toJson(JSON_PRETTY_PRINT) . '</pre>')
                     ->getStateUsing(static function ($record): string {
                         $settings = $record->getSettings();
+                        return '<pre>' . json_encode($settings, JSON_PRETTY_PRINT) . '</pre>';
+                    })
+                    ->html(),
+                TextEntry::make('mappings')
+                    ->columnSpanFull()
+                    // ->getStateUsing(fn($record) => '<pre>' . $record->toJson(JSON_PRETTY_PRINT) . '</pre>')
+                    ->getStateUsing(static function ($record): string {
                         $mappings = $record->getMappings();
-                        return '<pre>' . json_encode(compact('settings', 'mappings'), JSON_PRETTY_PRINT) . '</pre>';
-
-                        return '<pre>' . $record->toJson(JSON_PRETTY_PRINT) . '</pre>';
+                        return '<pre>' . json_encode($mappings, JSON_PRETTY_PRINT) . '</pre>';
                     })
                     ->html(),
             ]);
@@ -82,11 +99,19 @@ class IndexResource extends Resource
 
     public static function table(Table $table): Table
     {
+
+
         return $table
             ->columns([
-                TextColumn::make('cluster')->badge()->color('gray'),
-                TextColumn::make('name')->sortable()->searchable(),
+                TextColumn::make('cluster')
+                    ->badge()
+                    ->color('gray')
+                    ->toggleable(isToggledHiddenByDefault: true),
+                TextColumn::make('name')
+                    ->sortable()
+                    ->searchable(),
                 TextColumn::make('health')
+                    ->label('Status')
                     ->badge()
                     ->color(fn($record) => match ($record->health) {
                         'green' => 'success',
@@ -94,25 +119,57 @@ class IndexResource extends Resource
                         'red' => 'danger',
                         default => 'primary',
                     }),
-                TextColumn::make('status')
-                    ->badge()
-                    ->color(fn($record) => match ($record->status) {
-                        'open' => 'primary',
-                        'closed' => 'danger',
-                        default => 'danger',
-                    }),
-                TextColumn::make('docs')->numeric(locale: app()->getLocale())->alignRight()->sortable(),
-                TextColumn::make('primary_size')->sortable()
-                    ->formatStateUsing(fn($record) => Number::fileSize($record->primary_size, 1))
-                    ->alignRight(),
-                TextColumn::make('total_size')
+                // TextColumn::make('status')
+                //     ->badge()
+                //     ->color(fn($record) => match ($record->status) {
+                //         'open' => 'primary',
+                //         'closed' => 'danger',
+                //         default => 'danger',
+                //     }),
+                TextColumn::make('total.docs.count')
+                    ->label('Documents')
+                    ->numeric(locale: app()->getLocale())
+                    ->alignRight()
+                    ->sortable(),
+
+                TextColumn::make('total.store.size_in_bytes')
+                    ->label('Data')
                     ->sortable()
-                    ->formatStateUsing(fn($record) => Number::fileSize($record->total_size, 1))
+                    ->formatStateUsing(fn($state) => Number::fileSize($state, 1))
                     ->alignRight(),
+                TextColumn::make('primary.store.size_in_bytes')
+                    ->label('Primary size')
+                    ->sortable()
+                    ->formatStateUsing(fn($state) => Number::fileSize($state, 1))
+                    ->alignRight()
+                    ->toggleable(isToggledHiddenByDefault: true),
                 TextColumn::make('Doc size')
-                    ->getStateUsing(static fn($record) => Number::fileSize($record->total_size / max(1, $record->docs), 1)),
-                TextColumn::make('shards')->sortable()->numeric(locale: app()->getLocale())->alignRight(),
-                TextColumn::make('deleted_docs')->sortable()->numeric(locale: app()->getLocale())->alignRight(),
+                    ->getStateUsing(static fn($record) => Number::fileSize($record->total->store->size_in_bytes / max(1, $record->total->docs->count), 1))
+                    ->toggleable(isToggledHiddenByDefault: true),
+                TextColumn::make('total.shard_stats.total_count')
+                    ->label('Shards')
+                    ->sortable()
+                    ->numeric(locale: app()->getLocale())
+                    ->alignRight()
+                    ->toggleable(isToggledHiddenByDefault: true),
+                TextColumn::make('total.docs.deleted')
+                    ->sortable()
+                    ->numeric(locale: app()->getLocale())
+                    ->alignRight()
+                    ->toggleable(isToggledHiddenByDefault: true),
+                // Index Rate
+                TextColumn::make('total.indexing.index_total')
+                    ->label('Index Rate')
+                    ->sortable()
+                    ->numeric(locale: app()->getLocale())
+                    ->alignRight()
+                    ->toggleable(isToggledHiddenByDefault: true),
+                TextColumn::make('total.search.query_total')
+                    ->sortable()
+                    ->label('Search Rate')
+                    ->numeric(locale: app()->getLocale())
+                    ->alignRight()
+                    ->toggleable(isToggledHiddenByDefault: true),
             ])
             ->filters([
                 SelectFilter::make('health')
@@ -177,11 +234,11 @@ class IndexResource extends Resource
         ];
     }
 
-    public static function getNavigationBadge(): ?string
-    {
-        $model = static::getModel();
-        return format_number(
-            (new $model)->count()
-        );
-    }
+    // public static function getNavigationBadge(): ?string
+    // {
+    //     $model = static::getModel();
+    //     return format_number(
+    //         (new $model)->count()
+    //     );
+    // }
 }

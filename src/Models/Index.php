@@ -11,17 +11,16 @@ class Index extends Model
     use Sushi;
 
     protected $schema = [
-        'timestamp' => 'timestamp',
+        'uuid' => 'string',
         'name' => 'string',
-        'cluster' => 'string',
 
-        'primary_size' => 'integer',
-        'total_size' => 'integer',
-        'docs' => 'integer',
-        'deleted_docs' => 'integer',
         'health' => 'string',
         'status' => 'string',
-        'shards' => 'integer',
+
+        'primaries' => 'json',
+        'total' => 'json',
+
+        'timestamp' => 'timestamp',
     ];
 
     public $primaryKey = 'name';
@@ -29,6 +28,14 @@ class Index extends Model
     protected $keyType = 'string';
 
     public $incrementing = false;
+
+    public function getCasts()
+    {
+        return [
+            'primaries' => 'array',
+            'total' => 'array',
+        ];
+    }
 
     public function getSettings()
     {
@@ -58,15 +65,12 @@ class Index extends Model
             ->asArray()['indices'])
             ->map(fn($value, $index) => [
                 'name' => $index,
-                'cluster' => 'elastic',
-                'total_size' => $value['total']['store']['size_in_bytes'],
-                'primary_size' => $value['primaries']['store']['size_in_bytes'],
+                'uuid' => $value['uuid'],
+                'primaries' => json_encode($value['primaries']),
+                'total' => json_encode($value['total']),
+                'timestamp' => now(),
                 'health' => $value['health'],
                 'status' => $value['status'],
-                'docs' => $value['total']['docs']['count'],
-                'deleted_docs' => $value['total']['docs']['deleted'],
-                'shards' => $value['total']['shard_stats']['total_count'],
-
             ])
             ->values()
             ->all();
