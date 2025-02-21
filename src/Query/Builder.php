@@ -402,7 +402,7 @@ class Builder extends BaseBuilder
         return $this;
     }
 
-    public function rank(string $field, int|float $boost = null): self
+    public function rank(string $field, null|int|float $boost = null): self
     {
         $this->ranks[] = [
             $field,
@@ -787,8 +787,8 @@ class Builder extends BaseBuilder
 
     public function enumerate(
         string $field,
-        string $string = null,
-        string $after = null,
+        ?string $string = null,
+        ?string $after = null,
         int $size = 10,
         bool $insensitive = true
     ): LazyCollection {
@@ -848,11 +848,11 @@ class Builder extends BaseBuilder
         string $name,
         string $text,
         string|array $field,
-        int $size = null,
         string $type = 'term',
-        string $sort = null,
-        string $mode = null,
-        int $min_doc_freq = null
+        ?int $size = null,
+        ?string $sort = null,
+        ?string $mode = null,
+        ?int $min_doc_freq = null
     ): static {
         $this->suggest[] = compact('name', 'text', 'field', 'size', 'type', 'sort', 'mode', 'min_doc_freq');
 
