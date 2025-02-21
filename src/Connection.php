@@ -86,7 +86,7 @@ class Connection extends BaseConnection implements ConnectionInterface
         $response = $this->getClient()->{$method}($payload);
 
         if ($response instanceof Promise) {
-            $handlePromise = fn ($response) => $this->endingQuery(
+            $handlePromise = fn($response) => $this->endingQuery(
                 method: $method,
                 payload: $payload,
                 response: json_decode((string) $response->getBody(), true),
@@ -165,8 +165,8 @@ class Connection extends BaseConnection implements ConnectionInterface
             if ($response['errors'] ?? false) {
                 if ($query['options']['ignore_conflicts']) {
                     $hasOtherErrors = collect($response['items'])
-                        ->filter(fn (array $item): bool => !empty(collect($item)->first()['error']))
-                        ->filter(fn (array $item): bool => collect($item)->first()['error']['type'] != 'version_conflict_engine_exception')
+                        ->filter(fn(array $item): bool => !empty(collect($item)->first()['error']))
+                        ->filter(fn(array $item): bool => collect($item)->first()['error']['type'] != 'version_conflict_engine_exception')
                         ->isNotEmpty();
 
                     if (!$hasOtherErrors) {
@@ -180,7 +180,7 @@ class Connection extends BaseConnection implements ConnectionInterface
         });
     }
 
-    public function termsEnum(string|array $index, string $field, int $size = null, string $string = null, string $after = null, bool $insensitive = null)
+    public function termsEnum(string|array $index, string $field, ?int $size = null, ?string $string = null, ?string $after = null, ?bool $insensitive = null)
     {
         $query = [
             'method' => 'termsEnum',
@@ -331,7 +331,7 @@ class Connection extends BaseConnection implements ConnectionInterface
                 ->tap(function ($hits) use (&$total) {
                     $total = $hits->count();
                 })
-                ->keyBy(fn ($hit) => $hit instanceof Model ? $hit->getKey() : $hit['_id'])
+                ->keyBy(fn($hit) => $hit instanceof Model ? $hit->getKey() : $hit['_id'])
                 ->all();
 
             // yield from (new PromiseResponse(
@@ -615,9 +615,7 @@ class Connection extends BaseConnection implements ConnectionInterface
     /**
      * Reconnect to the database if a PDO connection is missing.
      */
-    public function reconnectIfMissingConnection()
-    {
-    }
+    public function reconnectIfMissingConnection() {}
 
     /**
      * Run a SQL statement.

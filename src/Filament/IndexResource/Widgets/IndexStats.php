@@ -17,7 +17,12 @@ class IndexStats extends BaseWidget
         return ListIndices::class;
     }
 
-    protected function getCards(): array
+    protected function getColumns(): int
+    {
+        return 4;
+    }
+
+    protected function getStats(): array
     {
         return [
             Stat::make('Total indices', format_number($this->getPageTableQuery()->count())),

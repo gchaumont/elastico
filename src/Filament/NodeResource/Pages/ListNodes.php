@@ -3,14 +3,19 @@
 namespace Elastico\Filament\NodeResource\Pages;
 
 use Filament\Resources\Pages\ListRecords;
-use Elastico\Models\Node;
-use Filament\Resources\Pages\ListRecords\Tab;
+use Filament\Resources\Components\Tab;
 use Elastico\Filament\NodeResource;
 use Elastico\Filament\NodeResource\Widgets\NodeStats;
+use Filament\Support\Enums\MaxWidth;
 
 class ListNodes extends ListRecords
 {
     protected static string $resource = NodeResource::class;
+
+    public function getMaxContentWidth(): MaxWidth
+    {
+        return MaxWidth::Full;
+    }
 
     protected function isTablePaginationEnabled(): bool
     {
@@ -27,12 +32,12 @@ class ListNodes extends ListRecords
     public function getTabs(): array
     {
         return [
-            null => Tab::make('All Clusters'),
-            ...collect(Node::all())
-                ->pluck('cluster')
-                ->unique()
-                ->mapWithKeys(fn ($cluster) => [$cluster => Tab::make($cluster)])
-                ->all()
+            // null => Tab::make('All Clusters'),
+            // ...collect(Node::all())
+            //     ->pluck('cluster')
+            //     ->unique()
+            //     ->mapWithKeys(fn($cluster) => [$cluster => Tab::make($cluster)])
+            //     ->all()
         ];
     }
 
