@@ -26,8 +26,8 @@ class IndexStats extends BaseWidget
     {
         return [
             Stat::make('Total indices', format_number($this->getPageTableQuery()->count())),
-            Stat::make('Total size', formatBytes($this->getPageTableQuery()->sum('total_size'))),
-            Stat::make('Primary size', formatBytes($this->getPageTableQuery()->sum('primary_size'))),
+            Stat::make('Total size', formatBytes($this->getPageTableQuery()->sum('total_size')))
+                ->description('Primary size', formatBytes($this->getPageTableQuery()->sum('primary_size'))),
             Stat::make('Documents', format_number($this->getPageTableQuery()->sum('docs'))),
             Stat::make('Unhealthy', format_number($this->getPageTableQuery()->whereIn('health', ['red', 'yellow'])->count()))
                 ->color('danger'),

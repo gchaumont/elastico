@@ -25,45 +25,35 @@ class NodeStatsTable extends TableWidget
     public function table(Table $table): Table
     {
         return $table
+            ->heading('Nodes')
             ->query(NodeResource::getEloquentQuery())
             ->defaultPaginationPageOption(5)
-            ->poll('5s')
-            // ->defaultSort('created_at', 'desc')
+            ->poll('2s')
             ->columns([
                 TextColumn::make('name'),
                 TextColumn::make('cluster'),
 
-                TextColumn::make('cpu')
-                    ->suffix('%')
-                    ->numeric(),
-                TextColumn::make('memory_current_percent')
-                    ->label('Memory used')
-                    ->numeric()
-                    ->suffix('%'),
-                TextColumn::make('filesystem_available_bytes')
-                    ->label('Disk space available')
-                    ->numeric()
-                    ->formatStateUsing(fn($record): string => Number::fileSize($record->filesystem_available_bytes)),
-                TextColumn::make('jvm_heap_used_percent')
-                    ->label('JVM heap used')
-                    ->numeric()
-                    ->suffix('%'),
+                TextColumn::make('os.cpu.percent')
+                    ->label('CPU %')
+                    ->sortable()
+                    ->alignRight()
+                    ->formatStateUsing(fn($record) => Number::percentage($record->os['cpu']['percent']))
+                    ->color(fn($record) => $record->os['cpu']['percent'] > 90 ? 'danger' : 'success'),
 
-                // Tables\Columns\TextColumn::make('currency')
-                //     ->getStateUsing(fn($record): ?string => Currency::find($record->currency)?->name ?? null)
-                //     ->searchable()
-                //     ->sortable(),
-                // Tables\Columns\TextColumn::make('total_price')
-                //     ->searchable()
-                //     ->sortable(),
-                // Tables\Columns\TextColumn::make('shipping_price')
-                //     ->label('Shipping cost')
-                //     ->searchable()
-                //     ->sortable(),
+                TextColumn::make('jvm.mem.heap_used_percent')
+                    ->label('JVM Heap Used %')
+                    ->sortable()
+                    ->alignRight()
+                    ->formatStateUsing(fn($record) => Number::percentage($record->jvm['mem']['heap_used_percent']))
+                    ->color(fn($record) => $record->jvm['mem']['heap_used_percent'] > 90 ? 'danger' : 'success'),
+
+                TextColumn::make('fs.total.available_in_bytes')
+                    ->label('FS Available')
+                    ->sortable()
+                    ->alignRight()
+                    ->formatStateUsing(fn($record) => Number::fileSize($record->fs['total']['available_in_bytes']))
+                    ->color(fn($record) => $record->fs['total']['available_in_bytes'] < 100_000_000_000 ? 'danger' : 'success'), // 100GB
             ])
-            ->actions([
-                // Tables\Actions\Action::make('open')
-                //     ->url(fn(Order $record): string => OrderResource::getUrl('edit', ['record' => $record])),
-            ]);
+            ->actions([]);
     }
 }

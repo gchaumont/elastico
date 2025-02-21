@@ -8,10 +8,8 @@ use Filament\Panel;
 use Filament\Navigation\NavigationGroup;
 use Elastico\Filament\IndexResource;
 use Elastico\Filament\ElasticoDashboard;
-use Elastico\Filament\Widgets\ClusterWidget;
 use Elastico\Filament\Widgets\NodeStatsTable;
-use Elastico\Filament\Widgets\ElasticStatsOverviewWidget;
-use Elastico\Filament\Widgets\SummaryWidget;
+use Elastico\Filament\Widgets\ClusterStats;
 
 class ElasticoPlugin implements Plugin
 {
@@ -48,10 +46,8 @@ class ElasticoPlugin implements Plugin
                 // 'snapshots' => SnapshotResource::class,
             ])
             ->widgets([
-                SummaryWidget::class,
-                ClusterWidget::class,
+                ClusterStats::class,
                 NodeStatsTable::class,
-                ElasticStatsOverviewWidget::class,
             ]);
     }
 

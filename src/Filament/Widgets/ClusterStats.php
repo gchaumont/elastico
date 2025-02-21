@@ -8,7 +8,7 @@ use Filament\Widgets\StatsOverviewWidget as BaseWidget;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Number;
 
-class SummaryWidget extends BaseWidget
+class ClusterStats extends BaseWidget
 {
     use InteractsWithPageFilters;
 
@@ -23,20 +23,33 @@ class SummaryWidget extends BaseWidget
             return [];
         }
 
-        $cluster_health = DB::connection($this->filters['connection'])
+        $connection = $this->filters['connection'];
+
+        $cluster_health = DB::connection($connection)
             ->getClient()
             ->cluster()
             ->health()
             ->asArray();
 
-        $cluster_stats = DB::connection($this->filters['connection'])
+        $cluster_stats = DB::connection($connection)
             ->getClient()
             ->cluster()
             ->stats()
             ->asArray();
 
+        $indices_stats = DB::connection($connection)
+            ->getClient()
+            ->indices()
+            ->stats()
+            ->asArray();
 
         $fs_used_percent = ($cluster_stats['nodes']['fs']['total_in_bytes'] - $cluster_stats['nodes']['fs']['free_in_bytes']) / $cluster_stats['nodes']['fs']['total_in_bytes'];
+
+        $jvm_mem_used_percent = $cluster_stats['nodes']['jvm']['mem']['heap_used_in_bytes'] / $cluster_stats['nodes']['jvm']['mem']['heap_max_in_bytes'];
+
+        $unhealthy_indices = collect($indices_stats['indices'])
+            ->filter(fn($index) => $index['health'] !== 'green')
+            ->count();
 
         return [
             Stat::make('Cluster Status', $cluster_health['status'])
@@ -50,20 +63,23 @@ class SummaryWidget extends BaseWidget
 
             Stat::make('Nodes', Number::format($cluster_health['number_of_nodes'], locale: app()->getLocale())),
 
-            Stat::make("Indices", Number::format($cluster_stats['indices']['count'], locale: app()->getLocale())),
+            Stat::make("Indices", Number::format($cluster_stats['indices']['count'], locale: app()->getLocale()))
+                ->description($unhealthy_indices ? Number::format($unhealthy_indices, locale: app()->getLocale()) . " unhealthy indices" : 'All indices are healthy')
+                ->color($unhealthy_indices ? 'danger' : 'success'),
 
             // TOTAL JVM Memory usage / AVAILABLE
             Stat::make("Memory", Number::fileSize($cluster_stats['nodes']['jvm']['mem']['heap_used_in_bytes'], precision: 1) . ' / ' . Number::fileSize($cluster_stats['nodes']['jvm']['mem']['heap_max_in_bytes'], precision: 1))
-            // ->color(match (true) {
-            //     $cluster_stats['nodes']['jvm']['mem']['heap_used_percent'] < 0.5 => 'success',
-            //     $cluster_stats['nodes']['jvm']['mem']['heap_used_percent'] < 0.8 => 'warning',
-            //     default => 'danger',
-            // })
-            ,
+                ->description(Number::percentage($jvm_mem_used_percent * 100) . ' used')
+                ->color(match (true) {
+                    $jvm_mem_used_percent < 0.6 => 'success',
+                    $jvm_mem_used_percent < 0.8 => 'warning',
+                    default => 'danger',
+                }),
 
             // Total Number of Shards
             Stat::make('Shards', Number::format($cluster_health['active_shards'], locale: app()->getLocale())),
             Stat::make('Unassigned Shards', Number::format($cluster_health['unassigned_shards'], locale: app()->getLocale()))
+                ->description($cluster_health['unassigned_shards'] ? Number::format($cluster_health['unassigned_shards'], locale: app()->getLocale()) . " unassigned shards" : null)
                 ->color(match (true) {
                     $cluster_health['unassigned_shards'] < 1 => 'success',
                     $cluster_health['unassigned_shards'] < 10 => 'warning',
@@ -74,26 +90,13 @@ class SummaryWidget extends BaseWidget
             Stat::make('Documents', Number::format($cluster_stats['indices']['docs']['count'], locale: app()->getLocale())),
 
             // Data size 
-            Stat::make('Data', Number::fileSize($cluster_stats['indices']['store']['size_in_bytes'])),
+            Stat::make('Data', Number::fileSize($cluster_stats['indices']['store']['size_in_bytes']))
+                ->description("Used " . Number::percentage(100 * $fs_used_percent) . " of " . Number::fileSize($cluster_stats['nodes']['fs']['total_in_bytes']))
+                ->color(match (true) {
+                    $fs_used_percent < 0.5 => 'success',
+                    $fs_used_percent < 0.8 => 'warning',
+                    default => 'danger',
+                }),
         ];
     }
-
-    // protected function getCards(): array
-    // {
-
-
-    //     $total_filesytem = Node::sum('filesystem_total');
-    //     $used_filesytem = Node::sum('filesystem_used_bytes');
-
-    //     return [
-    //         Stat::make('Total Nodes', Number::format(Node::count(), locale: app()->getLocale())),
-    //         Stat::make('Filesystem', Number::fileSize($total_filesytem)),
-    //         Stat::make('Used Filesystem', Number::fileSize($used_filesytem))
-    //             ->description(Number::percentage($used_filesytem / $total_filesytem * 100) . ' used'),
-    //         Stat::make('Free Filesystem', Number::fileSize(Node::sum('filesystem_available_bytes'))),
-    //         Stat::make('Total Memory', Number::fileSize(Node::sum('memory_max_bytes'))),
-    //         Stat::make('Memory', Number::percentage(Node::avg('memory_current_percent'))),
-    //         Stat::make('CPU', Number::format(Node::avg('cpu_load_15m'), locale: app()->getLocale())),
-    //     ];
-    // }
 }

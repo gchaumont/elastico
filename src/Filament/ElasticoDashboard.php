@@ -6,12 +6,10 @@ use Filament\Forms\Components\Select;
 use Filament\Pages\Dashboard;
 use Elastico\Filament\IndexResource\Widgets\IndexStats;
 use Elastico\Filament\NodeResource\Widgets\NodeStats;
-use Elastico\Filament\Widgets\ClusterWidget;
 use Elastico\Filament\Widgets\NodeStatsTable;
 use Filament\Forms\Components\Section;
 use Filament\Forms\Form;
-use Elastico\Filament\Widgets\ElasticStatsOverviewWidget;
-use Elastico\Filament\Widgets\SummaryWidget;
+use Elastico\Filament\Widgets\ClusterStats;
 
 class ElasticoDashboard extends Dashboard
 {
@@ -28,12 +26,8 @@ class ElasticoDashboard extends Dashboard
     public function getWidgets(): array
     {
         return [
-            SummaryWidget::class,
-            ClusterWidget::class,
-            NodeStats::class,
-            IndexStats::class,
+            ClusterStats::class,
             NodeStatsTable::class,
-            ElasticStatsOverviewWidget::class,
         ];
     }
 
@@ -45,6 +39,7 @@ class ElasticoDashboard extends Dashboard
                 Section::make()
                     ->schema([
                         Select::make('connection')
+                            ->label('Cluster')
                             ->default(collect(config('database.connections'))
                                 ->filter(fn($connection) => $connection['driver'] === 'elastic')
                                 ->keys()->first())
