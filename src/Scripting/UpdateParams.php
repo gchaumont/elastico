@@ -27,12 +27,16 @@ class UpdateParams extends Script
 
     public function parameters(): array
     {
-        $values = $this->model instanceof Model ? $this->model->getAttributes() : $this->model;
+        $oValues = $values = $this->model instanceof Model ? $this->model->getAttributes() : $this->model;
 
-        if (empty($this->params)) {
-            return ['values' => $values];
+        $values = !empty($this->params) ? Arr::only($values, $this->params) : $values;
+
+        if (empty($values)) {
+            throw new \Exception('No values to update: ' . json_encode($this->params) . ' in ' . json_encode($oValues));
         }
 
-        return ['values' => Arr::only($values, $this->params)];
+        return [
+            'values' => $values,
+        ];
     }
 }
