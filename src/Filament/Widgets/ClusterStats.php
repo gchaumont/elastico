@@ -77,7 +77,8 @@ class ClusterStats extends BaseWidget
                 }),
 
             // Total Number of Shards
-            Stat::make('Shards', Number::format($cluster_health['active_shards'], locale: app()->getLocale())),
+            Stat::make('Shards', Number::format($cluster_health['active_shards'], locale: app()->getLocale()))
+                ->description(Number::format($cluster_health['active_primary_shards']) . " primary /  " . Number::format($cluster_health['active_shards'] - $cluster_health['active_primary_shards'], locale: app()->getLocale()) . " replica"),
             Stat::make('Unassigned Shards', Number::format($cluster_health['unassigned_shards'], locale: app()->getLocale()))
                 ->description($cluster_health['unassigned_shards'] ? Number::format($cluster_health['unassigned_shards'], locale: app()->getLocale()) . " unassigned shards" : null)
                 ->color(match (true) {

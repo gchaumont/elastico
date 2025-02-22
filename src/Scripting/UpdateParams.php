@@ -30,9 +30,9 @@ class UpdateParams extends Script
         $values = $this->model instanceof Model ? $this->model->getAttributes() : $this->model;
 
         if (empty($this->params)) {
-            return $values;
+            return ['values' => $values];
         }
 
-        return Arr::only($values, $this->params);
+        return ['values' => Arr::only($values, $this->params)];
     }
 }
