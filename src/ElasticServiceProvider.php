@@ -29,16 +29,16 @@ class ElasticServiceProvider extends ServiceProvider
         BaseCollection::macro('getBulk', function (iterable|callable $queries) {
             return $this
                 ->flatMap(static function (mixed $model, string $model_key) use ($queries): BaseCollection {
-                    $queries = $queries instanceof Closure ? $queries($model) : collect($queries)->map(fn ($query) => $query($model));
+                    $queries = $queries instanceof Closure ? $queries($model) : collect($queries)->map(fn($query) => $query($model));
 
                     return collect($queries)
-                        ->keyBy(fn ($query, $query_key): string => implode('::', [$model_key, $query_key]));
+                        ->keyBy(fn($query, $query_key): string => implode('::', [$model_key, $query_key]));
                 })
-                ->groupBy(static fn (Builder|ElasticEloquentBuilder|Relation $query): string => $query->getConnection()->getName(), preserveKeys: true)
-                ->map(static fn (BaseCollection $queries, string $connection): array => DB::connection($connection)->query()->getMany($queries->all()))
+                ->groupBy(static fn(Builder|ElasticEloquentBuilder|Relation $query): string => $query->getConnection()->getName(), preserveKeys: true)
+                ->map(static fn(BaseCollection $queries, string $connection): array => DB::connection($connection)->query()->getMany($queries->all()))
                 ->collapse()
-                ->groupBy(static fn (BaseCollection $response, string $query_key): string => explode('::', $query_key, 2)[0], preserveKeys: true)
-                ->map(static fn (BaseCollection $responses, string $model_id): BaseCollection => $responses->keyBy(fn (Collection $response, $response_key) => explode('::', $response_key, 2)[1]));
+                ->groupBy(static fn(BaseCollection $response, string $query_key): string => explode('::', $query_key, 2)[0], preserveKeys: true)
+                ->map(static fn(BaseCollection $responses, string $model_id): BaseCollection => $responses->keyBy(fn(Collection $response, $response_key) => explode('::', $response_key, 2)[1]));
         });
     }
 
@@ -79,7 +79,6 @@ class ElasticServiceProvider extends ServiceProvider
 
                 Console\Cluster\ClusterHealth::class,
                 Console\Cluster\ClusterRestart::class,
-                Console\Cluster\SetupCluster::class,
 
                 Console\DataStreams\CreateDataStream::class,
                 Console\DataStreams\DeleteDataStream::class,

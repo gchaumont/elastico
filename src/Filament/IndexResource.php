@@ -27,7 +27,7 @@ class IndexResource extends Resource
 {
     protected static ?string $model = Index::class;
 
-    protected static ?string $navigationIcon = 'heroicon-o-list-bullet';
+    protected static ?string $navigationIcon = 'heroicon-o-document-magnifying-glass';
 
     protected static ?string $navigationGroup = 'Elasticsearch';
 

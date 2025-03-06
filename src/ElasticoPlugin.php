@@ -10,6 +10,8 @@ use Elastico\Filament\IndexResource;
 use Elastico\Filament\ElasticoDashboard;
 use Elastico\Filament\Widgets\NodeStatsTable;
 use Elastico\Filament\Widgets\ClusterStats;
+use Elastico\Filament\RepositoryResource;
+use Elastico\Filament\SnapshotResource;
 
 class ElasticoPlugin implements Plugin
 {
@@ -42,8 +44,9 @@ class ElasticoPlugin implements Plugin
                 // 'clusters' => ClusterResource::class,
                 'nodes' => NodeResource::class,
                 'indices' => IndexResource::class,
+                'repositories' => RepositoryResource::class,
                 // 'shards' => ShardResource::class, 
-                // 'snapshots' => SnapshotResource::class,
+                'snapshots' => SnapshotResource::class,
             ])
             ->widgets([
                 ClusterStats::class,

@@ -49,18 +49,6 @@ class InstallElasticsearch extends Command
     public function handle()
     {
         try {
-            $this->validateInput();
-
-            $this->createSSH(
-                ip: $this->argument('ip'),
-                user: $this->option('user'),
-                port: $this->option('port'),
-                privateKey: $this->option('private-key'), // '/Users/gchaumont/.ssh/id_ed25519'
-                password: $this->option('root-password'),
-            );
-
-            $this->installElasticsearch();
-
             $this->configureNode(
                 cluster: $this->option('cluster') ?? $this->ask('What is the Cluster name?'),
                 host: $this->option('host'),
@@ -83,15 +71,6 @@ class InstallElasticsearch extends Command
         } catch (Throwable $th) {
             $this->error($th->getMessage());
         }
-    }
-
-    public function validateInput(): void
-    {
-        if (!$this->argument('ip')) {
-            throw new Exception('The SSH IP address is required.');
-        }
-
-        // Add any other validation as per your needs
     }
 
     public function testConnection(string $ip): void
@@ -139,30 +118,6 @@ class InstallElasticsearch extends Command
         }
     }
 
-    public function handleOutput(): \Closure
-    {
-        return function ($type, $line) {
-            $this->handlePasswordCapture($line);
-            $this->handleConsoleOutput($type, $line);
-        };
-    }
-
-    private function handlePasswordCapture($line): void
-    {
-        $match = preg_match('#The generated password for the elastic built-in superuser is : (\S*)#', $line, $matches);
-        if (1 === $match) {
-            $this->elastic_password = $matches[1];
-        }
-    }
-
-    private function handleConsoleOutput($type, $line): void
-    {
-        match ($type) {
-            'err' => $this->warn($line),
-            'out' => $this->line($line),
-        };
-    }
-
 
     public function joinCluster(null|string $token): void
     {
@@ -174,36 +129,6 @@ class InstallElasticsearch extends Command
         }
     }
 
-    public function installElasticsearch(): void
-    {
-        $this->ssh->execute([
-            'echo ">> Updating apt"',
-            'apt update',
-
-            'echo ">> Installing Elastic GPG Key"',
-            'wget -qO - https://artifacts.elastic.co/GPG-KEY-elasticsearch | sudo gpg --yes --dearmor -o /usr/share/keyrings/elasticsearch-keyring.gpg',
-
-            'echo ">> Install apt-transport-https"',
-            'sudo apt-get install apt-transport-https',
-            'echo "deb [signed-by=/usr/share/keyrings/elasticsearch-keyring.gpg] https://artifacts.elastic.co/packages/8.x/apt stable main" | sudo tee /etc/apt/sources.list.d/elastic-8.x.list',
-
-            'echo ">> Installing Elasticsearch"',
-            'sudo apt-get update && sudo apt-get install elasticsearch',
-            'echo ">> Elastic Search Installed"',
-        ]);
-    }
-
-    public function startElasticsearch(): void
-    {
-        $this->ssh->execute([
-            'echo ">> Scheduling Elasticsearch"',
-            '/bin/systemctl daemon-reload',
-            '/bin/systemctl enable elasticsearch.service',
-
-            'echo ">> Starting Elasticsearch"',
-            'systemctl restart elasticsearch.service',
-        ]);
-    }
 
     public function configureNode(string $cluster, string $host, array $seed_hosts, array $master_nodes = [], null|string $s3_endpoint = null): void
     {
