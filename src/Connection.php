@@ -279,6 +279,7 @@ class Connection extends BaseConnection implements ConnectionInterface
             $payload['body']['size'] ??= static::DEFAULT_CURSOR_SIZE;
             $payload['body']['sort'] ??= '_shard_doc';
 
+
             $pit = $this->performQuery('openPointInTime', [
                 'index' => $payload['index'],
                 'keep_alive' => $keepAlive,
@@ -292,8 +293,9 @@ class Connection extends BaseConnection implements ConnectionInterface
             }
 
             $pit['keep_alive'] = $keepAlive;
+            unset($pit['_shards']);
 
-            $payload['body']['pit'] = $pit['id'];
+            $payload['body']['pit'] = $pit;
             unset($payload['index']);
 
             return $this->performQuery('search', $payload);
