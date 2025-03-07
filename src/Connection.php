@@ -293,7 +293,7 @@ class Connection extends BaseConnection implements ConnectionInterface
 
             $pit['keep_alive'] = $keepAlive;
 
-            $payload['body']['pit'] = $pit;
+            $payload['body']['pit'] = $pit['id'];
             unset($payload['index']);
 
             return $this->performQuery('search', $payload);
