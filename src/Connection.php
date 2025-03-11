@@ -19,7 +19,6 @@ use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Database\Events\QueryExecuted;
 use Illuminate\Database\QueryException;
 use Illuminate\Support\LazyCollection;
-use Elastico\Eloquent\Concerns\ElasticModel;
 
 /**
  * Keeps the Client and performs the queries
@@ -334,7 +333,7 @@ class Connection extends BaseConnection implements ConnectionInterface
                 ->tap(function ($hits) use (&$total) {
                     $total = $hits->count();
                 })
-                ->keyBy(fn($hit) => $hit instanceof Model || in_array(ElasticModel::class, class_uses_recursive($hit)) ? $hit->getKey() : $hit['_id'])
+                ->keyBy(fn($hit) => $hit instanceof Model  ? $hit->getKey() : $hit['_id'])
                 ->all();
 
             // yield from (new PromiseResponse(
