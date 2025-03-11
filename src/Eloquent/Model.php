@@ -13,4 +13,12 @@ use Illuminate\Database\Eloquent\Model as BaseModel;
 abstract class Model extends BaseModel implements Castable
 {
     use ElasticModel;
+
+    public $incrementing = false;
+
+    protected $keyType = 'string';
+
+    protected $dateFormat = 'c';
+
+    protected $connection = 'elastic';
 }

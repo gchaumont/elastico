@@ -14,7 +14,12 @@ use Elastico\Eloquent\Concerns\PerformsScriptUpdates;
 use Illuminate\Database\Eloquent\Relations\Relation;
 use Illuminate\Contracts\Database\Eloquent\CastsAttributes;
 use Illuminate\Database\Eloquent\Builder as EloquentBuilder;
+use Elastico\Eloquent\Builder;
+use Elastico\Eloquent\Model;
 
+/**
+ * @mixin \Elastico\Eloquent\Model
+ */
 trait ElasticModel
 {
     use HasIndexConfig;
@@ -23,13 +28,7 @@ trait ElasticModel
     use PerformsScriptUpdates;
     // use EmbedsRelations;
 
-    public $incrementing = false;
 
-    protected $keyType = 'string';
-
-    protected $dateFormat = 'c';
-
-    protected $connection = 'elastic';
 
 
     public $_score = null;
@@ -140,7 +139,7 @@ trait ElasticModel
             {
                 $class = $this->class;
 
-                if (is_subclass_of($class, Model::class)) {
+                if (is_subclass_of($class, Model::class) || in_array(ElasticModel::class, class_uses_recursive($class))) {
                     return (new $class())->forceFill($value);
                 }
 
