@@ -100,7 +100,7 @@ class ClusterCheck extends Check
             // ⚠️ Warnings (Triggers a warning)
             if (
                 $status === 'yellow' ||
-                $worstHeapUsed > 75 ||
+                $worstHeapUsed > 80 ||
                 $worstCpuUsage > 60 ||
                 $worstDiskUsage > 80 ||
                 $avgQueryLatency > 200 ||
