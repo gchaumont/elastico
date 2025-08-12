@@ -2,6 +2,40 @@
 
 namespace Elastico;
 
+use Elastico\Console\CreateElasticsearchNode;
+use Elastico\Console\IndexPainless;
+use Elastico\Console\InstallElasticAgent;
+use Elastico\Console\Setup\InstallElasticsearch;
+use Elastico\Console\Setup\InstallKibana;
+use Elastico\Console\Setup\RemoveElasticsearch;
+use Elastico\Console\Setup\GenerateEnrollmentToken;
+use Elastico\Console\Setup\SetupS3Repository;
+use Elastico\Console\InstallEnterpriseSearch;
+use Elastico\Console\InstallFilebeat;
+use Elastico\Console\InstallFleet;
+use Elastico\Console\InstallMetricbeat;
+use Elastico\Console\InstallPacketbeat;
+use Elastico\Console\SwitchAlias;
+use Elastico\Console\UpgradeElasticsearch;
+use Elastico\Console\Backups\Backup;
+use Elastico\Console\Backups\CleanBackup;
+use Elastico\Console\Cluster\ClusterHealth;
+use Elastico\Console\Cluster\ClusterRestart;
+use Elastico\Console\DataStreams\CreateDataStream;
+use Elastico\Console\DataStreams\DeleteDataStream;
+use Elastico\Console\Documents\Reindex;
+use Elastico\Console\Indices\UpdateIndex;
+use Elastico\Console\Indices\CreateIndexTemplate;
+use Elastico\Console\Indices\CreateIndex;
+use Elastico\Console\Indices\CountFields;
+use Elastico\Console\Indices\DeleteIndex;
+use Elastico\Console\Indices\UpdateIndexSettings;
+use Elastico\Console\Nodes\ExcludeNodeAllocation;
+use Elastico\Console\Nodes\UpgradeNode;
+use Elastico\Console\Security\ConfigureHttpTLS;
+use Elastico\Console\Security\ConfigureTransportTLS;
+use Elastico\Console\Security\UpdateCertificateAuthority;
+use Elastico\Console\Shards\ToggleShardAllocation;
 use Closure;
 use Elastico\Query\Builder;
 use Elastico\Eloquent\Model;
@@ -58,48 +92,48 @@ class ElasticServiceProvider extends ServiceProvider
     {
         if ($this->app->runningInConsole()) {
             $this->commands([
-                Console\CreateElasticsearchNode::class,
-                Console\IndexPainless::class,
-                Console\InstallElasticAgent::class,
-                Console\Setup\InstallElasticsearch::class,
-                Console\Setup\InstallKibana::class,
-                Console\Setup\RemoveElasticsearch::class,
-                Console\Setup\GenerateEnrollmentToken::class,
-                Console\Setup\SetupS3Repository::class,
-                Console\InstallEnterpriseSearch::class,
-                Console\InstallFilebeat::class,
-                Console\InstallFleet::class,
-                Console\InstallMetricbeat::class,
-                Console\InstallPacketbeat::class,
-                Console\SwitchAlias::class,
-                Console\UpgradeElasticsearch::class,
+                CreateElasticsearchNode::class,
+                IndexPainless::class,
+                InstallElasticAgent::class,
+                InstallElasticsearch::class,
+                InstallKibana::class,
+                RemoveElasticsearch::class,
+                GenerateEnrollmentToken::class,
+                SetupS3Repository::class,
+                InstallEnterpriseSearch::class,
+                InstallFilebeat::class,
+                InstallFleet::class,
+                InstallMetricbeat::class,
+                InstallPacketbeat::class,
+                SwitchAlias::class,
+                UpgradeElasticsearch::class,
 
-                Console\Backups\Backup::class,
-                Console\Backups\CleanBackup::class,
+                Backup::class,
+                CleanBackup::class,
 
-                Console\Cluster\ClusterHealth::class,
-                Console\Cluster\ClusterRestart::class,
+                ClusterHealth::class,
+                ClusterRestart::class,
 
-                Console\DataStreams\CreateDataStream::class,
-                Console\DataStreams\DeleteDataStream::class,
+                CreateDataStream::class,
+                DeleteDataStream::class,
 
-                Console\Documents\Reindex::class,
+                Reindex::class,
 
-                Console\Indices\UpdateIndex::class,
-                Console\Indices\CreateIndexTemplate::class,
-                Console\Indices\CreateIndex::class,
-                Console\Indices\CountFields::class,
-                Console\Indices\DeleteIndex::class,
-                Console\Indices\UpdateIndexSettings::class,
+                UpdateIndex::class,
+                CreateIndexTemplate::class,
+                CreateIndex::class,
+                CountFields::class,
+                DeleteIndex::class,
+                UpdateIndexSettings::class,
 
-                Console\Nodes\ExcludeNodeAllocation::class,
-                Console\Nodes\UpgradeNode::class,
+                ExcludeNodeAllocation::class,
+                UpgradeNode::class,
 
-                Console\Security\ConfigureHttpTLS::class,
-                Console\Security\ConfigureTransportTLS::class,
-                Console\Security\UpdateCertificateAuthority::class,
+                ConfigureHttpTLS::class,
+                ConfigureTransportTLS::class,
+                UpdateCertificateAuthority::class,
 
-                Console\Shards\ToggleShardAllocation::class,
+                ToggleShardAllocation::class,
             ]);
         }
     }

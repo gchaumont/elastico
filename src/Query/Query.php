@@ -21,7 +21,7 @@ abstract class Query
         $payload = $this->getPayload();
 
         return [
-            $this->type => $this->getPayload() ?: new \stdClass(),
+            $this->type => $this->getPayload() ?: new stdClass(),
         ];
     }
 

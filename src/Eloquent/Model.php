@@ -2,6 +2,8 @@
 
 namespace Elastico\Eloquent;
 
+use BackedEnum;
+use UnitEnum;
 use Elastico\Connection;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Str;
@@ -176,7 +178,7 @@ abstract class Model extends BaseModel implements Castable
     /**
      * Get the parent relation.
      *
-     * @return \Illuminate\Database\Eloquent\Relations\Relation
+     * @return Relation
      */
     public function getParentRelation()
     {
@@ -221,11 +223,11 @@ abstract class Model extends BaseModel implements Castable
     /**
      * Retrieve the model for a bound value.
      *
-     * @param \Illuminate\Database\Eloquent\Model|\Illuminate\Database\Eloquent\Relations\Relation $query
+     * @param \Illuminate\Database\Eloquent\Model|Relation $query
      * @param mixed                                                                                $value
      * @param null|string                                                                          $field
      *
-     * @return \Illuminate\Database\Eloquent\Relations\Relation
+     * @return Relation
      */
     public function resolveRouteBindingQuery($query, $value, $field = null)
     {
@@ -253,11 +255,11 @@ abstract class Model extends BaseModel implements Castable
      * @param string     $enumClass
      * @param int|string $value
      *
-     * @return \BackedEnum|\UnitEnum
+     * @return BackedEnum|UnitEnum
      */
     protected function getEnumCaseFromValue($enumClass, $value)
     {
-        return is_subclass_of($enumClass, \BackedEnum::class)
+        return is_subclass_of($enumClass, BackedEnum::class)
             ? $enumClass::tryFrom($value)
             : constant($enumClass . '::' . $value);
     }

@@ -2,6 +2,12 @@
 
 namespace Elastico\Query\Builder;
 
+use Exception;
+use InvalidArgumentException;
+use DateTime;
+use BackedEnum;
+use UnitEnum;
+use Stringable;
 use Elastico\Eloquent\Model;
 use Elastico\Query\Compound\Boolean;
 use Elastico\Query\Query;
@@ -26,7 +32,7 @@ trait HasPostFilter
             $operator = '=';
         }
         if (is_null($value)) {
-            throw new \Exception('Null value passed as filter');
+            throw new Exception('Null value passed as filter');
         }
 
         $value = static::formatFilterValue($value);
@@ -40,7 +46,7 @@ trait HasPostFilter
                 true => $this->getPostFilter()->filter(new Terms(field: $field, values: $value)),
                 false => $this->getPostFilter()->filter(new Term(field: $field, value: $value)),
             },
-            default => throw new \InvalidArgumentException('Invalid where opterator')
+            default => throw new InvalidArgumentException('Invalid where opterator')
         };
 
         return $this;
@@ -60,10 +66,10 @@ trait HasPostFilter
             false => $value,
             true => match (true) {
                 $value instanceof Model => $value->getKey(),
-                $value instanceof \DateTime => $value->format(\DateTime::ATOM),
-                $value instanceof \BackedEnum => $value->value,
-                $value instanceof \UnitEnum => $value->name,
-                $value instanceof \Stringable => (string) $value,
+                $value instanceof DateTime => $value->format(DateTime::ATOM),
+                $value instanceof BackedEnum => $value->value,
+                $value instanceof UnitEnum => $value->name,
+                $value instanceof Stringable => (string) $value,
                 default => $value,
             }
         };

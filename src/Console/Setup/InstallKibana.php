@@ -2,6 +2,7 @@
 
 namespace Elastico\Console\Setup;
 
+use Closure;
 use Illuminate\Console\Command;
 use Spatie\Ssh\Ssh;
 
@@ -88,7 +89,7 @@ class InstallKibana extends Command
         }
     }
 
-    public function handleOutput(): \Closure
+    public function handleOutput(): Closure
     {
         return function ($type, $line) {
             match ($type) {

@@ -15,7 +15,7 @@ class DataCast implements CastsAttributes //extends DataEloquentCast
     protected DataConfig $dataConfig;
 
     public function __construct(
-        /** @var class-string<\Spatie\LaravelData\Contracts\BaseData> $dataClass */
+        /** @var class-string<BaseData> $dataClass */
         protected string $dataClass,
         /** @var string[] $arguments */
         protected array $arguments = []

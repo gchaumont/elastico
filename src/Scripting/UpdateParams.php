@@ -2,6 +2,7 @@
 
 namespace Elastico\Scripting;
 
+use Exception;
 use Illuminate\Support\Arr;
 use Elastico\Eloquent\Model;
 
@@ -32,7 +33,7 @@ class UpdateParams extends Script
         $values = !empty($this->params) ? Arr::only($values, $this->params) : $values;
 
         if (empty($values)) {
-            throw new \Exception('No values to update: ' . json_encode($this->params) . ' in ' . json_encode($oValues));
+            throw new Exception('No values to update: ' . json_encode($this->params) . ' in ' . json_encode($oValues));
         }
 
         return [

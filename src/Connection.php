@@ -2,6 +2,11 @@
 
 namespace Elastico;
 
+use RuntimeException;
+use Generator;
+use Closure;
+use Elastico\Query\Processor;
+use Elastico\Query\Grammar;
 use Elastic\Elasticsearch\Client;
 use Elastic\Elasticsearch\ClientBuilder;
 use Elastic\Elasticsearch\Response\Elasticsearch;
@@ -103,7 +108,7 @@ class Connection extends BaseConnection implements ConnectionInterface
                 identifier: $identifier
             );
         } else {
-            throw new \RuntimeException('Unsupported Elasticsearch Response');
+            throw new RuntimeException('Unsupported Elasticsearch Response');
         }
 
         return $response;
@@ -264,7 +269,7 @@ class Connection extends BaseConnection implements ConnectionInterface
      * @param bool   $useReadPdo
      * @param mixed  $keepAlive
      */
-    public function cursor($query, $bindings = [], $useReadPdo = true, $keepAlive = '1m'): \Generator
+    public function cursor($query, $bindings = [], $useReadPdo = true, $keepAlive = '1m'): Generator
     {
         $total = null;
         $payload = null;
@@ -627,9 +632,9 @@ class Connection extends BaseConnection implements ConnectionInterface
      *
      * @return mixed
      *
-     * @throws \Illuminate\Database\QueryException
+     * @throws QueryException
      */
-    protected function runQueryCallback($query, $bindings, \Closure $callback)
+    protected function runQueryCallback($query, $bindings, Closure $callback)
     {
         // To execute the statement, we'll simply call the callback, which will actually
         // run the SQL against the PDO connection. Then we can calculate the time it
@@ -641,7 +646,7 @@ class Connection extends BaseConnection implements ConnectionInterface
         // If an exception occurs when attempting to run a query, we'll format the error
         // message to include the bindings with SQL, which will make this exception a
         // lot more helpful to the developer instead of just the database's errors.
-        catch (\Exception $e) {
+        catch (Exception $e) {
             if (str_contains($e->getMessage(), 'index_not_found_exception')) {
                 if (preg_match('/no such index \[(.*?)\]/', $e->getMessage(), $matches)) {
                     $index_name = $matches[1];
@@ -670,7 +675,7 @@ class Connection extends BaseConnection implements ConnectionInterface
      */
     protected function getDefaultPostProcessor()
     {
-        return new Query\Processor();
+        return new Processor();
     }
 
     /**
@@ -678,7 +683,7 @@ class Connection extends BaseConnection implements ConnectionInterface
      */
     protected function getDefaultQueryGrammar()
     {
-        return new Query\Grammar();
+        return new Grammar();
     }
 
     private function createClientConfigFromConnection(array $connection): array

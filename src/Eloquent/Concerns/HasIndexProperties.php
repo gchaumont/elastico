@@ -2,6 +2,8 @@
 
 namespace Elastico\Eloquent\Concerns;
 
+use ReflectionClass;
+use ReflectionProperty;
 use Elastico\Mapping\Field;
 use Illuminate\Support\Collection;
 use ReflectionAttribute;
@@ -23,7 +25,7 @@ trait HasIndexProperties
 
         $properties = collect(static::indexProperties());
 
-        $reflectionClass = new \ReflectionClass(static::class);
+        $reflectionClass = new ReflectionClass(static::class);
 
         collect($reflectionClass->getAttributes(Field::class))
             ->map(static fn(ReflectionAttribute $attribute): Field => $attribute->newInstance())
@@ -31,20 +33,20 @@ trait HasIndexProperties
 
 
         collect($reflectionClass->getProperties())
-            ->flatMap(static fn(\ReflectionProperty $property) => collect($property->getAttributes(Field::class))
+            ->flatMap(static fn(ReflectionProperty $property) => collect($property->getAttributes(Field::class))
                 ->map(static fn(ReflectionAttribute $attribute): Field => $attribute->newInstance())
                 ->each(static fn(Field $field) => $field->name($property->getName())))
             ->tap(static fn(Collection $props) => $properties->push(...$props));
 
         collect(class_uses_recursive(static::class))
             ->each(static function ($trait) use ($properties): void {
-                collect((new \ReflectionClass($trait))->getAttributes(Field::class))
+                collect((new ReflectionClass($trait))->getAttributes(Field::class))
                     ->map(fn(ReflectionAttribute $attribute): Field => $attribute->newInstance())
                     ->tap(static fn(Collection $props) => $properties->push(...$props));
             })
             ->each(static function ($trait) use ($properties): void {
-                collect((new \ReflectionClass($trait))->getProperties())
-                    ->flatMap(static fn(\ReflectionProperty $property) => collect($property->getAttributes(Field::class))
+                collect((new ReflectionClass($trait))->getProperties())
+                    ->flatMap(static fn(ReflectionProperty $property) => collect($property->getAttributes(Field::class))
                         ->map(static fn(ReflectionAttribute $attribute): Field => $attribute->newInstance())
                         ->each(static fn(Field $field) => $field->name($property->getName())))
                     ->tap(static fn(Collection $props) => $properties->push(...$props));

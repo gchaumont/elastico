@@ -2,6 +2,7 @@
 
 namespace Elastico\Console\Backups;
 
+use Carbon\Carbon;
 use App\Support\Elasticsearch\Elasticsearch;
 use Illuminate\Console\Command;
 
@@ -58,7 +59,7 @@ class CleanBackup extends Command
             // if ($snapshot['state'] !== 'SUCCESS') {
             //     throw new \Exception("Unsuccessful backup", 1);
             // }
-            $time = \Carbon\Carbon::parse($snapshot['start_time']);
+            $time = Carbon::parse($snapshot['start_time']);
 
             if ($time > now()->subDays(7)) {
                 continue;

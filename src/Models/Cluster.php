@@ -2,6 +2,7 @@
 
 namespace Elastico\Models;
 
+use DateTime;
 use Elastico\Mapping\Field;
 use Elastico\Mapping\FieldType;
 use Illuminate\Database\Eloquent\Model;
@@ -17,7 +18,7 @@ class Cluster extends Model
     public readonly string $id;
 
     // #[Field(type: FieldType::date)]
-    public \DateTime $timestamp;
+    public DateTime $timestamp;
 
     // #[Field(type: FieldType::keyword)]
     public string $status;
@@ -41,7 +42,7 @@ class Cluster extends Model
     public float $active_shards_percent_as_number;
 
     public static function make(
-        \DateTime $timestamp,
+        DateTime $timestamp,
         string $status,
         int $nodes,
         int $active_shards,

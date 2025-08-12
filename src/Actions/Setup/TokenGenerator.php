@@ -2,6 +2,7 @@
 
 namespace Elastico\Actions\Setup;
 
+use Exception;
 use Spatie\Ssh\Ssh;
 
 class TokenGenerator
@@ -29,7 +30,7 @@ class TokenGenerator
         $ssh->execute('/usr/share/elasticsearch/bin/elasticsearch-create-enrollment-token -s ' . escapeshellarg($tokenType));
 
         if (empty($token)) {
-            throw new \Exception('Could not generate Token');
+            throw new Exception('Could not generate Token');
         }
 
         return $token;

@@ -66,11 +66,11 @@ class HasOne extends EloquentHasOne implements ElasticRelation
      * Indicate that the relation is a single result of a larger one-to-many relationship.
      *
      * @param  string|array|null  $column
-     * @param  string|\Closure|null  $aggregate
+     * @param string|Closure|null $aggregate
      * @param  string|null  $relation
      * @return $this
      *
-     * @throws \InvalidArgumentException
+     * @throws InvalidArgumentException
      */
     public function ofMany($column = 'id', $aggregate = 'MAX', $relation = null)
     {

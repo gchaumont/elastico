@@ -384,7 +384,7 @@ class Grammar extends BaseGrammar
                     if ($where['sql'] instanceof Query) {
                         $groupBool->must($where['sql']);
                     } elseif (is_array($where['sql'])) {
-                        throw new \Exception('TODO: allow raw arrays');
+                        throw new Exception('TODO: allow raw arrays');
                     }
 
                     continue;
@@ -410,11 +410,11 @@ class Grammar extends BaseGrammar
                 if (in_array($where['type'], ['Exists', 'NotExists'])) {
                     // dump($where, $query);
 
-                    throw new \Exception('Elasticsearch does not support Exists/NotExists');
+                    throw new Exception('Elasticsearch does not support Exists/NotExists');
                 }
 
                 if (in_array($where['type'], ['FullText'])) {
-                    throw new \Exception('TODO');
+                    throw new Exception('TODO');
                 }
 
                 $field = $where['column'];
@@ -523,7 +523,7 @@ class Grammar extends BaseGrammar
                 ->flatMap(static function (array $val, int $i) use ($update): array {
                     $id = Arr::pull($val, '_id');
                     if (empty($id)) {
-                        throw new \Exception('All upserts must have an _id');
+                        throw new Exception('All upserts must have an _id');
                     }
 
                     $header = [
@@ -550,7 +550,7 @@ class Grammar extends BaseGrammar
                         ])
                             ->filter(fn ($v) => !is_null($v))
                             ->all(),
-                        default => throw new \Exception('TODO'),
+                        default => throw new Exception('TODO'),
                     };
 
                     return [$header, $body];

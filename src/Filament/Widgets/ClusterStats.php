@@ -19,11 +19,11 @@ class ClusterStats extends BaseWidget
 
     protected function getStats(): array
     {
-        if (empty($this->filters['connection'])) {
+        if (empty($this->pageFilters['connection'])) {
             return [];
         }
 
-        $connection = $this->filters['connection'];
+        $connection = $this->pageFilters['connection'];
 
         $cluster_health = DB::connection($connection)
             ->getClient()

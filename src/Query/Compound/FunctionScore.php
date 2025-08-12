@@ -2,6 +2,7 @@
 
 namespace Elastico\Query\Compound;
 
+use stdClass;
 use Elastico\Query\Query;
 
 /**
@@ -35,7 +36,7 @@ class FunctionScore extends Query
         }
         foreach (['boost', 'script_score', 'weight', 'field_value_factor', 'decay', 'random_score'] as $type) {
             if (!is_null($this->{$type})) {
-                $payload[$type] = $this->{$type} ?: new \stdClass();
+                $payload[$type] = $this->{$type} ?: new stdClass();
             }
         }
 

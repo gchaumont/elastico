@@ -2,19 +2,19 @@
 
 namespace Elastico\Filament\NodeResource\Pages;
 
+use Filament\Support\Enums\Width;
 use Filament\Resources\Pages\ListRecords;
 use Filament\Resources\Components\Tab;
 use Elastico\Filament\NodeResource;
 use Elastico\Filament\NodeResource\Widgets\NodeStats;
-use Filament\Support\Enums\MaxWidth;
 
 class ListNodes extends ListRecords
 {
     protected static string $resource = NodeResource::class;
 
-    public function getMaxContentWidth(): MaxWidth
+    public function getMaxContentWidth(): Width
     {
-        return MaxWidth::Full;
+        return Width::Full;
     }
 
     protected function isTablePaginationEnabled(): bool

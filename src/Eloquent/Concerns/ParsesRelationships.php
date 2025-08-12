@@ -3,6 +3,7 @@
 namespace Elastico\Eloquent\Concerns;
 
 
+use Exception;
 use Illuminate\Support\Str;
 use Elastico\Eloquent\Relations\ElasticRelation;
 use Illuminate\Database\Eloquent\Model;
@@ -48,7 +49,7 @@ trait ParsesRelationships
             } elseif ($relation instanceof EloquentRelation) {
                 $partitioned['eloquent'][$key] =  $original_relation;
             } else {
-                throw new \Exception('Invalid relation type');
+                throw new Exception('Invalid relation type');
             }
         }
 

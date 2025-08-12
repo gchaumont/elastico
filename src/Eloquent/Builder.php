@@ -2,6 +2,9 @@
 
 namespace Elastico\Eloquent;
 
+use InvalidArgumentException;
+use Closure;
+use Illuminate\Contracts\Database\Query\Expression;
 use Illuminate\Support\Arr;
 use Elastico\Scripting\Script;
 use Elastico\Scripting\UpdateParams;
@@ -90,7 +93,7 @@ class Builder extends EloquentBuilder
      * @param mixed        $id
      * @param array|string $columns
      *
-     * @return null|\Elastico\Query\Response\Collection|\Illuminate\Database\Eloquent\Model|static|static[]
+     * @return null|Collection|\Illuminate\Database\Eloquent\Model|static|static[]
      */
     public function find($id, $columns = ['*'])
     {
@@ -110,10 +113,10 @@ class Builder extends EloquentBuilder
     /**
      * Find multiple models by their primary keys.
      *
-     * @param array|\Illuminate\Contracts\Support\Arrayable $ids
+     * @param array|Arrayable $ids
      * @param array|string                                  $columns
      *
-     * @return \Elastico\Query\Response\Collection
+     * @return Collection
      */
     public function findMany($ids, $columns = ['*'])
     {
@@ -145,7 +148,7 @@ class Builder extends EloquentBuilder
      *
      * @param array|string $columns
      *
-     * @return \Elastico\Query\Response\Collection|static[]
+     * @return Collection|static[]
      */
     public function get($columns = ['*'])
     {
@@ -219,7 +222,7 @@ class Builder extends EloquentBuilder
         }
 
         if ('_id' !== $uniqueBy) {
-            throw new \InvalidArgumentException('Elastic only supports upserts by _id');
+            throw new InvalidArgumentException('Elastic only supports upserts by _id');
         }
 
         $values = collect($values)
@@ -275,7 +278,7 @@ class Builder extends EloquentBuilder
 
         $this->passColumnNamesToQuery($columns);
 
-        $perPage = ($perPage instanceof \Closure
+        $perPage = ($perPage instanceof Closure
             ? $perPage($total)
             : $perPage
         ) ?: $this->model->getPerPage();
@@ -294,7 +297,7 @@ class Builder extends EloquentBuilder
      *
      * @param mixed $keepAlive
      *
-     * @return \Illuminate\Support\LazyCollection
+     * @return LazyCollection
      */
     public function cursor($keepAlive = '1m')
     {
@@ -417,7 +420,7 @@ class Builder extends EloquentBuilder
      * Add a basic where clause to a relationship query.
      *
      * @param  string  $relation
-     * @param  \Closure|string|array|\Illuminate\Contracts\Database\Query\Expression  $column
+     * @param Closure|string|array|Expression $column
      * @param  mixed  $operator
      * @param  mixed  $value
      * @return \Illuminate\Database\Eloquent\Builder|static
@@ -439,7 +442,7 @@ class Builder extends EloquentBuilder
     /**
      * Get the model instance being queried.
      *
-     * @return \Elastico\Eloquent\Model|static
+     * @return Model|static
      */
     public function getModel()
     {

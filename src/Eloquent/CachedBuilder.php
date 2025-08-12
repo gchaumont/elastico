@@ -2,12 +2,14 @@
 
 namespace Elastico\Eloquent;
 
+use Elastico\Query\Response\Collection;
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Contracts\Support\Arrayable;
 
 /**
  *  Elasticsearch Cached Query Builder
- * 
- * @mixin \Elastico\Eloquent\Builder
+ *
+ * @mixin Builder
  */
 class CachedBuilder extends Builder
 {
@@ -18,7 +20,7 @@ class CachedBuilder extends Builder
      * @param mixed        $id
      * @param array|string $columns
      *
-     * @return null|\Elastico\Query\Response\Collection|\Illuminate\Database\Eloquent\Model|static|static[]
+     * @return null|Collection|Model|static|static[]
      */
     public function find($id, $columns = ['*'])
     {
@@ -38,10 +40,10 @@ class CachedBuilder extends Builder
     /**
      * Find multiple models by their primary keys.
      *
-     * @param array|\Illuminate\Contracts\Support\Arrayable $ids
+     * @param array|Arrayable $ids
      * @param array|string                                  $columns
      *
-     * @return \Elastico\Query\Response\Collection
+     * @return Collection
      */
     public function findMany($ids, $columns = ['*'])
     {

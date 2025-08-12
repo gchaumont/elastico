@@ -2,6 +2,7 @@
 
 namespace Elastico\Models;
 
+use DateTime;
 use Elastico\Mapping\Field;
 use Elastico\Mapping\FieldType;
 use App\Support\Data\Formats\Format;
@@ -21,7 +22,7 @@ class Shard extends Model
     public readonly string $id;
 
     // #[Field(type: FieldType::date)]
-    public \DateTime $timestamp;
+    public DateTime $timestamp;
 
     // #[Field(type: FieldType::object)]
     public Index $index;
@@ -52,7 +53,7 @@ class Shard extends Model
     public static function make(
         string|Index $index,
         string $shard,
-        \DateTime $timestamp,
+        DateTime $timestamp,
         string $prirep,
         string $state,
         null|int $store,

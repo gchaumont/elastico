@@ -23,7 +23,8 @@
         "illuminate/support": "^11.0|^12.0",
         "illuminate/container": "^11.0|^12.0",
         "illuminate/events": "^11.0|^12.0",
-        "filament/filament": "^3.0"
+        "filament/filament": "^3.0",
+        "filament/upgrade": "^4.0"
     },
     "autoload": {
         "psr-4": {

@@ -2,12 +2,13 @@
 
 namespace Elastico\Query\Response\Aggregation;
 
+use ArrayAccess;
 use Illuminate\Support\Collection;
 
 /**
  *  Aggregation Response.
  */
-class BucketResponse extends AggregationResponse implements \ArrayAccess
+class BucketResponse extends AggregationResponse implements ArrayAccess
 {
     // For Bucket Aggregations
     public function buckets(): Collection

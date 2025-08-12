@@ -391,7 +391,7 @@ class BelongsToMany extends EloquentBelongsToMany implements ElasticRelation
      * Match the eagerly loaded results to their parents.
      *
      * @param  array  $models
-     * @param  \Illuminate\Database\Eloquent\Collection  $results
+     * @param Collection $results
      * @param  string  $relation
      * @return array
      */

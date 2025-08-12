@@ -2,12 +2,13 @@
 
 namespace Elastico\Query\Builder;
 
+use Elastico\Query\Builder;
 use Elastico\Query\Response\Collection;
 use Illuminate\Support\Arr;
 use Elastico\Scripting\Script;
 
-/** 
- * @mixin \Elastico\Query\Builder
+/**
+ * @mixin Builder
  */
 trait PerformsBulkOperations
 {

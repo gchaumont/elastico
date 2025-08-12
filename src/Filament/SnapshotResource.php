@@ -2,16 +2,16 @@
 
 namespace Elastico\Filament;
 
+use Filament\Schemas\Schema;
+use Filament\Schemas\Components\Fieldset;
 use Carbon\CarbonInterface;
 use Filament\Tables\Table;
 use Filament\Resources\Resource;
 use Filament\Tables\Columns\TextColumn;
 use Elastico\Filament\SnapshotResource\Pages\ListSnapshots;
-use Filament\Infolists\Infolist;
 use Filament\Infolists\Components\TextEntry;
 use Elastico\Filament\SnapshotResource\Pages\ViewSnapshot;
 use Elastico\Models\Snapshot;
-use Filament\Infolists\Components\Fieldset;
 use Filament\Infolists\Components\IconEntry;
 use Filament\Infolists\Components\KeyValueEntry;
 use Illuminate\Support\Number;
@@ -20,16 +20,16 @@ class SnapshotResource extends Resource
 {
     protected static ?string $model = Snapshot::class;
 
-    protected static ?string $navigationIcon = 'heroicon-o-camera';
+    protected static string | \BackedEnum | null $navigationIcon = 'heroicon-o-camera';
 
-    protected static ?string $navigationGroup = 'Elasticsearch';
+    protected static string | \UnitEnum | null $navigationGroup = 'Elasticsearch';
 
     protected static ?string $recordTitleAttribute = 'snapshot';
 
-    public static function infolist(Infolist $infolist): Infolist
+    public static function infolist(Schema $schema): Schema
     {
-        return $infolist
-            ->schema([
+        return $schema
+            ->components([
                 TextEntry::make('snapshot'),
                 TextEntry::make('repository')->badge(),
                 IconEntry::make('include_global_state')
@@ -89,7 +89,7 @@ class SnapshotResource extends Resource
             //         ->slideOver(),
             //     // Tables\Actions\EditAction::make(),
             // ])
-            ->bulkActions([])
+            ->toolbarActions([])
             // ->deferLoading()
             ->defaultSort('name', 'asc')
             ->poll('5s');

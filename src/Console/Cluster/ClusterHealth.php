@@ -2,6 +2,7 @@
 
 namespace Elastico\Console\Cluster;
 
+use Throwable;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\DB;
 
@@ -34,7 +35,7 @@ class ClusterHealth extends Command
 
         try {
             $r = $elastic->cluster()->health();
-        } catch (\Throwable $e) {
+        } catch (Throwable $e) {
             dd($e->getMessage());
         }
 

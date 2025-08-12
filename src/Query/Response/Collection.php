@@ -2,6 +2,7 @@
 
 namespace Elastico\Query\Response;
 
+use Throwable;
 use Closure;
 use Elastico\Query\Builder;
 use Elastico\Eloquent\Model;
@@ -65,7 +66,7 @@ class Collection extends EloquentCollection
             return $this
                 ->requested_aggregations
                 ->map(fn (Aggregation $agg, string $name): AggregationResponse => $agg->toResponse(response: $this->aggregations[$name]));
-        } catch (\Throwable $th) {
+        } catch (Throwable $th) {
             throw $th;
         }
 

@@ -2,6 +2,7 @@
 
 namespace Elastico\Console\Setup;
 
+use Closure;
 use Illuminate\Console\Command;
 use Spatie\Ssh\Ssh;
 
@@ -89,7 +90,7 @@ class RemoveElasticsearch extends Command
         }
     }
 
-    public function handleOutput(): \Closure
+    public function handleOutput(): Closure
     {
         return function ($type, $line) {
             $match = preg_match('#The generated password for the elastic built-in superuser is : (\w*)#', $line, $matches);

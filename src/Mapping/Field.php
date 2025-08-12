@@ -2,6 +2,10 @@
 
 namespace Elastico\Mapping;
 
+use ReflectionProperty;
+use Closure;
+use ReflectionUnionType;
+use ReflectionType;
 use Attribute;
 use Elastico\Models\DataAccessObject;
 use Elastico\Models\Model;
@@ -10,7 +14,7 @@ use Illuminate\Contracts\Support\Arrayable;
 #[Attribute(Attribute::TARGET_CLASS | Attribute::TARGET_PROPERTY | Attribute::IS_REPEATABLE)]
 class Field implements Arrayable
 {
-    public readonly \ReflectionProperty $property;
+    public readonly ReflectionProperty $property;
 
     public bool $index;
 
@@ -32,7 +36,7 @@ class Field implements Arrayable
 
     public string $similarity;
 
-    public \Closure $propertyCallback;
+    public Closure $propertyCallback;
 
     public string|array $copy_to;
 
@@ -147,7 +151,7 @@ class Field implements Arrayable
         return $this->name;
     }
 
-    public function eachProperty(\Closure $callback): static
+    public function eachProperty(Closure $callback): static
     {
         $this->propertyCallback = $callback;
 
@@ -209,7 +213,7 @@ class Field implements Arrayable
         return $config;
     }
 
-    public function withProp(\ReflectionProperty $property): static
+    public function withProp(ReflectionProperty $property): static
     {
         $this->property = $property;
 
@@ -231,7 +235,7 @@ class Field implements Arrayable
         if (!empty($this->class)) {
             return $this->class;
         }
-        if ($this->property->getType() instanceof \ReflectionUnionType) {
+        if ($this->property->getType() instanceof ReflectionUnionType) {
             $types = explode('|', (string) $this->property->getType());
 
             $types = array_filter($types, fn($type) => !in_array($type, ['array', 'null', 'string']));
@@ -239,7 +243,7 @@ class Field implements Arrayable
             if (1 == count($types)) {
                 return reset($types);
             }
-        } elseif ($this->property->getType() instanceof \ReflectionType) {
+        } elseif ($this->property->getType() instanceof ReflectionType) {
             return $this->property->getType()->getName();
         }
     }

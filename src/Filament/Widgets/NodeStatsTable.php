@@ -59,6 +59,6 @@ class NodeStatsTable extends TableWidget
                     ->sortable()
                     ->alignRight(),
             ])
-            ->actions([]);
+            ->recordActions([]);
     }
 }

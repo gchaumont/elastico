@@ -2,6 +2,12 @@
 
 namespace Elastico\Query\Builder;
 
+use Closure;
+use InvalidArgumentException;
+use DateTime;
+use BackedEnum;
+use UnitEnum;
+use Stringable;
 use Elastico\Eloquent\Model;
 use Elastico\Query\Term\Term;
 use Elastico\Query\Term\Range;
@@ -55,7 +61,7 @@ trait HasWhere
     // public function where(string|\Closure $field, mixed $operator = null, mixed $value = null): self
     public function where($column, $operator = null, $value = null, $boolean = 'and'): self
     {
-        if ($column instanceof \Closure) {
+        if ($column instanceof Closure) {
             $this->getQuery()->filter($column(new Boolean()));
 
             return $this;
@@ -75,7 +81,7 @@ trait HasWhere
                 true => $this->filter(new Terms(field: $column, values: $value)),
                 false => $this->filter(new Term(field: $column, value: $value)),
             },
-            default => throw new \InvalidArgumentException('Invalid where opterator')
+            default => throw new InvalidArgumentException('Invalid where opterator')
         };
 
         return $this;
@@ -95,10 +101,10 @@ trait HasWhere
             false => $value,
             true => match (true) {
                 $value instanceof Model => $value->getKey(),
-                $value instanceof \DateTime => $value->format(\DateTime::ATOM),
-                $value instanceof \BackedEnum => $value->value,
-                $value instanceof \UnitEnum => $value->name,
-                $value instanceof \Stringable => (string) $value,
+                $value instanceof DateTime => $value->format(DateTime::ATOM),
+                $value instanceof BackedEnum => $value->value,
+                $value instanceof UnitEnum => $value->name,
+                $value instanceof Stringable => (string) $value,
                 default => $value,
             }
         };

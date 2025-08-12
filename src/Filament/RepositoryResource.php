@@ -2,11 +2,11 @@
 
 namespace Elastico\Filament;
 
+use Filament\Schemas\Schema;
 use Filament\Tables\Table;
 use Filament\Resources\Resource;
 use Filament\Tables\Columns\TextColumn;
 use Elastico\Filament\RepositoryResource\Pages\ListRepositories;
-use Filament\Infolists\Infolist;
 use Filament\Infolists\Components\TextEntry;
 use Elastico\Filament\RepositoryResource\Pages\ViewRepository;
 use Elastico\Models\Repository;
@@ -16,16 +16,16 @@ class RepositoryResource extends Resource
 {
     protected static ?string $model = Repository::class;
 
-    protected static ?string $navigationIcon = 'heroicon-o-folder';
+    protected static string | \BackedEnum | null $navigationIcon = 'heroicon-o-folder';
 
-    protected static ?string $navigationGroup = 'Elasticsearch';
+    protected static string | \UnitEnum | null $navigationGroup = 'Elasticsearch';
 
     protected static ?string $recordTitleAttribute = 'id';
 
-    public static function infolist(Infolist $infolist): Infolist
+    public static function infolist(Schema $schema): Schema
     {
-        return $infolist
-            ->schema([
+        return $schema
+            ->components([
                 TextEntry::make('id'),
                 TextEntry::make('type')->badge(),
                 KeyValueEntry::make('settings'),
@@ -48,7 +48,7 @@ class RepositoryResource extends Resource
             //         ->slideOver(),
             //     // Tables\Actions\EditAction::make(),
             // ])
-            ->bulkActions([])
+            ->toolbarActions([])
             // ->deferLoading()
             ->defaultSort('name', 'asc')
             ->poll('5s');

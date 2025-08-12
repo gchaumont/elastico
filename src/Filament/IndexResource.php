@@ -3,12 +3,14 @@
 namespace Elastico\Filament;
 
 
+use Filament\Schemas\Schema;
+use Filament\Actions\ViewAction;
+use Filament\Actions\Action;
 use Filament\Tables;
 use Filament\Forms\Form;
 use Filament\Tables\Table;
 use Filament\Resources\Resource;
 use Illuminate\Support\Facades\DB;
-use Filament\Tables\Actions\Action;
 use Filament\Tables\Columns\TextColumn;
 use Illuminate\Database\QueryException;
 use Filament\Tables\Filters\SelectFilter;
@@ -17,8 +19,6 @@ use Elastico\Models\Index;
 use Filament\Tables\Columns\Summarizers\Sum;
 use Elastico\Filament\IndexResource\Pages\ListIndices;
 use Elastico\Filament\IndexResource\Widgets\IndexStats;
-use Filament\Infolists\Infolist;
-use Filament\Tables\Actions\ViewAction;
 use Illuminate\Support\Number;
 use Illuminate\Database\Eloquent\Model;
 use Filament\Infolists\Components\TextEntry;
@@ -27,9 +27,9 @@ class IndexResource extends Resource
 {
     protected static ?string $model = Index::class;
 
-    protected static ?string $navigationIcon = 'heroicon-o-document-magnifying-glass';
+    protected static string | \BackedEnum | null $navigationIcon = 'heroicon-o-document-magnifying-glass';
 
-    protected static ?string $navigationGroup = 'Elasticsearch';
+    protected static string | \UnitEnum | null $navigationGroup = 'Elasticsearch';
 
     protected static ?string $recordTitleAttribute = 'name';
 
@@ -50,10 +50,10 @@ class IndexResource extends Resource
         return parent::getEloquentQuery();
     }
 
-    public static function infolist(Infolist $infolist): Infolist
+    public static function infolist(Schema $schema): Schema
     {
-        return $infolist
-            ->schema([
+        return $schema
+            ->components([
                 TextEntry::make('uuid'),
                 TextEntry::make('name'),
                 TextEntry::make('health')
@@ -179,7 +179,7 @@ class IndexResource extends Resource
                         'red' => 'red',
                     ]),
             ])
-            ->actions([
+            ->recordActions([
                 // see the mappings and settings
                 ViewAction::make()
                     ->slideOver(),
@@ -195,7 +195,7 @@ class IndexResource extends Resource
                     ->color('danger'),
                 // Tables\Actions\EditAction::make(),
             ])
-            ->bulkActions([
+            ->toolbarActions([
                 // Tables\Actions\DeleteBulkAction::make(),
             ])
             // ->deferLoading()

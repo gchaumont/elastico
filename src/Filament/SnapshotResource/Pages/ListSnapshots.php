@@ -2,17 +2,17 @@
 
 namespace Elastico\Filament\SnapshotResource\Pages;
 
+use Filament\Support\Enums\Width;
 use Filament\Resources\Pages\ListRecords;
 use Elastico\Filament\SnapshotResource;
-use Filament\Support\Enums\MaxWidth;
 
 class ListSnapshots extends ListRecords
 {
     protected static string $resource = SnapshotResource::class;
 
-    public function getMaxContentWidth(): MaxWidth
+    public function getMaxContentWidth(): Width
     {
-        return MaxWidth::Full;
+        return Width::Full;
     }
 
     protected function isTablePaginationEnabled(): bool

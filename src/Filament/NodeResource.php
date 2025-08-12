@@ -2,6 +2,8 @@
 
 namespace Elastico\Filament;
 
+use Filament\Schemas\Schema;
+use Filament\Actions\ViewAction;
 use Filament\Tables;
 use Filament\Forms\Form;
 use Filament\Tables\Table;
@@ -18,27 +20,25 @@ use Elastico\Filament\IndexResource\Pages\ListIndices;
 use Elastico\Filament\NodeResource\Pages\ListNodes;
 use Elastico\Filament\NodeResource\Widgets\NodeStats;
 use Elastico\Models\Node;
-use Filament\Infolists\Infolist;
 use Filament\Infolists\Components\TextEntry;
 use Elastico\Filament\NodeResource\Pages\ViewNode;
 use Filament\Infolists\Components\KeyValueEntry;
-use Filament\Tables\Actions\ViewAction;
 use Illuminate\Support\Number;
 
 class NodeResource extends Resource
 {
     protected static ?string $model = Node::class;
 
-    protected static ?string $navigationIcon = 'heroicon-o-server-stack';
+    protected static string | \BackedEnum | null $navigationIcon = 'heroicon-o-server-stack';
 
-    protected static ?string $navigationGroup = 'Elasticsearch';
+    protected static string | \UnitEnum | null $navigationGroup = 'Elasticsearch';
 
     protected static ?string $recordTitleAttribute = 'name';
 
-    public static function infolist(Infolist $infolist): Infolist
+    public static function infolist(Schema $schema): Schema
     {
-        return $infolist
-            ->schema([
+        return $schema
+            ->components([
                 TextEntry::make('id'),
                 TextEntry::make('name'),
                 TextEntry::make('cluster'),
@@ -133,12 +133,12 @@ class NodeResource extends Resource
 
             ])
             ->filters([])
-            ->actions([
+            ->recordActions([
                 ViewAction::make()
                     ->slideOver(),
                 // Tables\Actions\EditAction::make(),
             ])
-            ->bulkActions([])
+            ->toolbarActions([])
             // ->deferLoading()
             ->defaultSort('name', 'asc')
             ->poll('5s');

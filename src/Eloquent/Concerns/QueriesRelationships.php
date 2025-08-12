@@ -2,6 +2,8 @@
 
 namespace Elastico\Eloquent\Concerns;
 
+use Closure;
+use Exception;
 use Elastico\Eloquent\Model;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Relations\Relation;
@@ -24,9 +26,9 @@ trait QueriesRelationships
      *
      * @return Builder|static
      *
-     * @throws \Exception
+     * @throws Exception
      */
-    public function has($relation, $operator = '>=', $count = 1, $boolean = 'and', ?\Closure $callback = null)
+    public function has($relation, $operator = '>=', $count = 1, $boolean = 'and', ?Closure $callback = null)
     {
         if (is_string($relation)) {
             if (false !== strpos($relation, '.')) {
@@ -79,9 +81,9 @@ trait QueriesRelationships
      *
      * @return mixed
      *
-     * @throws \Exception
+     * @throws Exception
      */
-    public function addHybridHas(Relation $relation, $operator = '>=', $count = 1, $boolean = 'and', ?\Closure $callback = null)
+    public function addHybridHas(Relation $relation, $operator = '>=', $count = 1, $boolean = 'and', ?Closure $callback = null)
     {
         $hasQuery = $relation->getQuery();
         if ($callback) {
@@ -158,7 +160,7 @@ trait QueriesRelationships
      *
      * @return string
      *
-     * @throws \Exception
+     * @throws Exception
      */
     protected function getRelatedConstraintKey(Relation $relation)
     {
@@ -174,6 +176,6 @@ trait QueriesRelationships
             return $this->model->getKeyName();
         }
 
-        throw new \Exception(class_basename($relation) . ' is not supported for hybrid query constraints.');
+        throw new Exception(class_basename($relation) . ' is not supported for hybrid query constraints.');
     }
 }

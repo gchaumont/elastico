@@ -10,7 +10,7 @@ trait BuildsDictionnaries
     /**
      * Build model dictionary keyed by the relation's foreign key.
      *
-     * @param  \Illuminate\Database\Eloquent\Collection  $results
+     * @param Collection $results
      * @return array
      */
     protected function buildDictionary(Collection $results)

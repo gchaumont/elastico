@@ -2,6 +2,7 @@
 
 namespace Elastico\Checks;
 
+use Exception;
 use Illuminate\Support\Facades\DB;
 use Spatie\Health\Checks\Check;
 use Spatie\Health\Checks\Result;
@@ -112,7 +113,7 @@ class ClusterCheck extends Check
             }
 
             return $result->ok("Elasticsearch cluster is healthy.");
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             return $result->failed("Elasticsearch check failed: " . $e->getMessage());
         }
     }

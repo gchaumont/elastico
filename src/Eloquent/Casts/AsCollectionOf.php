@@ -2,6 +2,7 @@
 
 namespace Elastico\Eloquent\Casts;
 
+use Exception;
 use Illuminate\Contracts\Database\Eloquent\CastsAttributes;
 use Illuminate\Database\Eloquent\Casts\AsCollection;
 use Illuminate\Support\Collection;
@@ -56,7 +57,7 @@ class AsCollectionOf extends AsCollection
                 }
 
                 if (!is_array($value)) {
-                    throw new \Exception("Cannot cast data");
+                    throw new Exception("Cannot cast data");
                 }
 
                 return [$key => collect($value)->toArray()];

@@ -60,7 +60,7 @@ class CreateDataStream extends Command
 
         $template = [];
         $template['body']['index_patterns'] = [$model->getTable() . '*'];
-        $template['body']['data_stream'] = new \stdClass();
+        $template['body']['data_stream'] = new stdClass();
         $template['body']['priority'] = '300'; // higher than 200 avoid collision with builtin templates
         $template['body']['template'] = $config['body'];
 

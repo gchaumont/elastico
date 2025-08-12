@@ -2,6 +2,7 @@
 
 namespace Elastico\Eloquent\Concerns;
 
+use Exception;
 use Elastico\Query\Response\Collection;
 use Illuminate\Support\Collection as BaseCollection;
 
@@ -48,6 +49,6 @@ trait HasAggregations
 
     public function getResponse(string $key): Collection
     {
-        return $this->responses->get($key) ?? throw new \Exception("No response found for {$key}");
+        return $this->responses->get($key) ?? throw new Exception("No response found for {$key}");
     }
 }

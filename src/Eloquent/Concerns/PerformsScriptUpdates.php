@@ -14,8 +14,8 @@ trait PerformsScriptUpdates
 {
     /**
      * Perform a model update operation.
-     * @param \Elastico\Eloquent\Builder $query
-     * 
+     * @param Builder $query
+     *
      * @return bool
      */
     protected function performScriptedUpdate(Builder $query,  Script $script)

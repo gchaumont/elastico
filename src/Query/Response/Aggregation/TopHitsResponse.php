@@ -2,12 +2,13 @@
 
 namespace Elastico\Query\Response\Aggregation;
 
+use ArrayAccess;
 use Illuminate\Support\Collection;
 
 /**
  *  Aggregation Response.
  */
-class TopHitsResponse extends AggregationResponse implements \ArrayAccess
+class TopHitsResponse extends AggregationResponse implements ArrayAccess
 {
     public function hits(): Collection
     {

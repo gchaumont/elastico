@@ -2,6 +2,11 @@
 
 namespace Elastico\Query;
 
+use Exception;
+use Generator;
+use InvalidArgumentException;
+use Closure;
+use Illuminate\Support\Collection;
 use Elastico\Connection;
 use Elastico\Query\Grammar;
 use Illuminate\Support\Arr;
@@ -126,11 +131,11 @@ class Builder extends BaseBuilder
     /**
      * Explains the query.
      *
-     * @return \Illuminate\Support\Collection
+     * @return Collection
      */
     public function explain()
     {
-        throw new \Exception('Not Supported');
+        throw new Exception('Not Supported');
     }
 
     /**
@@ -243,7 +248,7 @@ class Builder extends BaseBuilder
      *
      * @param mixed $keepAlive
      *
-     * @return \Illuminate\Support\LazyCollection
+     * @return LazyCollection
      */
     public function cursor($keepAlive = '1m')
     {
@@ -303,7 +308,7 @@ class Builder extends BaseBuilder
     /**
      * Add a basic where clause to the query.
      *
-     * @param array|\Closure|string $column
+     * @param array|Closure|string $column
      * @param mixed                 $operator
      * @param mixed                 $value
      * @param string                $boolean
@@ -533,7 +538,7 @@ class Builder extends BaseBuilder
     /**
      * Insert new records into the table using a subquery.
      *
-     * @param \Closure|\Illuminate\Database\Eloquent\Builder|\Illuminate\Database\Query\Builder|string $query
+     * @param Closure|\Illuminate\Database\Eloquent\Builder|\Illuminate\Database\Query\Builder|string $query
      *
      * @return int
      */
@@ -585,7 +590,7 @@ class Builder extends BaseBuilder
      *
      * @return int
      *
-     * @throws \InvalidArgumentException
+     * @throws InvalidArgumentException
      */
     public function increment($column, $amount = 1, array $extra = [])
     {
@@ -608,7 +613,7 @@ class Builder extends BaseBuilder
      *
      * @return int
      *
-     * @throws \InvalidArgumentException
+     * @throws InvalidArgumentException
      */
     public function decrement($column, $amount = 1, array $extra = [])
     {
@@ -792,7 +797,7 @@ class Builder extends BaseBuilder
         int $size = 10,
         bool $insensitive = true
     ): LazyCollection {
-        return LazyCollection::make(function () use ($field, $string, $after, $size, $insensitive): \Generator {
+        return LazyCollection::make(function () use ($field, $string, $after, $size, $insensitive): Generator {
             do {
                 $response = $this->connection->termsEnum(
                     index: $this->from,
@@ -836,7 +841,7 @@ class Builder extends BaseBuilder
         $direction = strtolower($direction);
 
         if (!in_array($direction, ['asc', 'desc'], true)) {
-            throw new \InvalidArgumentException('Order direction must be "asc" or "desc".');
+            throw new InvalidArgumentException('Order direction must be "asc" or "desc".');
         }
 
         $this->orders[] = compact('column', 'direction', 'missing', 'mode', 'nested');
@@ -865,7 +870,7 @@ class Builder extends BaseBuilder
 
         $total = value($total) ?? $this->getCountForPagination();
 
-        $perPage = $perPage instanceof \Closure ? $perPage($total) : $perPage;
+        $perPage = $perPage instanceof Closure ? $perPage($total) : $perPage;
 
         // Query anyway because aggregations
         $results = $this->forPage($page, $perPage)->get($columns);

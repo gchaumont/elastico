@@ -2,26 +2,27 @@
 
 namespace Elastico\Filament;
 
+use Filament\Pages\Dashboard\Concerns\HasFiltersForm;
+use Filament\Schemas\Schema;
+use Filament\Schemas\Components\Section;
 use Filament\Forms\Components\Select;
 use Filament\Pages\Dashboard;
 use Elastico\Filament\IndexResource\Widgets\IndexStats;
 use Elastico\Filament\NodeResource\Widgets\NodeStats;
 use Elastico\Filament\Widgets\NodeStatsTable;
-use Filament\Forms\Components\Section;
-use Filament\Forms\Form;
 use Elastico\Filament\Widgets\ClusterStats;
 
 class ElasticoDashboard extends Dashboard
 {
-    use Dashboard\Concerns\HasFiltersForm;
+    use HasFiltersForm;
 
     protected static string $routePath = '/elastico';
 
-    protected static ?string $navigationIcon = 'heroicon-o-chart-bar-square';
+    protected static string | \BackedEnum | null $navigationIcon = 'heroicon-o-chart-bar-square';
 
     protected static ?string $title = 'Dashboard';
 
-    protected static ?string $navigationGroup = 'Elasticsearch';
+    protected static string | \UnitEnum | null $navigationGroup = 'Elasticsearch';
 
     public function getWidgets(): array
     {
@@ -32,10 +33,10 @@ class ElasticoDashboard extends Dashboard
     }
 
 
-    public function filtersForm(Form $form): Form
+    public function filtersForm(Schema $schema): Schema
     {
-        return $form
-            ->schema([
+        return $schema
+            ->components([
                 Section::make()
                     ->schema([
                         Select::make('connection')

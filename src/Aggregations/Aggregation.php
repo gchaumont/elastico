@@ -2,6 +2,7 @@
 
 namespace Elastico\Aggregations;
 
+use stdClass;
 use Elastico\Query\Builder\HasAggregations;
 use Elastico\Query\Response\Aggregation\AggregationResponse;
 use Elastico\Query\Response\Collection;
@@ -29,7 +30,7 @@ abstract class Aggregation
     final public function compile(): array
     {
         return collect([
-            static::TYPE => $this->getPayload() ?: new \stdClass(),
+            static::TYPE => $this->getPayload() ?: new stdClass(),
             'aggs' => $this->getAggregations()->map(fn ($aggregation) => $aggregation->compile())->all(),
         ])
             ->filter()

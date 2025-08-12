@@ -2,17 +2,17 @@
 
 namespace Elastico\Filament\RepositoryResource\Pages;
 
+use Filament\Support\Enums\Width;
 use Filament\Resources\Pages\ListRecords;
 use Elastico\Filament\RepositoryResource;
-use Filament\Support\Enums\MaxWidth;
 
 class ListRepositories extends ListRecords
 {
     protected static string $resource = RepositoryResource::class;
 
-    public function getMaxContentWidth(): MaxWidth
+    public function getMaxContentWidth(): Width
     {
-        return MaxWidth::Full;
+        return Width::Full;
     }
 
     protected function isTablePaginationEnabled(): bool

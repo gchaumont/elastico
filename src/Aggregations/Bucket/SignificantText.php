@@ -2,6 +2,8 @@
 
 namespace Elastico\Aggregations\Bucket;
 
+use stdClass;
+use Exception;
 use Elastico\Aggregations\Aggregation;
 
 /**
@@ -27,7 +29,7 @@ class SignificantText extends BucketAggregation
     {
         $agg = [
             'field' => $this->field,
-            $this->significance_type => new \stdClass(),
+            $this->significance_type => new stdClass(),
             'size' => $this->size,
         ];
         if (!is_null($this->include)) {
@@ -53,7 +55,7 @@ class SignificantText extends BucketAggregation
     public function type(string $type): self
     {
         if (!in_array($type, ['jlh', 'mutual_information', 'chi_square', 'gnd', 'percentage'])) {
-            throw new \Exception('Invalid Significane Type', 1);
+            throw new Exception('Invalid Significane Type', 1);
         }
 
         $this->significance_type = $type;

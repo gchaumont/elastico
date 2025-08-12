@@ -27,7 +27,7 @@ trait HybridRelations
      * @param string $foreignKey
      * @param string $localKey
      *
-     * @return \Illuminate\Database\Eloquent\Relations\HasOne|\Elastico\Eloquent\Relations\HasOne
+     * @return \Illuminate\Database\Eloquent\Relations\HasOne|HasOne
      */
     public function hasOne($related, $foreignKey = null, $localKey = null)
     {
@@ -54,7 +54,7 @@ trait HybridRelations
      * @param string $id
      * @param string $localKey
      *
-     * @return \Illuminate\Database\Eloquent\Relations\MorphOne
+     * @return MorphOne
      */
     public function morphOne($related, $name, $type = null, $id = null, $localKey = null)
     {
@@ -79,7 +79,7 @@ trait HybridRelations
      * @param string $foreignKey
      * @param string $localKey
      *
-     * @return \Illuminate\Database\Eloquent\Relations\HasMany|\Elastico\Eloquent\Relations\HasMany
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany|HasMany
      */
     public function hasMany($related, $foreignKey = null, $localKey = null)
     {
@@ -137,7 +137,7 @@ trait HybridRelations
      * @param string $otherKey
      * @param string $relation
      *
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo|\Elastico\Eloquent\Relations\BelongsTo
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo|BelongsTo
      */
     public function belongsTo($related, $foreignKey = null, $otherKey = null, $relation = null)
     {
@@ -241,7 +241,7 @@ trait HybridRelations
      * @param string $relatedKey
      * @param string $relation
      *
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsToMany|\Elastico\Eloquent\Relations\BelongsToMany
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsToMany|BelongsToMany
      */
     public function belongsToMany(
         $related,
